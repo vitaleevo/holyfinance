@@ -9,6 +9,18 @@ export const get = query({
     handler: async (ctx, args) => {
         if (!args.userId) return [];
 
+        const user = await ctx.db.get(args.userId!);
+        if (!user) return [];
+
+        // If user is admin/partner, show all family transactions
+        if (user.familyId && (user.role === 'admin' || user.role === 'partner')) {
+            return await ctx.db
+                .query("transactions")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .order("desc")
+                .collect();
+        }
+
         return await ctx.db
             .query("transactions")
             .withIndex("by_user", (q) => q.eq("userId", args.userId!))
@@ -26,15 +38,28 @@ export const create = mutation({
         category: v.string(),
         date: v.string(),
         account: v.string(),
-        status: v.string(),
+        status: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const id = await ctx.db.insert("transactions", args);
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+
+        const id = await ctx.db.insert("transactions", {
+            ...args,
+            status: args.status || "completed", // Default
+            familyId
+        });
 
         // Update Account Balance
-        const account = await ctx.db
-            .query("accounts")
-            .withIndex("by_user", (q) => q.eq("userId", args.userId))
+        let accountQuery = ctx.db.query("accounts");
+        if (familyId) {
+            // @ts-ignore
+            accountQuery = accountQuery.withIndex("by_family", q => q.eq("familyId", familyId));
+        } else {
+            accountQuery = accountQuery.withIndex("by_user", q => q.eq("userId", args.userId));
+        }
+
+        const account = await accountQuery
             .filter((q) => q.eq(q.field("name"), args.account))
             .first();
 
@@ -46,36 +71,43 @@ export const create = mutation({
                 newBalance -= args.amount;
             }
             await ctx.db.patch(account._id, { balance: newBalance });
-
         }
 
         // Check Budget Limit (Negative Objective)
         if (args.type === "expense") {
-            const limitDoc = await ctx.db
-                .query("budgetLimits")
-                .withIndex("by_user", (q) => q.eq("userId", args.userId))
-                .filter((q) => q.eq(q.field("category"), args.category))
-                .first();
+            let limitDoc;
+            if (familyId) {
+                limitDoc = await ctx.db.query("budgetLimits")
+                    .withIndex("by_family", q => q.eq("familyId", familyId))
+                    .filter(q => q.eq(q.field("category"), args.category))
+                    .first();
+            } else {
+                limitDoc = await ctx.db.query("budgetLimits")
+                    .withIndex("by_user", q => q.eq("userId", args.userId))
+                    .filter(q => q.eq(q.field("category"), args.category))
+                    .first();
+            }
 
             if (limitDoc) {
                 // Calculate total spend this month for this category
                 const now = new Date();
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
-                const transactions = await ctx.db
-                    .query("transactions")
-                    .withIndex("by_user", (q) => q.eq("userId", args.userId))
+                let transactionsQuery = ctx.db.query("transactions");
+                if (familyId) {
+                    // @ts-ignore
+                    transactionsQuery = transactionsQuery.withIndex("by_family", q => q.eq("familyId", familyId));
+                } else {
+                    transactionsQuery = transactionsQuery.withIndex("by_user", q => q.eq("userId", args.userId));
+                }
+
+                const transactions = await transactionsQuery
                     .filter((q) => q.and(
                         q.eq(q.field("category"), args.category),
                         q.eq(q.field("type"), "expense"),
                         q.gte(q.field("date"), startOfMonth)
                     ))
                     .collect();
-
-                // Note: 'transactions' includes the one we just inserted? 
-                // ctx.db.insert returns ID, but query consistency in same mutation usually includes it? 
-                // Convex consistency allows "read your writes".
-                // But date format might vary. Assuming ISO.
 
                 const totalSpent = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
 
@@ -89,6 +121,7 @@ export const create = mutation({
 
                     await createNotification(ctx, {
                         userId: args.userId,
+                        familyId,
                         title: `Orçamento Excedido: ${args.category} ⚠️`,
                         message: `Você ultrapassou o limite de ${limitDoc.limit} para ${args.category}. Gasto atual: ${totalSpent}.\n\n💡 Ideia: ${idea}`,
                         type: "warning", // Negative
@@ -112,7 +145,7 @@ export const update = mutation({
         category: v.string(),
         date: v.string(),
         account: v.string(),
-        status: v.string(),
+        status: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         const { id, userId, ...newData } = args;
@@ -122,20 +155,31 @@ export const update = mutation({
             throw new Error("Transaction not found");
         }
 
+        const user = await ctx.db.get(userId);
+        const familyId = user?.familyId;
+
         // Verify ownership
-        if (oldTransaction.userId !== userId) {
+        const hasAccess = oldTransaction.userId === userId || (familyId && oldTransaction.familyId === familyId);
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
         await ctx.db.patch(id, newData);
 
-        // Revert old transaction effect on account
-        const oldAccount = await ctx.db
-            .query("accounts")
-            .withIndex("by_user", (q) => q.eq("userId", userId))
-            .filter((q) => q.eq(q.field("name"), oldTransaction.account))
-            .first();
+        // Helper to find account
+        const findAccount = async (name: string) => {
+            let q = ctx.db.query("accounts");
+            if (familyId) {
+                // @ts-ignore
+                q = q.withIndex("by_family", qt => qt.eq("familyId", familyId));
+            } else {
+                q = q.withIndex("by_user", qt => qt.eq("userId", userId));
+            }
+            return await q.filter(qt => qt.eq(qt.field("name"), name)).first();
+        };
 
+        // Revert old transaction effect
+        const oldAccount = await findAccount(oldTransaction.account);
         if (oldAccount) {
             let balance = oldAccount.balance ?? 0;
             if (oldTransaction.type === "income") {
@@ -146,13 +190,8 @@ export const update = mutation({
             await ctx.db.patch(oldAccount._id, { balance });
         }
 
-        // Apply new transaction effect on account
-        const newAccount = await ctx.db
-            .query("accounts")
-            .withIndex("by_user", (q) => q.eq("userId", userId))
-            .filter((q) => q.eq(q.field("name"), newData.account))
-            .first();
-
+        // Apply new transaction effect
+        const newAccount = await findAccount(newData.account);
         if (newAccount) {
             let balance = newAccount.balance ?? 0;
             if (newData.type === "income") {
@@ -174,17 +213,27 @@ export const remove = mutation({
         const transaction = await ctx.db.get(args.id);
         if (!transaction) return;
 
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+
         // Verify ownership
-        if (transaction.userId !== args.userId) {
+        const hasAccess = transaction.userId === args.userId || (familyId && transaction.familyId === familyId);
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
         await ctx.db.delete(args.id);
 
         // Revert Account Balance
-        const account = await ctx.db
-            .query("accounts")
-            .withIndex("by_user", (q) => q.eq("userId", args.userId))
+        let accountQuery = ctx.db.query("accounts");
+        if (familyId) {
+            // @ts-ignore
+            accountQuery = accountQuery.withIndex("by_family", q => q.eq("familyId", familyId));
+        } else {
+            accountQuery = accountQuery.withIndex("by_user", q => q.eq("userId", args.userId));
+        }
+
+        const account = await accountQuery
             .filter((q) => q.eq(q.field("name"), transaction.account))
             .first();
 

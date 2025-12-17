@@ -8,6 +8,17 @@ export const get = query({
     handler: async (ctx, args) => {
         if (!args.userId) return [];
 
+        const user = await ctx.db.get(args.userId!);
+        if (!user) return [];
+
+        // Admin/Partner see all family investments
+        if (user.familyId && (user.role === 'admin' || user.role === 'partner')) {
+            return await ctx.db
+                .query("investments")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .collect();
+        }
+
         return await ctx.db
             .query("investments")
             .withIndex("by_user", (q) => q.eq("userId", args.userId!))
@@ -28,12 +39,16 @@ export const create = mutation({
     handler: async (ctx, args) => {
         const { accountId, ...investmentData } = args;
 
-        const id = await ctx.db.insert("investments", investmentData);
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+
+        const id = await ctx.db.insert("investments", { ...investmentData, familyId });
 
         // Debit from account if specified
         if (accountId) {
             const account = await ctx.db.get(accountId);
-            if (account && account.userId === args.userId) {
+            const accountAccess = account && (account.userId === args.userId || (familyId && account.familyId === familyId));
+            if (accountAccess) {
                 const totalCost = args.quantity * args.price;
                 await ctx.db.patch(accountId, {
                     balance: (account.balance ?? 0) - totalCost,
@@ -59,7 +74,12 @@ export const update = mutation({
         const { id, userId, ...data } = args;
 
         const investment = await ctx.db.get(id);
-        if (!investment || investment.userId !== userId) {
+        if (!investment) throw new Error("Not found");
+
+        const user = await ctx.db.get(userId);
+        const hasAccess = investment.userId === userId || (user?.familyId && investment.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
@@ -74,7 +94,12 @@ export const remove = mutation({
     },
     handler: async (ctx, args) => {
         const investment = await ctx.db.get(args.id);
-        if (!investment || investment.userId !== args.userId) {
+        if (!investment) return;
+
+        const user = await ctx.db.get(args.userId);
+        const hasAccess = investment.userId === args.userId || (user?.familyId && investment.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 

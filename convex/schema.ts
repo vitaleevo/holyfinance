@@ -2,6 +2,12 @@ import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
 export default defineSchema({
+  families: defineTable({
+    name: v.string(),
+    code: v.string(), // Invite code e.g. "SILVA-9921"
+    createdAt: v.string(),
+  }).index("by_code", ["code"]),
+
   users: defineTable({
     name: v.string(),
     email: v.string(),
@@ -10,7 +16,11 @@ export default defineSchema({
     phone: v.optional(v.string()),
     currency: v.optional(v.string()),
     avatarStorageId: v.optional(v.id("_storage")),
-  }).index("by_email", ["email"]),
+    familyId: v.optional(v.id("families")), // Link to family
+    role: v.optional(v.string()), // "admin" | "partner" | "member"
+  })
+    .index("by_email", ["email"])
+    .index("by_family", ["familyId"]),
 
   sessions: defineTable({
     userId: v.id("users"),
@@ -26,49 +36,68 @@ export default defineSchema({
   }).index("by_user", ["userId"]),
 
   accounts: defineTable({
-    userId: v.id("users"),
+    userId: v.id("users"), // Author
+    familyId: v.optional(v.id("families")), // Owner entity
     name: v.string(),
     type: v.string(),
     balance: v.number(),
     bankName: v.string(),
-  }).index("by_user", ["userId"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_family", ["familyId"]),
 
   transactions: defineTable({
-    userId: v.id("users"),
+    userId: v.id("users"), // Author
+    familyId: v.optional(v.id("families")), // Owner entity
     description: v.string(),
     amount: v.number(),
     type: v.string(), // "income" | "expense"
     category: v.string(),
     date: v.string(),
     account: v.string(), // Name of account, linked via logic
-  }).index("by_user", ["userId"]),
+    status: v.optional(v.string()),
+  })
+    .index("by_user", ["userId"])
+    .index("by_family", ["familyId"]),
 
   goals: defineTable({
     userId: v.id("users"),
+    familyId: v.optional(v.id("families")),
     title: v.string(),
     targetAmount: v.number(),
     currentAmount: v.number(),
     deadline: v.string(),
     status: v.string(), // "active" | "completed"
-  }).index("by_user", ["userId"]),
+    category: v.string(),
+    icon: v.string(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_family", ["familyId"]),
 
   budgetLimits: defineTable({
     userId: v.id("users"),
+    familyId: v.optional(v.id("families")),
     category: v.string(),
     limit: v.number(),
-  }).index("by_user", ["userId"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_family", ["familyId"]),
 
   investments: defineTable({
     userId: v.id("users"),
+    familyId: v.optional(v.id("families")),
     ticker: v.string(),
     name: v.string(),
     type: v.string(),
     quantity: v.number(),
     price: v.number(),
-  }).index("by_user", ["userId"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_family", ["familyId"]),
 
   debts: defineTable({
     userId: v.id("users"),
+    familyId: v.optional(v.id("families")),
     name: v.string(),
     bank: v.string(),
     totalValue: v.number(),
@@ -76,17 +105,22 @@ export default defineSchema({
     monthlyParcel: v.number(),
     dueDate: v.string(),
     icon: v.string(),
-  }).index("by_user", ["userId"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_family", ["familyId"]),
 
   notifications: defineTable({
-    userId: v.id("users"), // Cast as string in code if using v.string() but here strict v.id()
+    userId: v.id("users"),
+    familyId: v.optional(v.id("families")),
     title: v.string(),
     message: v.string(),
     type: v.string(), // "info" | "success" | "warning" | "error"
     read: v.boolean(),
     createdAt: v.string(),
     isImportant: v.boolean(),
-  }).index("by_user", ["userId"]),
+  })
+    .index("by_user", ["userId"])
+    .index("by_family", ["familyId"]),
 
   emailSettings: defineTable({
     userId: v.id("users"),

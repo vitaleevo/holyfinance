@@ -8,6 +8,17 @@ export const get = query({
     handler: async (ctx, args) => {
         if (!args.userId) return [];
 
+        const user = await ctx.db.get(args.userId!);
+        if (!user) return [];
+
+        // Admin/Partner see all family debts
+        if (user.familyId && (user.role === 'admin' || user.role === 'partner')) {
+            return await ctx.db
+                .query("debts")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .collect();
+        }
+
         return await ctx.db
             .query("debts")
             .withIndex("by_user", (q) => q.eq("userId", args.userId!))
@@ -27,7 +38,10 @@ export const create = mutation({
         icon: v.string(),
     },
     handler: async (ctx, args) => {
-        return await ctx.db.insert("debts", args);
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+
+        return await ctx.db.insert("debts", { ...args, familyId });
     },
 });
 
@@ -47,7 +61,12 @@ export const update = mutation({
         const { id, userId, ...data } = args;
 
         const debt = await ctx.db.get(id);
-        if (!debt || debt.userId !== userId) {
+        if (!debt) throw new Error("Not found");
+
+        const user = await ctx.db.get(userId);
+        const hasAccess = debt.userId === userId || (user?.familyId && debt.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
@@ -62,7 +81,12 @@ export const remove = mutation({
     },
     handler: async (ctx, args) => {
         const debt = await ctx.db.get(args.id);
-        if (!debt || debt.userId !== args.userId) {
+        if (!debt) return;
+
+        const user = await ctx.db.get(args.userId);
+        const hasAccess = debt.userId === args.userId || (user?.familyId && debt.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
@@ -74,6 +98,7 @@ export const payParcel = mutation({
     args: {
         debtId: v.id("debts"),
         accountId: v.id("accounts"),
+        userId: v.id("users"),
         amount: v.number(),
         date: v.string(),
     },
@@ -82,7 +107,14 @@ export const payParcel = mutation({
         const account = await ctx.db.get(args.accountId);
 
         if (!debt || !account) throw new Error("Referência não encontrada");
-        if (debt.userId !== account.userId) throw new Error("Unauthorized");
+
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+
+        const debtAccess = debt.userId === args.userId || (familyId && debt.familyId === familyId);
+        const accountAccess = account.userId === args.userId || (familyId && account.familyId === familyId);
+
+        if (!debtAccess || !accountAccess) throw new Error("Unauthorized");
         if ((account.balance ?? 0) < args.amount) throw new Error("Saldo insuficiente");
 
         // Update Debt
@@ -97,7 +129,8 @@ export const payParcel = mutation({
 
         // Create Transaction
         await ctx.db.insert("transactions", {
-            userId: debt.userId,
+            userId: args.userId,
+            familyId,
             description: `Pagamento Dívida: ${debt.name}`,
             amount: args.amount,
             type: "expense",
@@ -105,12 +138,5 @@ export const payParcel = mutation({
             date: args.date,
             account: account.name,
         });
-
-        // Check if finished?
-        const newPaid = (debt.paidValue || 0) + args.amount;
-        if (newPaid >= debt.totalValue) {
-            // Maybe notify?
-            // console.log("Debt paid off!");
-        }
     },
 });

@@ -14,6 +14,7 @@ import type * as auth from "../auth.js";
 import type * as budgets from "../budgets.js";
 import type * as debts from "../debts.js";
 import type * as emailConfigs from "../emailConfigs.js";
+import type * as families from "../families.js";
 import type * as goals from "../goals.js";
 import type * as investments from "../investments.js";
 import type * as migrations from "../migrations.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   budgets: typeof budgets;
   debts: typeof debts;
   emailConfigs: typeof emailConfigs;
+  families: typeof families;
   goals: typeof goals;
   investments: typeof investments;
   migrations: typeof migrations;

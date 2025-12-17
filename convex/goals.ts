@@ -9,6 +9,17 @@ export const get = query({
     handler: async (ctx, args) => {
         if (!args.userId) return [];
 
+        const user = await ctx.db.get(args.userId!);
+        if (!user) return [];
+
+        // Admin/Partner see all family goals
+        if (user.familyId && (user.role === 'admin' || user.role === 'partner')) {
+            return await ctx.db
+                .query("goals")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .collect();
+        }
+
         return await ctx.db
             .query("goals")
             .withIndex("by_user", (q) => q.eq("userId", args.userId!))
@@ -26,8 +37,12 @@ export const create = mutation({
         icon: v.string(),
     },
     handler: async (ctx, args) => {
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+
         return await ctx.db.insert("goals", {
             ...args,
+            familyId,
             currentAmount: 0,
             status: "active",
         });
@@ -50,7 +65,12 @@ export const update = mutation({
         const { id, userId, ...data } = args;
 
         const goal = await ctx.db.get(id);
-        if (!goal || goal.userId !== userId) {
+        if (!goal) throw new Error("Not found");
+
+        const user = await ctx.db.get(userId);
+        const hasAccess = goal.userId === userId || (user?.familyId && goal.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
@@ -65,7 +85,12 @@ export const remove = mutation({
     },
     handler: async (ctx, args) => {
         const goal = await ctx.db.get(args.id);
-        if (!goal || goal.userId !== args.userId) {
+        if (!goal) return;
+
+        const user = await ctx.db.get(args.userId);
+        const hasAccess = goal.userId === args.userId || (user?.familyId && goal.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
@@ -82,7 +107,13 @@ export const addFundsCompensating = mutation({
     },
     handler: async (ctx, args) => {
         const goal = await ctx.db.get(args.goalId);
-        if (!goal || goal.userId !== args.userId) {
+        if (!goal) throw new Error("Not found");
+
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+        const hasAccess = goal.userId === args.userId || (familyId && goal.familyId === familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
@@ -107,6 +138,7 @@ export const addFundsCompensating = mutation({
 
             await createNotification(ctx, {
                 userId: args.userId,
+                familyId,
                 title: `Meta Atingida: ${goal.title} 🎉`,
                 message: `Parabéns! Você alcançou o valor alvo de ${goal.targetAmount}.\n\n💡 Ideia: ${idea}`,
                 type: "success",
@@ -117,7 +149,8 @@ export const addFundsCompensating = mutation({
         // Debit from account if specified
         if (args.accountId) {
             const account = await ctx.db.get(args.accountId);
-            if (account && account.userId === args.userId) {
+            const accountAccess = account && (account.userId === args.userId || (familyId && account.familyId === familyId));
+            if (accountAccess) {
                 await ctx.db.patch(args.accountId, {
                     balance: (account.balance ?? 0) - args.amount,
                 });

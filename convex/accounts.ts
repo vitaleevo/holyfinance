@@ -8,6 +8,18 @@ export const get = query({
     handler: async (ctx, args) => {
         if (!args.userId) return [];
 
+        const user = await ctx.db.get(args.userId!);
+        if (!user) return [];
+
+        // If user is in a family AND has full access (admin/partner), show all family data
+        if (user.familyId && (user.role === 'admin' || user.role === 'partner')) {
+            return await ctx.db
+                .query("accounts")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .collect();
+        }
+
+        // Members only see their own accounts
         return await ctx.db
             .query("accounts")
             .withIndex("by_user", (q) => q.eq("userId", args.userId!))
@@ -24,7 +36,13 @@ export const create = mutation({
         bankName: v.string(),
     },
     handler: async (ctx, args) => {
-        return await ctx.db.insert("accounts", args);
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+
+        return await ctx.db.insert("accounts", {
+            ...args,
+            familyId,
+        });
     },
 });
 
@@ -41,7 +59,12 @@ export const update = mutation({
         const { id, userId, ...data } = args;
 
         const account = await ctx.db.get(id);
-        if (!account || account.userId !== userId) {
+        if (!account) throw new Error("Not found");
+
+        const user = await ctx.db.get(userId);
+        const hasAccess = account.userId === userId || (user?.familyId && account.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
@@ -56,7 +79,12 @@ export const remove = mutation({
     },
     handler: async (ctx, args) => {
         const account = await ctx.db.get(args.id);
-        if (!account || account.userId !== args.userId) {
+        if (!account) return;
+
+        const user = await ctx.db.get(args.userId);
+        const hasAccess = account.userId === args.userId || (user?.familyId && account.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 

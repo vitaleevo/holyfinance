@@ -8,6 +8,17 @@ export const get = query({
     handler: async (ctx, args) => {
         if (!args.userId) return [];
 
+        const user = await ctx.db.get(args.userId!);
+        if (!user) return [];
+
+        // Admin/Partner see all family budget limits
+        if (user.familyId && (user.role === 'admin' || user.role === 'partner')) {
+            return await ctx.db
+                .query("budgetLimits")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .collect();
+        }
+
         return await ctx.db
             .query("budgetLimits")
             .withIndex("by_user", (q) => q.eq("userId", args.userId!))
@@ -22,7 +33,10 @@ export const create = mutation({
         limit: v.number(),
     },
     handler: async (ctx, args) => {
-        return await ctx.db.insert("budgetLimits", args);
+        const user = await ctx.db.get(args.userId);
+        const familyId = user?.familyId;
+
+        return await ctx.db.insert("budgetLimits", { ...args, familyId });
     },
 });
 
@@ -37,7 +51,12 @@ export const update = mutation({
         const { id, userId, ...data } = args;
 
         const budget = await ctx.db.get(id);
-        if (!budget || budget.userId !== userId) {
+        if (!budget) throw new Error("Not found");
+
+        const user = await ctx.db.get(userId);
+        const hasAccess = budget.userId === userId || (user?.familyId && budget.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 
@@ -52,7 +71,12 @@ export const remove = mutation({
     },
     handler: async (ctx, args) => {
         const budget = await ctx.db.get(args.id);
-        if (!budget || budget.userId !== args.userId) {
+        if (!budget) return;
+
+        const user = await ctx.db.get(args.userId);
+        const hasAccess = budget.userId === args.userId || (user?.familyId && budget.familyId === user.familyId);
+
+        if (!hasAccess) {
             throw new Error("Unauthorized");
         }
 

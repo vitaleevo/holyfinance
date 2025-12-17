@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTransactions } from '../../context/TransactionContext';
 import { useAuth } from '../../context/AuthContext';
 import { useMutation, useQuery } from "convex/react";
@@ -10,6 +11,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 export default function SettingsPage() {
     const { settings, updateSettings } = useTransactions();
     const { user, token } = useAuth();
+    const router = useRouter();
 
     // Fetch full profile to get avatarUrl
     const userProfile = useQuery(api.users.getProfile, { token: token ?? undefined });
@@ -245,6 +247,22 @@ export default function SettingsPage() {
                                 </>
                             ) : "Salvar Alterações"}
                         </button>
+                    </div>
+                </section>
+
+                {/* Family Plan Section */}
+                <section className="bg-surface-dark border border-surface-border rounded-2xl p-6 cursor-pointer hover:border-primary transition-colors group" onClick={() => router.push('/settings/family')}>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                                <span className="material-symbols-outlined">diversity_3</span>
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-bold text-white">Plano Familiar</h2>
+                                <p className="text-sm text-text-secondary">Gerencie membros, convites e compartilhe suas finanças.</p>
+                            </div>
+                        </div>
+                        <span className="material-symbols-outlined text-text-secondary group-hover:text-primary transition-colors">arrow_forward</span>
                     </div>
                 </section>
 

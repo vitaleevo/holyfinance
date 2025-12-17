@@ -11,15 +11,20 @@ export const list = query({
         const userId = await getUserIdFromToken(ctx, args.token);
         if (!userId) return [];
 
-        const notifications = await ctx.db
+        const user = await ctx.db.get(userId);
+        if (user && user.familyId) {
+            return await ctx.db
+                .query("notifications")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .order("desc")
+                .collect();
+        }
+
+        return await ctx.db
             .query("notifications")
             .withIndex("by_user", (q) => q.eq("userId", userId))
             .order("desc")
             .collect();
-
-        // Sort by time in code since filter might affect index usage (though we use filter here so order might handle _creationTime)
-        // Convex .order("desc") orders by _creationTime by default.
-        return notifications;
     },
 });
 
@@ -32,9 +37,14 @@ export const markAsRead = mutation({
         const userId = await getUserIdFromToken(ctx, args.token);
         const notification = await ctx.db.get(args.id);
 
-        if (!notification || !userId || notification.userId !== userId) {
+        if (!notification || !userId) {
             throw new Error("Unauthorized");
         }
+
+        const user = await ctx.db.get(userId);
+        const hasAccess = notification.userId === userId || (user?.familyId && notification.familyId === user.familyId);
+
+        if (!hasAccess) throw new Error("Unauthorized");
 
         await ctx.db.patch(args.id, { read: true });
     },
@@ -48,11 +58,22 @@ export const markAllAsRead = mutation({
         const userId = await getUserIdFromToken(ctx, args.token);
         if (!userId) return;
 
-        const unread = await ctx.db
-            .query("notifications")
-            .withIndex("by_user", (q) => q.eq("userId", userId))
-            .filter((q) => q.eq(q.field("read"), false))
-            .collect();
+        const user = await ctx.db.get(userId);
+        let unread = [];
+
+        if (user?.familyId) {
+            unread = await ctx.db
+                .query("notifications")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .filter((q) => q.eq(q.field("read"), false))
+                .collect();
+        } else {
+            unread = await ctx.db
+                .query("notifications")
+                .withIndex("by_user", (q) => q.eq("userId", userId))
+                .filter((q) => q.eq(q.field("read"), false))
+                .collect();
+        }
 
         for (const notif of unread) {
             await ctx.db.patch(notif._id, { read: true });
@@ -68,10 +89,20 @@ export const clearAll = mutation({
         const userId = await getUserIdFromToken(ctx, args.token);
         if (!userId) return;
 
-        const notifications = await ctx.db
-            .query("notifications")
-            .withIndex("by_user", (q) => q.eq("userId", userId))
-            .collect();
+        const user = await ctx.db.get(userId);
+        let notifications = [];
+
+        if (user?.familyId) {
+            notifications = await ctx.db
+                .query("notifications")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .collect();
+        } else {
+            notifications = await ctx.db
+                .query("notifications")
+                .withIndex("by_user", (q) => q.eq("userId", userId))
+                .collect();
+        }
 
         for (const notif of notifications) {
             await ctx.db.delete(notif._id);
@@ -80,9 +111,10 @@ export const clearAll = mutation({
 });
 
 // Helper for internal use from other mutations
-export async function createNotification(ctx: any, args: { userId: any, title: string, message: string, type: string, isImportant: boolean }) {
+export async function createNotification(ctx: any, args: { userId: any, familyId?: any, title: string, message: string, type: string, isImportant: boolean }) {
     await ctx.db.insert("notifications", {
         userId: args.userId,
+        familyId: args.familyId,
         title: args.title,
         message: args.message,
         type: args.type,
@@ -122,6 +154,7 @@ export async function createNotification(ctx: any, args: { userId: any, title: s
 export const create = mutation({
     args: {
         userId: v.id("users"),
+        familyId: v.optional(v.id("families")),
         title: v.string(),
         message: v.string(),
         type: v.string(), // info, warning, success, error

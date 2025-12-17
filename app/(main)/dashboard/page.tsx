@@ -1,22 +1,33 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useRouter } from 'next/navigation';
 import { useTransactions } from '../../context/TransactionContext';
 
 export default function DashboardPage() {
     const { transactions, accounts, investments, debts, settings } = useTransactions();
+    const router = useRouter();
+    const [viewMode, setViewMode] = useState<'month' | 'all'>('month');
 
-    // 1. Calculate Monthly Cash Flow (Income vs Expenses)
-    const totalIncome = transactions
+    // Filter transactions based on viewMode
+    const filteredTransactions = transactions.filter(t => {
+        if (viewMode === 'all') return true;
+        const tDate = new Date(t.date);
+        const now = new Date();
+        return tDate.getMonth() === now.getMonth() && tDate.getFullYear() === now.getFullYear();
+    });
+
+    // 1. Calculate Cash Flow (Income vs Expenses) based on filter
+    const totalIncome = filteredTransactions
         .filter(t => t.type === 'income')
         .reduce((acc, curr) => acc + curr.amount, 0);
 
-    const totalExpense = transactions
+    const totalExpense = filteredTransactions
         .filter(t => t.type === 'expense')
         .reduce((acc, curr) => acc + curr.amount, 0);
 
-    // 2. Calculate Real Assets (Wealth)
+    // 2. Calculate Real Assets (Wealth) - Always current snapshot
     const totalAccountsBalance = accounts.reduce((acc, curr) => acc + curr.balance, 0);
     const totalInvested = investments.reduce((acc, curr) => acc + (curr.quantity * curr.price), 0);
     const totalDebtRemaining = debts.reduce((acc, curr) => acc + (curr.totalValue - curr.paidValue), 0);
@@ -30,8 +41,8 @@ export default function DashboardPage() {
         return 'KZ ' + val.toLocaleString();
     };
 
-    // 3. Calculate Expenses by Category for Chart
-    const categories = transactions
+    // 3. Calculate Expenses by Category for Chart (using filtered)
+    const categories = filteredTransactions
         .filter(t => t.type === 'expense')
         .reduce((acc, curr) => {
             // @ts-ignore
@@ -50,19 +61,46 @@ export default function DashboardPage() {
         }));
 
     // 4. Generate Dynamic Chart Data (Group transactions by month)
-    const chartDataMap = transactions.reduce((acc, t) => {
-        const date = new Date(t.date);
-        const key = date.toLocaleString('default', { month: 'short' });
-        // @ts-ignore
-        if (!acc[key]) acc[key] = 0;
-        // @ts-ignore
-        acc[key] += (t.type === 'income' ? t.amount : -t.amount);
-        return acc;
-    }, {} as Record<string, number>);
+    // If 'month' view, maybe show daily? For now, keeping logic simple, if 'all' show months, if 'month' show days?
+    // Let's keep it simple: chart always shows 'all history' trend or just adapt.
+    // Actually, for 'viewMode === month', an AreaChart of just one point (the month) is boring.
+    // Let's stick to the previous chart logic (All time trend) BUT maybe highlight valid range?
+    // OR: let's leave the Chart as "Historical Overview" regardless of filter, 
+    // BUT common expectation is dashboard filters affect charts.
+    // Let's make the chart show daily progress if 'month', monthly progress if 'all'.
 
-    const chartData = Object.keys(chartDataMap).length > 0
-        ? Object.entries(chartDataMap).map(([name, value]) => ({ name, value }))
-        : [{ name: 'Atual', value: 0 }];
+    let chartData = [];
+    if (viewMode === 'month') {
+        const dailyMap = filteredTransactions.reduce((acc, t) => {
+            const day = new Date(t.date).getDate();
+            // @ts-ignore
+            if (!acc[day]) acc[day] = 0;
+            // @ts-ignore
+            acc[day] += (t.type === 'income' ? t.amount : -t.amount);
+            return acc;
+        }, {} as Record<number, number>);
+
+        // Fill days 1..31
+        chartData = Array.from({ length: 31 }, (_, i) => {
+            const day = i + 1;
+            // @ts-ignore
+            return { name: `${day}`, value: dailyMap[day] || 0 };
+        });
+    } else {
+        const monthlyMap = transactions.reduce((acc, t) => {
+            const date = new Date(t.date);
+            const key = date.toLocaleString('default', { month: 'short' });
+            // @ts-ignore
+            if (!acc[key]) acc[key] = 0;
+            // @ts-ignore
+            acc[key] += (t.type === 'income' ? t.amount : -t.amount);
+            return acc;
+        }, {} as Record<string, number>);
+
+        chartData = Object.entries(monthlyMap).map(([name, value]) => ({ name, value }));
+    }
+
+    if (chartData.length === 0) chartData = [{ name: 'Atual', value: 0 }];
 
     return (
         <div className="flex flex-col gap-8">
@@ -72,11 +110,17 @@ export default function DashboardPage() {
                     <p className="text-text-secondary text-base">Visão unificada do seu patrimônio e fluxo de caixa.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-surface-border bg-surface-dark text-text-secondary text-sm font-medium hover:text-primary transition-colors">
+                    <button
+                        onClick={() => setViewMode(prev => prev === 'month' ? 'all' : 'month')}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-surface-border bg-surface-dark text-text-secondary text-sm font-medium hover:text-primary transition-colors hover:border-primary active:scale-95"
+                    >
                         <span className="material-symbols-outlined text-[20px]">calendar_today</span>
-                        Este Mês
+                        {viewMode === 'month' ? 'Este Mês' : 'Todos'}
                     </button>
-                    <button className="p-2 rounded-lg border border-surface-border bg-surface-dark text-text-secondary hover:text-primary transition-colors">
+                    <button
+                        onClick={() => router.push('/dashboard/notifications')}
+                        className="p-2 rounded-lg border border-surface-border bg-surface-dark text-text-secondary hover:text-primary transition-colors hover:border-primary active:scale-95"
+                    >
                         <span className="material-symbols-outlined text-[20px] icon-filled">notifications</span>
                     </button>
                 </div>
@@ -84,7 +128,7 @@ export default function DashboardPage() {
 
             {/* KPI Cards */}
             <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Net Worth Card */}
+                {/* Net Worth Card - Not affected by filter usually, but consistency? Let's leave absolute */}
                 <div className="flex flex-col gap-4 rounded-2xl p-6 bg-surface-dark border border-surface-border shadow-sm relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
                         <span className="material-symbols-outlined text-[64px] text-primary">account_balance</span>
@@ -104,7 +148,7 @@ export default function DashboardPage() {
                         <div className="p-2 rounded-lg bg-success/10 text-success">
                             <span className="material-symbols-outlined">arrow_downward</span>
                         </div>
-                        <p className="text-text-secondary text-sm font-semibold uppercase tracking-wider">Receitas (Total)</p>
+                        <p className="text-text-secondary text-sm font-semibold uppercase tracking-wider">Receitas ({viewMode === 'month' ? 'Mês' : 'Total'})</p>
                     </div>
                     <div>
                         <h2 className={`text-white text-2xl font-bold tracking-tight ${settings.privacyMode ? 'tracking-widest' : ''}`}>{formatMoney(totalIncome)}</h2>
@@ -117,7 +161,7 @@ export default function DashboardPage() {
                         <div className="p-2 rounded-lg bg-danger/10 text-danger">
                             <span className="material-symbols-outlined">arrow_upward</span>
                         </div>
-                        <p className="text-text-secondary text-sm font-semibold uppercase tracking-wider">Despesas (Total)</p>
+                        <p className="text-text-secondary text-sm font-semibold uppercase tracking-wider">Despesas ({viewMode === 'month' ? 'Mês' : 'Total'})</p>
                     </div>
                     <div>
                         <h2 className={`text-white text-2xl font-bold tracking-tight ${settings.privacyMode ? 'tracking-widest' : ''}`}>{formatMoney(totalExpense)}</h2>
