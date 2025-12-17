@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HolyFinanças - Criar Nova Meta</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                        "surface-dark": "#1c2720",
+                        "border-dark": "#3b5445",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        /* Custom scrollbar for better integration with dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111814; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b5445; 
+        }
+        .form-input-custom {
+            background-color: #1c2720;
+            border-color: #3b5445;
+            color: white;
+        }
+        .form-input-custom:focus {
+            border-color: #13ec6d;
+            box-shadow: 0 0 0 1px #13ec6d;
+        }
+        /* Date picker icon color fix for dark mode */
+        ::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            opacity: 0.6;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-[#111814] text-slate-900 dark:text-white overflow-x-hidden">
+<div class="relative flex h-screen w-full flex-row overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-64 shrink-0 hidden md:flex flex-col border-r border-[#28392f] bg-[#111814]">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-6">
+<!-- User Profile -->
+<div class="flex gap-3 items-center px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 border-2 border-[#13ec6d]" data-alt="Profile picture of a user smiling" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDxRm66UeQ4lIwnqY2ZpiT5ByVnfFjv9VSgL_3z1ZRD-wNrV8I9-joIbxavvO5Mc3b2_k30NrSBpAsyDvN1qx4kVayTdl-0s2N5uEwBIBGjBOZndfOh42xzNb3tWA6p5Sk4ayaGaVBSdsWAebNDcNnDFXjnYYqoq-r1BY3P1t4yj8VxH3jVr2khG6fUTihc_PKSOiaf82qaIGyEdgIpCBaNm_HXCumAJ0eAms7miB9kaDwLWVyNmqqhuWCwT8UTBgNGBP4sHW9LwI1o");'>
+</div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-bold leading-normal">Ana Silva</h1>
+<p class="text-[#9db9a8] text-xs font-normal leading-normal">Plano Premium</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2720] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-white" style="font-size: 24px;">dashboard</span>
+<p class="text-[#9db9a8] group-hover:text-white text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2720] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-white" style="font-size: 24px;">receipt_long</span>
+<p class="text-[#9db9a8] group-hover:text-white text-sm font-medium leading-normal">Extrato</p>
+</a>
+<!-- Active State for Metas -->
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg bg-[#28392f]" href="#">
+<span class="material-symbols-outlined text-[#13ec6d]" style="font-size: 24px;">track_changes</span>
+<p class="text-white text-sm font-bold leading-normal">Metas</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2720] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-white" style="font-size: 24px;">savings</span>
+<p class="text-[#9db9a8] group-hover:text-white text-sm font-medium leading-normal">Orçamento</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2720] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-white" style="font-size: 24px;">settings</span>
+<p class="text-[#9db9a8] group-hover:text-white text-sm font-medium leading-normal">Configurações</p>
+</a>
+</nav>
+</div>
+<div class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#1c2720] cursor-pointer text-[#ef4444]">
+<span class="material-symbols-outlined" style="font-size: 24px;">logout</span>
+<p class="text-sm font-medium leading-normal">Sair</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Layout -->
+<div class="flex-1 flex flex-col h-full overflow-y-auto relative">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-20 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#28392f] bg-[#111814]/90 backdrop-blur-md px-6 py-4">
+<div class="flex items-center gap-4 text-white md:hidden">
+<span class="material-symbols-outlined cursor-pointer">menu</span>
+</div>
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-[#13ec6d]">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">HolyFinanças</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-[#28392f] text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-8 md:hidden" data-alt="User profile thumbnail" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA3Bl9eK536Fh5J9jZHp2WDSIXSLh3EGp8oGBMynZQpNP2SoySVqGP1Qi4r5BjmHj4k8LvI_7iDgeC_fmpk5k_YNznPWNGGk4F6kpV_8qJLore9y31kNNXGsyU35s2L7vDGrhaaRxElhLMjbW8hpBigJjyE-RT9iDmWOM8ZijOYw0iKtZdgjqv3g6BNtmgCV8-Zdd7eTPfcmEJ2udBSUpel4VvSx1ITzlO4YYGMPCuT68OmmbmIa2WnBi9T-Ki2YPg37Rot6EmKDDH8");'>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 px-4 md:px-12 py-8 max-w-[1400px] mx-auto w-full">
+<!-- Page Heading -->
+<div class="flex flex-wrap justify-between items-end gap-4 mb-8">
+<div class="flex flex-col gap-2">
+<h1 class="text-white text-3xl md:text-4xl font-extrabold leading-tight tracking-[-0.033em]">Criar Nova Meta</h1>
+<p class="text-[#9db9a8] text-base font-normal">Defina seu objetivo financeiro e nós te ajudamos a chegar lá.</p>
+</div>
+<a class="text-[#9db9a8] hover:text-white flex items-center gap-1 text-sm font-medium transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                    Voltar para Metas
+                </a>
+</div>
+<!-- Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Form -->
+<div class="lg:col-span-7 flex flex-col gap-8">
+<!-- Chips: Category -->
+<div class="flex flex-col gap-3">
+<label class="text-white text-sm font-semibold uppercase tracking-wider text-[#9db9a8]">Categoria</label>
+<div class="flex gap-3 flex-wrap">
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-lg bg-[#13ec6d] text-background-dark pl-4 pr-4 transition-all hover:opacity-90 ring-2 ring-offset-2 ring-offset-[#111814] ring-[#13ec6d]">
+<span class="material-symbols-outlined text-[20px]">flight_takeoff</span>
+<p class="text-sm font-bold">Viagem</p>
+</button>
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-lg bg-[#1c2720] border border-[#3b5445] pl-4 pr-4 hover:bg-[#28392f] transition-all group">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-white text-[20px]">home</span>
+<p class="text-[#9db9a8] group-hover:text-white text-sm font-medium">Casa</p>
+</button>
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-lg bg-[#1c2720] border border-[#3b5445] pl-4 pr-4 hover:bg-[#28392f] transition-all group">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-white text-[20px]">directions_car</span>
+<p class="text-[#9db9a8] group-hover:text-white text-sm font-medium">Carro</p>
+</button>
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-lg bg-[#1c2720] border border-[#3b5445] pl-4 pr-4 hover:bg-[#28392f] transition-all group">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-white text-[20px]">medical_services</span>
+<p class="text-[#9db9a8] group-hover:text-white text-sm font-medium">Emergência</p>
+</button>
+<button class="flex h-10 items-center justify-center gap-x-2 rounded-lg bg-[#1c2720] border border-[#3b5445] pl-4 pr-4 hover:bg-[#28392f] transition-all group">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-white text-[20px]">add</span>
+<p class="text-[#9db9a8] group-hover:text-white text-sm font-medium">Outro</p>
+</button>
+</div>
+</div>
+<!-- Input Fields -->
+<div class="space-y-6">
+<label class="flex flex-col w-full">
+<p class="text-white text-base font-medium leading-normal pb-2">Nome do Objetivo</p>
+<input class="form-input-custom flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl h-14 placeholder:text-[#5c7a69] p-[15px] text-base font-normal leading-normal focus:outline-0 focus:ring-0" placeholder="Ex: Viagem para Malanje" value="Viagem de Férias"/>
+</label>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<label class="flex flex-col w-full relative">
+<p class="text-white text-base font-medium leading-normal pb-2">Valor Total da Meta</p>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#9db9a8] font-bold">KZ</span>
+<input class="form-input-custom flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl h-14 placeholder:text-[#5c7a69] pl-12 pr-4 text-base font-normal leading-normal focus:outline-0 focus:ring-0" placeholder="0,00" type="text" value="1.500.000,00"/>
+</div>
+</label>
+<label class="flex flex-col w-full">
+<p class="text-white text-base font-medium leading-normal pb-2">Data Alvo</p>
+<input class="form-input-custom flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl h-14 placeholder:text-[#5c7a69] px-4 text-base font-normal leading-normal focus:outline-0 focus:ring-0" type="date" value="2024-12-31"/>
+</label>
+</div>
+<label class="flex flex-col w-full relative">
+<div class="flex justify-between items-center pb-2">
+<p class="text-white text-base font-medium leading-normal">Valor Inicial (Opcional)</p>
+<span class="text-xs text-[#9db9a8] bg-[#28392f] px-2 py-1 rounded">Já tenho guardado</span>
+</div>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#9db9a8] font-bold">KZ</span>
+<input class="form-input-custom flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl h-14 placeholder:text-[#5c7a69] pl-12 pr-4 text-base font-normal leading-normal focus:outline-0 focus:ring-0" placeholder="0,00" type="text" value="200.000,00"/>
+</div>
+</label>
+</div>
+</div>
+<!-- Right Column: Calculation & Actions -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<!-- Dynamic Feedback Card -->
+<div class="bg-gradient-to-br from-[#1c2720] to-[#161f1a] border border-[#3b5445] rounded-2xl p-6 md:p-8 flex flex-col gap-6 shadow-xl relative overflow-hidden group">
+<!-- Abstract decorative glow -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-[#13ec6d] rounded-full blur-[100px] opacity-10 group-hover:opacity-15 transition-opacity pointer-events-none"></div>
+<div class="flex items-start justify-between relative z-10">
+<div class="flex flex-col gap-1">
+<h3 class="text-[#9db9a8] text-sm font-semibold uppercase tracking-widest">Resumo do Plano</h3>
+<p class="text-white font-medium text-lg">Viagem de Férias</p>
+</div>
+<div class="bg-[#28392f] p-2 rounded-lg text-[#13ec6d]">
+<span class="material-symbols-outlined">calculate</span>
+</div>
+</div>
+<div class="h-px bg-[#3b5445] w-full"></div>
+<div class="flex flex-col gap-4 relative z-10">
+<div>
+<p class="text-[#9db9a8] text-sm mb-1">Para atingir sua meta em <span class="text-white font-bold">12 meses</span>:</p>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-bold text-[#13ec6d]">KZ</span>
+<span class="text-5xl font-extrabold text-[#13ec6d] tracking-tight">108.333</span>
+<span class="text-xl text-[#9db9a8] font-medium">/mês</span>
+</div>
+</div>
+<div class="bg-[#111814]/50 rounded-lg p-3 border border-[#28392f] flex gap-3 items-start">
+<span class="material-symbols-outlined text-[#13ec6d] text-sm mt-0.5">trending_up</span>
+<p class="text-xs text-[#9db9a8] leading-relaxed">
+                                    Guardando este valor mensalmente, você terá <strong class="text-white">KZ 1.500.000</strong> em <strong class="text-white">Dezembro de 2024</strong>.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-3">
+<button class="w-full h-14 bg-[#13ec6d] hover:bg-[#10d460] active:scale-[0.98] transition-all text-[#111814] text-lg font-bold rounded-xl flex items-center justify-center gap-2 shadow-[0_4px_14px_0_rgba(19,236,109,0.39)]">
+<span>Criar Meta</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="w-full h-14 bg-transparent border border-[#3b5445] hover:bg-[#1c2720] hover:border-[#5c7a69] active:scale-[0.98] transition-all text-white text-base font-medium rounded-xl">
+                            Cancelar
+                        </button>
+</div>
+<!-- Visual Aid Image -->
+<div class="hidden xl:block mt-4 rounded-2xl overflow-hidden relative h-48 w-full group">
+<div class="absolute inset-0 bg-gradient-to-t from-[#111814] to-transparent z-10"></div>
+<div class="bg-center bg-cover h-full w-full opacity-60 group-hover:opacity-80 transition-opacity duration-700 transform group-hover:scale-105" data-alt="Abstract green financial growth graph visualization" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDMgtvmRDtWRMOkb0WJ0eN-mwB_o23K2wP5C4abG4bKHUVWppuj_sPE7uQG6BJKYiir4VINhk5YKP9f83qE5cg22iY5hLbwRlFZPbnkJztbwLOyiLCUbZYsZoi8LWaGZ9__7ERGOz7ikg37x4qnqf61-luJ5F7Uzvs6mi_T4BQL0TKLNH6KF20Qw8L5zno1c1YkU06Xe9GI3uXHV1s4tqtuqpr2TclEJblivNy3-CxrTyVyyNfc3C9dzKc8tFflng4fYivWmhJxKBZm");'>
+</div>
+<div class="absolute bottom-4 left-4 z-20">
+<p class="text-white font-bold text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[#13ec6d] text-base">verified</span>
+                                Dica Financeira
+                            </p>
+<p class="text-[#9db9a8] text-xs mt-1 max-w-[250px]">Automatize sua transferência mensal para não esquecer de poupar.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

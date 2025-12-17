@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registrar Nova Despesa - HolyFinanças</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                        "surface-dark": "#1c2e24", // Custom surface color for cards
+                        "surface-input": "#16251d", // Custom input background
+                        "border-dark": "#2e4538", // Custom border color
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem", 
+                        "lg": "0.5rem", 
+                        "xl": "0.75rem", 
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display min-h-screen flex flex-col">
+<header class="w-full border-b border-gray-200 dark:border-border-dark bg-background-light dark:bg-background-dark sticky top-0 z-50">
+<div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-3 text-slate-900 dark:text-white">
+<div class="size-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<h2 class="text-lg font-bold tracking-tight">HolyFinanças</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium text-primary hover:text-primary transition-colors" href="#">Despesas</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">Receitas</a>
+<a class="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary transition-colors" href="#">Relatórios</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="size-8 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<div class="size-8 rounded-full bg-cover bg-center ring-2 ring-primary/30" data-alt="User profile avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBYMYAAbSucv0NjCCQYN9zuvSyRJbSddFrc_1EhDbC-ZBxE7A0DYUQtFE2rxsXG1bBstvqMjC3sde6r2WVXZIj6PZWqlUlxdQ1R2JCBp43kd9KEY9NVHlTwynaX79h5MT5KvZmLBmp8Y9u0XrRtOJPTqeZLXF2FlKYog-C_pYw2nxDQN0O10ZZEt8ix1--4mJP0AllHo4ew8-gLesU8rKjB5TzDrUFfzj53bE4Tem4-j1izxGoOQUQALm3D9O75Tk21hoI15EYDD9Pa");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-6 py-10">
+<div class="flex flex-col lg:flex-row gap-8 items-start">
+<div class="w-full lg:w-1/3 flex flex-col gap-6 sticky top-28">
+<div>
+<h1 class="text-3xl font-extrabold tracking-tight mb-2 dark:text-white">Nova Despesa</h1>
+<p class="text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Preencha os detalhes abaixo para registrar uma nova saída financeira. Mantenha seu controle em dia.
+                    </p>
+</div>
+<div class="hidden lg:block p-6 rounded-xl bg-surface-dark/50 border border-border-dark mt-4">
+<h3 class="text-sm font-semibold uppercase tracking-wider text-slate-400 mb-4">Resumo Rápido</h3>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500">
+<span class="material-symbols-outlined text-[20px]">trending_down</span>
+</div>
+<div>
+<p class="text-xs text-slate-400">Total Despesas (Mês)</p>
+<p class="text-sm font-bold text-white">KZ 2.450,00</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">account_balance</span>
+</div>
+<div>
+<p class="text-xs text-slate-400">Saldo Atual</p>
+<p class="text-sm font-bold text-white">KZ 5.120,50</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-2/3">
+<form class="bg-white dark:bg-surface-dark rounded-2xl shadow-xl dark:shadow-none border border-gray-100 dark:border-border-dark p-6 md:p-8 flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider" for="amount">Valor da Despesa</label>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 font-bold text-2xl">KZ</span>
+<input autofocus="" class="w-full bg-slate-50 dark:bg-surface-input border-none rounded-xl py-6 pl-14 pr-6 text-4xl font-black text-slate-900 dark:text-primary placeholder:text-slate-300 dark:placeholder:text-slate-700 focus:ring-2 focus:ring-primary transition-all" id="amount" placeholder="0,00" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-200">Data</label>
+<div class="relative">
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+</span>
+<input class="w-full bg-slate-50 dark:bg-surface-input border border-gray-200 dark:border-border-dark rounded-lg h-12 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none" type="date"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-200">Conta de Origem</label>
+<div class="relative">
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</span>
+<select class="w-full bg-slate-50 dark:bg-surface-input border border-gray-200 dark:border-border-dark rounded-lg h-12 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary transition-colors appearance-none">
+<option disabled="" selected="" value="">Selecione uma conta</option>
+<option value="nubank">Nubank (KZ 1.200,00)</option>
+<option value="inter">Banco Inter (KZ 450,50)</option>
+<option value="wallet">Carteira (KZ 120,00)</option>
+</select>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-200">Categoria</label>
+<button class="text-xs font-semibold text-primary hover:text-green-400 flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[14px]">add</span>
+                                Nova Categoria
+                            </button>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="category" type="radio" value="home"/>
+<div class="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-gray-200 dark:border-border-dark bg-slate-50 dark:bg-surface-input peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all hover:bg-slate-100 dark:hover:bg-white/5">
+<span class="material-symbols-outlined">home</span>
+<span class="text-xs font-medium">Casa</span>
+</div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="category" type="radio" value="food"/>
+<div class="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-gray-200 dark:border-border-dark bg-slate-50 dark:bg-surface-input peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all hover:bg-slate-100 dark:hover:bg-white/5">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="text-xs font-medium">Alimentação</span>
+</div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="category" type="radio" value="transport"/>
+<div class="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-gray-200 dark:border-border-dark bg-slate-50 dark:bg-surface-input peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all hover:bg-slate-100 dark:hover:bg-white/5">
+<span class="material-symbols-outlined">directions_car</span>
+<span class="text-xs font-medium">Transporte</span>
+</div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="category" type="radio" value="leisure"/>
+<div class="flex flex-col items-center justify-center gap-2 p-3 rounded-lg border border-gray-200 dark:border-border-dark bg-slate-50 dark:bg-surface-input peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all hover:bg-slate-100 dark:hover:bg-white/5">
+<span class="material-symbols-outlined">theater_comedy</span>
+<span class="text-xs font-medium">Lazer</span>
+</div>
+</label>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-200">Descrição</label>
+<input class="w-full bg-slate-50 dark:bg-surface-input border border-gray-200 dark:border-border-dark rounded-lg h-12 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary transition-colors placeholder:text-slate-400 dark:placeholder:text-slate-600" placeholder="Ex: Jantar de aniversário no Outback" type="text"/>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-slate-200">Comprovante (Opcional)</label>
+<div class="flex items-center justify-center w-full">
+<label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 dark:border-border-dark rounded-lg cursor-pointer bg-slate-50 dark:bg-surface-input hover:bg-slate-100 dark:hover:bg-white/5 transition-colors group" for="dropzone-file">
+<div class="flex flex-col items-center justify-center pt-5 pb-6">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary mb-2 transition-colors">cloud_upload</span>
+<p class="mb-1 text-sm text-slate-500 dark:text-slate-400"><span class="font-semibold text-primary">Clique para enviar</span> ou arraste e solte</p>
+<p class="text-xs text-slate-400 dark:text-slate-500">PDF, PNG, JPG (Max. 5MB)</p>
+</div>
+<input class="hidden" id="dropzone-file" type="file"/>
+</label>
+</div>
+</div>
+<div class="flex items-center justify-end gap-4 pt-4 border-t border-gray-100 dark:border-border-dark mt-2">
+<button class="px-6 py-3 rounded-lg text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" type="button">
+                            Cancelar
+                        </button>
+<button class="px-8 py-3 rounded-lg text-sm font-bold text-slate-900 bg-primary hover:bg-green-400 transition-all shadow-[0_0_15px_rgba(19,236,109,0.3)] hover:shadow-[0_0_25px_rgba(19,236,109,0.5)] flex items-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                            Salvar Despesa
+                        </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+
+</body></html>

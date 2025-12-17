@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registro de Aportes/Resgates - HolyFinanças</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Sans:wght@300..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13ec6d",
+              "background-light": "#f6f8f7",
+              "background-dark": "#102218",
+              "surface-dark": "#1A2C22",
+              "surface-light": "#FFFFFF",
+              "text-primary-dark": "#FFFFFF",
+              "text-secondary-dark": "#9db9a8",
+              "danger": "#ff5252",
+            },
+            fontFamily: {
+              "display": ["Manrope", "Noto Sans", "sans-serif"],
+              "body": ["Manrope", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #102218; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b5445; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-text-primary-dark antialiased transition-colors duration-200">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-[#28392f] bg-surface-light dark:bg-background-dark px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-4 text-gray-900 dark:text-white">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-background-dark">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">HolyFinanças</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-gray-600 dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-bold leading-normal" href="#">Investimentos</a>
+<a class="text-gray-600 dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Relatórios</a>
+<a class="text-gray-600 dark:text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Configurações</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center text-gray-600 dark:text-white hover:bg-gray-100 dark:hover:bg-[#28392f] rounded-full p-2">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-primary/20" data-alt="User profile picture placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcxziZjsAEoyt-Fqyh4RUJfP4QYe-Y8Ljq7xa6BCI5GkY1eCuTpxjiR-7olhfXG1jyyBTo4PDKczm44cB0iNDFuAEV4tkRE9s2k6NkaVLmOOoi4-KbJrghuqJV3xS2TutUQfc-wTYmC8NFoXrK9EOsRUQURDw5b9BeFAiFokvFi0Zdzs3YBKLhvjty3Yz2HT5erddDAHVstqZC22rWD9dx7eI9dML_ooftAVGfnhVSri3MoFfPs9Ua_xWPP81OBkN2P3wIs-KndqME");'></div>
+</div>
+</div>
+</header>
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-8">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1 gap-8">
+<div class="flex flex-wrap gap-2 px-4">
+<a class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium leading-normal hover:underline" href="#">Home</a>
+<span class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium leading-normal">/</span>
+<a class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium leading-normal hover:underline" href="#">Investimentos</a>
+<span class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium leading-normal">/</span>
+<span class="text-gray-900 dark:text-white text-sm font-medium leading-normal">Movimentações</span>
+</div>
+<div class="flex flex-wrap justify-between items-end gap-6 px-4">
+<div class="flex flex-col gap-2">
+<h1 class="text-gray-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Registro de Aportes e Resgates</h1>
+<p class="text-gray-500 dark:text-[#9db9a8] text-base font-normal leading-normal max-w-2xl">Gerencie as entradas e saídas de capital dos seus investimentos com precisão e acompanhe seu histórico.</p>
+</div>
+<button class="bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-[#3b5445] text-gray-900 dark:text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-[#28392f] transition-all shadow-sm">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                            Exportar Relatório
+                        </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 px-4">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-[#3b5445] shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium">Total Aportado (Mês)</p>
+<span class="material-symbols-outlined text-primary bg-primary/10 p-1 rounded-md">trending_up</span>
+</div>
+<p class="text-gray-900 dark:text-white tracking-tight text-2xl font-bold">KZ 45.200,00</p>
+<p class="text-primary text-xs font-bold bg-primary/10 w-fit px-2 py-1 rounded">+12% vs mês anterior</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-[#3b5445] shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium">Total Resgatado (Mês)</p>
+<span class="material-symbols-outlined text-danger bg-danger/10 p-1 rounded-md">trending_down</span>
+</div>
+<p class="text-gray-900 dark:text-white tracking-tight text-2xl font-bold">KZ 5.000,00</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-surface-light dark:bg-surface-dark border border-gray-200 dark:border-[#3b5445] shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium">Saldo Líquido</p>
+<span class="material-symbols-outlined text-gray-400">account_balance</span>
+</div>
+<p class="text-gray-900 dark:text-white tracking-tight text-2xl font-bold">KZ 40.200,00</p>
+<p class="text-primary text-xs font-bold bg-primary/10 w-fit px-2 py-1 rounded">+8% rentabilidade</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 px-4">
+<div class="lg:col-span-4 flex flex-col gap-6">
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-[#3b5445] p-6 shadow-sm sticky top-24">
+<h3 class="text-gray-900 dark:text-white text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">add_circle</span>
+                                    Nova Movimentação
+                                </h3>
+<form class="flex flex-col gap-5">
+<div class="flex flex-col gap-2">
+<label class="text-gray-700 dark:text-[#9db9a8] text-sm font-medium">Investimento</label>
+<div class="relative">
+<select class="w-full bg-white dark:bg-[#111814] border border-gray-300 dark:border-[#3b5445] text-gray-900 dark:text-white rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none appearance-none cursor-pointer">
+<option disabled="" selected="" value="">Selecione o ativo...</option>
+<option value="1">Tesouro Selic 2027</option>
+<option value="2">IVVB11 - S&amp;P 500</option>
+<option value="3">MXRF11 - Maxi Renda</option>
+<option value="4">Bitcoin (BTC)</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-gray-500">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-gray-700 dark:text-[#9db9a8] text-sm font-medium">Tipo de Transação</label>
+<div class="grid grid-cols-2 gap-2 bg-gray-100 dark:bg-[#111814] p-1 rounded-lg border border-gray-200 dark:border-[#3b5445]">
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="type" type="radio"/>
+<div class="flex items-center justify-center gap-2 py-2 px-4 rounded-md text-gray-500 dark:text-[#9db9a8] peer-checked:bg-surface-light dark:peer-checked:bg-surface-dark peer-checked:text-primary peer-checked:font-bold peer-checked:shadow-sm transition-all text-sm">
+<span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+                                                    Aporte
+                                                </div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="type" type="radio"/>
+<div class="flex items-center justify-center gap-2 py-2 px-4 rounded-md text-gray-500 dark:text-[#9db9a8] peer-checked:bg-surface-light dark:peer-checked:bg-surface-dark peer-checked:text-danger peer-checked:font-bold peer-checked:shadow-sm transition-all text-sm">
+<span class="material-symbols-outlined text-[18px]">arrow_downward</span>
+                                                    Resgate
+                                                </div>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-2">
+<label class="text-gray-700 dark:text-[#9db9a8] text-sm font-medium">Valor (KZ)</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-[#5c7a6b] text-sm font-medium">KZ</span>
+<input class="w-full bg-white dark:bg-[#111814] border border-gray-300 dark:border-[#3b5445] text-gray-900 dark:text-white rounded-lg py-3 pl-9 pr-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder-gray-400" placeholder="0,00" type="number"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-gray-700 dark:text-[#9db9a8] text-sm font-medium">Data</label>
+<input class="w-full bg-white dark:bg-[#111814] border border-gray-300 dark:border-[#3b5445] text-gray-900 dark:text-white rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none [color-scheme:light] dark:[color-scheme:dark]" type="date"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-gray-700 dark:text-[#9db9a8] text-sm font-medium">Observações</label>
+<textarea class="w-full bg-white dark:bg-[#111814] border border-gray-300 dark:border-[#3b5445] text-gray-900 dark:text-white rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder-gray-400 resize-none" placeholder="Detalhes opcionais..." rows="3"></textarea>
+</div>
+<button class="mt-2 w-full bg-primary hover:bg-green-400 text-background-dark font-bold py-3 px-4 rounded-lg shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined">check_circle</span>
+                                        Confirmar Transação
+                                    </button>
+</form>
+</div>
+</div>
+<div class="lg:col-span-8 flex flex-col gap-6">
+<div class="flex flex-wrap items-center justify-between gap-4 bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-gray-200 dark:border-[#3b5445]">
+<h3 class="text-gray-900 dark:text-white text-lg font-bold">Histórico Recente</h3>
+<div class="flex items-center gap-3">
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+<span class="material-symbols-outlined text-gray-500 text-sm">search</span>
+</span>
+<input class="bg-gray-50 dark:bg-[#111814] border border-gray-300 dark:border-[#3b5445] text-gray-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block w-full pl-10 p-2 placeholder-gray-400" placeholder="Buscar..." type="text"/>
+</div>
+<button class="p-2 text-gray-500 hover:text-primary dark:text-[#9db9a8] hover:bg-gray-100 dark:hover:bg-[#28392f] rounded-lg transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<div class="relative overflow-x-auto rounded-xl border border-gray-200 dark:border-[#3b5445] shadow-sm">
+<table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+<thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-[#1A2C22] dark:text-[#9db9a8]">
+<tr>
+<th class="px-6 py-4 font-bold" scope="col">Data</th>
+<th class="px-6 py-4 font-bold" scope="col">Ativo</th>
+<th class="px-6 py-4 font-bold text-center" scope="col">Tipo</th>
+<th class="px-6 py-4 font-bold text-right" scope="col">Valor</th>
+<th class="px-6 py-4 font-bold text-center" scope="col">Ações</th>
+</tr>
+</thead>
+<tbody class="bg-surface-light dark:bg-surface-dark divide-y divide-gray-200 dark:divide-[#28392f]">
+<tr class="hover:bg-gray-50 dark:hover:bg-[#111814] transition-colors">
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                                24 Out, 2023
+                                            </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-xs">BT</div>
+<div class="flex flex-col">
+<span class="text-gray-900 dark:text-white font-bold">Bitcoin</span>
+<span class="text-xs">Criptomoeda</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs font-bold px-2.5 py-0.5 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> Aporte
+                                                </span>
+</td>
+<td class="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                                                KZ 2.500,00
+                                            </td>
+<td class="px-6 py-4 text-center">
+<button class="text-gray-400 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 dark:hover:bg-[#111814] transition-colors">
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                                22 Out, 2023
+                                            </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-xs">IV</div>
+<div class="flex flex-col">
+<span class="text-gray-900 dark:text-white font-bold">IVVB11</span>
+<span class="text-xs">ETF Internacional</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs font-bold px-2.5 py-0.5 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> Aporte
+                                                </span>
+</td>
+<td class="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                                                KZ 1.200,00
+                                            </td>
+<td class="px-6 py-4 text-center">
+<button class="text-gray-400 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 dark:hover:bg-[#111814] transition-colors">
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                                15 Out, 2023
+                                            </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold text-xs">MX</div>
+<div class="flex flex-col">
+<span class="text-gray-900 dark:text-white font-bold">MXRF11</span>
+<span class="text-xs">Fundo Imobiliário</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-danger/10 text-danger text-xs font-bold px-2.5 py-0.5 rounded-full border border-danger/20">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span> Resgate
+                                                </span>
+</td>
+<td class="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                                                - KZ 500,00
+                                            </td>
+<td class="px-6 py-4 text-center">
+<button class="text-gray-400 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 dark:hover:bg-[#111814] transition-colors">
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                                10 Out, 2023
+                                            </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 dark:text-green-400 font-bold text-xs">TS</div>
+<div class="flex flex-col">
+<span class="text-gray-900 dark:text-white font-bold">Tesouro Selic</span>
+<span class="text-xs">Renda Fixa</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs font-bold px-2.5 py-0.5 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> Aporte
+                                                </span>
+</td>
+<td class="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                                                KZ 5.000,00
+                                            </td>
+<td class="px-6 py-4 text-center">
+<button class="text-gray-400 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+<tr class="hover:bg-gray-50 dark:hover:bg-[#111814] transition-colors">
+<td class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
+                                                01 Out, 2023
+                                            </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-bold text-xs">BT</div>
+<div class="flex flex-col">
+<span class="text-gray-900 dark:text-white font-bold">Bitcoin</span>
+<span class="text-xs">Criptomoeda</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-primary/10 text-primary text-xs font-bold px-2.5 py-0.5 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> Aporte
+                                                </span>
+</td>
+<td class="px-6 py-4 text-right font-bold text-gray-900 dark:text-white">
+                                                KZ 1.000,00
+                                            </td>
+<td class="px-6 py-4 text-center">
+<button class="text-gray-400 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-[#3b5445] bg-surface-light dark:bg-surface-dark">
+<span class="text-sm text-gray-700 dark:text-[#9db9a8]">
+                                    Mostrando <span class="font-bold text-gray-900 dark:text-white">1</span> a <span class="font-bold text-gray-900 dark:text-white">5</span> de <span class="font-bold text-gray-900 dark:text-white">12</span> resultados
+                                </span>
+<div class="inline-flex mt-2 xs:mt-0">
+<button class="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 dark:text-white bg-gray-100 dark:bg-[#28392f] rounded-l hover:bg-gray-200 dark:hover:bg-[#3b5445]">
+<span class="material-symbols-outlined text-sm mr-2">chevron_left</span>
+                                        Anterior
+                                    </button>
+<button class="flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-900 dark:text-white bg-gray-100 dark:bg-[#28392f] border-l border-gray-200 dark:border-[#111814] rounded-r hover:bg-gray-200 dark:hover:bg-[#3b5445]">
+                                        Próximo
+                                        <span class="material-symbols-outlined text-sm ml-2">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-AO"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HolyFinanças - Relatório de Receitas e Despesas</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Sans:wght@300..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "primary-dark": "#0ea84d",
+                        "danger": "#ef4444", 
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#111814",
+                        "surface-dark": "#28392f",
+                        "text-secondary": "#9db9a8"
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for tables if needed */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111814; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a4f42; 
+        }
+        .chart-bar-bg {
+            background: linear-gradient(180deg, rgba(40, 57, 47, 0) 0%, rgba(40, 57, 47, 0.5) 100%);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col group/design-root">
+<!-- Top Navigation Bar -->
+<div class="w-full border-b border-solid border-b-[#28392f] bg-[#111814]">
+<div class="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-8">
+<header class="flex h-16 items-center justify-between whitespace-nowrap">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2 text-white">
+<div class="flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-size: 32px;">account_balance_wallet</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">HolyFinanças</h2>
+</div>
+<div class="hidden md:flex items-center w-64 h-10">
+<div class="flex w-full items-stretch rounded-lg h-full bg-[#28392f] overflow-hidden group focus-within:ring-1 focus-within:ring-primary">
+<div class="text-[#9db9a8] flex items-center justify-center pl-4 pr-2">
+<span class="material-symbols-outlined" style="font-size: 20px;">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-white focus:outline-0 border-none h-full placeholder:text-[#9db9a8] text-sm font-normal leading-normal" placeholder="Buscar transações..." value=""/>
+</div>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-4 md:gap-8 items-center">
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-[#9db9a8] hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-[#9db9a8] hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Transações</a>
+<a class="text-white text-sm font-medium leading-normal border-b-2 border-primary pb-0.5" href="#">Relatórios</a>
+<a class="text-[#9db9a8] hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Orçamento</a>
+</nav>
+<div class="flex items-center gap-3">
+<button class="hidden sm:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary text-[#111814] hover:bg-primary-dark transition-colors text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Meu Perfil</span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-9 border border-[#28392f]" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBaN0hbQ88xWyARqHlJTjwppxCpSINBT7iU9LhyV6JXgMSvzum_tOnDcZUvHG9xRl6hg8ii3PT_9Yk9Gez6BmmG2qgSeGCC8_s27Hsk1B4bqoQyCLMX6qIDPiff-ascLh5p5D6PA4WS5vZa1JKiWnujQMjFPluH9kOEZDFdTDkDR1lHsIgPLFWqlwniSUSHHA91HyRcUTCnznJERPF5SF2uNGtKG9QQhGd84oaOER72pbK9IU1owJgxF1ETiGbHeZS5yv6y8q_Nph38");'></div>
+</div>
+</div>
+</header>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-1 py-8 px-4 sm:px-6 lg:px-8 mx-auto w-full max-w-[1280px]">
+<!-- Page Heading & Actions -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+<div class="flex flex-col gap-1">
+<h1 class="text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Relatório de Receitas e Despesas</h1>
+<p class="text-[#9db9a8] text-base font-normal">Analise o fluxo de caixa, tendências e detalhamento mensal.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-[#28392f] hover:bg-[#344a3d] text-white text-sm font-bold transition-colors border border-transparent hover:border-[#9db9a8]/30">
+<span class="material-symbols-outlined" style="font-size: 20px;">print</span>
+<span class="hidden sm:inline">Imprimir</span>
+</button>
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-primary hover:bg-primary-dark text-[#111814] text-sm font-bold transition-colors shadow-[0_0_15px_rgba(19,236,109,0.2)]">
+<span class="material-symbols-outlined" style="font-size: 20px;">download</span>
+<span>Exportar PDF</span>
+</button>
+</div>
+</div>
+<!-- Filters & Controls -->
+<div class="flex flex-col lg:flex-row gap-4 mb-8">
+<!-- Date Chips -->
+<div class="flex flex-wrap items-center gap-2 bg-[#1a2620] p-1.5 rounded-xl border border-[#28392f] self-start">
+<button class="px-3 py-1.5 rounded-lg bg-[#28392f] text-white text-sm font-medium border border-[#3e5647] shadow-sm">Este Mês</button>
+<button class="px-3 py-1.5 rounded-lg text-[#9db9a8] hover:text-white hover:bg-[#28392f]/50 text-sm font-medium transition-colors">Mês Passado</button>
+<button class="px-3 py-1.5 rounded-lg text-[#9db9a8] hover:text-white hover:bg-[#28392f]/50 text-sm font-medium transition-colors">Este Ano</button>
+<button class="px-3 py-1.5 rounded-lg text-[#9db9a8] hover:text-white hover:bg-[#28392f]/50 text-sm font-medium transition-colors flex items-center gap-1">
+                        Customizado <span class="material-symbols-outlined text-sm">calendar_today</span>
+</button>
+</div>
+<!-- Secondary Toolbar -->
+<div class="flex flex-1 justify-end gap-3 flex-wrap">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9db9a8]">
+<span class="material-symbols-outlined" style="font-size: 20px;">filter_list</span>
+</div>
+<select class="h-10 pl-10 pr-8 bg-[#1a2620] border border-[#28392f] text-white text-sm rounded-lg focus:ring-1 focus:ring-primary focus:border-primary block w-full appearance-none cursor-pointer">
+<option>Todas Categorias</option>
+<option>Alimentação</option>
+<option>Transporte</option>
+<option>Salário</option>
+</select>
+<div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none text-[#9db9a8]">
+<span class="material-symbols-outlined" style="font-size: 20px;">expand_more</span>
+</div>
+</div>
+<button class="flex items-center justify-center gap-2 h-10 px-4 bg-[#1a2620] border border-[#28392f] hover:border-primary/50 text-white rounded-lg text-sm font-medium transition-all">
+<span class="material-symbols-outlined text-primary" style="font-size: 20px;">compare_arrows</span>
+<span>Comparar Períodos</span>
+</button>
+</div>
+</div>
+<!-- KPI Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<!-- Income -->
+<div class="bg-[#1a2620] border border-[#28392f] rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-primary" style="font-size: 80px;">trending_up</span>
+</div>
+<p class="text-[#9db9a8] text-sm font-medium mb-1 flex items-center gap-2">
+                        Total Receitas
+                        <span class="bg-[#28392f] text-primary text-xs px-1.5 py-0.5 rounded flex items-center">
+<span class="material-symbols-outlined" style="font-size: 14px;">arrow_upward</span> 12%
+                        </span>
+</p>
+<p class="text-white text-3xl font-bold tracking-tight">KZ 450.000,00</p>
+<p class="text-[#9db9a8] text-xs mt-2">vs. KZ 401.500,00 mês anterior</p>
+</div>
+<!-- Expenses -->
+<div class="bg-[#1a2620] border border-[#28392f] rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-danger" style="font-size: 80px;">trending_down</span>
+</div>
+<p class="text-[#9db9a8] text-sm font-medium mb-1 flex items-center gap-2">
+                        Total Despesas
+                        <span class="bg-[#28392f] text-danger text-xs px-1.5 py-0.5 rounded flex items-center">
+<span class="material-symbols-outlined" style="font-size: 14px;">arrow_upward</span> 5%
+                        </span>
+</p>
+<p class="text-white text-3xl font-bold tracking-tight">KZ 120.000,00</p>
+<p class="text-[#9db9a8] text-xs mt-2">vs. KZ 114.000,00 mês anterior</p>
+</div>
+<!-- Net Balance -->
+<div class="bg-gradient-to-br from-[#1a2620] to-[#13ec6d]/10 border border-[#13ec6d]/30 rounded-xl p-6 relative overflow-hidden group shadow-[0_4px_20px_-10px_rgba(19,236,109,0.3)]">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-white" style="font-size: 80px;">account_balance</span>
+</div>
+<p class="text-[#9db9a8] text-sm font-medium mb-1">Saldo Líquido</p>
+<p class="text-primary text-3xl font-bold tracking-tight">KZ 330.000,00</p>
+<div class="w-full bg-[#28392f] rounded-full h-1.5 mt-4 overflow-hidden">
+<div class="bg-primary h-1.5 rounded-full" style="width: 73%"></div>
+</div>
+<p class="text-[#9db9a8] text-xs mt-2">73% da receita economizada</p>
+</div>
+</div>
+<!-- Visualizations Section -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<!-- Main Chart (Simulated with CSS) -->
+<div class="lg:col-span-2 bg-[#1a2620] border border-[#28392f] rounded-xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-white text-lg font-bold">Fluxo de Caixa (Maio 2024)</h3>
+<div class="flex gap-2">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-xs text-[#9db9a8]">Receita</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-danger"></span>
+<span class="text-xs text-[#9db9a8]">Despesa</span>
+</div>
+</div>
+</div>
+<!-- CSS Chart Container -->
+<div class="relative h-64 w-full flex items-end justify-between gap-2 sm:gap-4 px-2">
+<!-- Y-Axis Lines (Background) -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none z-0">
+<div class="border-t border-[#28392f] w-full h-0"></div>
+<div class="border-t border-[#28392f] border-dashed w-full h-0"></div>
+<div class="border-t border-[#28392f] border-dashed w-full h-0"></div>
+<div class="border-t border-[#28392f] border-dashed w-full h-0"></div>
+<div class="border-t border-[#28392f] w-full h-0"></div>
+</div>
+<!-- Bar Groups (Data) -->
+<div class="z-10 flex flex-col justify-end items-center gap-1 w-full h-full group cursor-pointer">
+<div class="w-full flex gap-1 items-end h-[80%] justify-center">
+<div class="w-2 sm:w-4 bg-primary rounded-t-sm h-[60%] transition-all hover:opacity-80"></div>
+<div class="w-2 sm:w-4 bg-danger rounded-t-sm h-[30%] transition-all hover:opacity-80"></div>
+</div>
+<span class="text-[10px] text-[#9db9a8]">Sem 1</span>
+</div>
+<div class="z-10 flex flex-col justify-end items-center gap-1 w-full h-full group cursor-pointer">
+<div class="w-full flex gap-1 items-end h-[80%] justify-center">
+<div class="w-2 sm:w-4 bg-primary rounded-t-sm h-[45%] transition-all hover:opacity-80"></div>
+<div class="w-2 sm:w-4 bg-danger rounded-t-sm h-[50%] transition-all hover:opacity-80"></div>
+</div>
+<span class="text-[10px] text-[#9db9a8]">Sem 2</span>
+</div>
+<div class="z-10 flex flex-col justify-end items-center gap-1 w-full h-full group cursor-pointer">
+<div class="w-full flex gap-1 items-end h-[80%] justify-center">
+<div class="w-2 sm:w-4 bg-primary rounded-t-sm h-[80%] transition-all hover:opacity-80"></div>
+<div class="w-2 sm:w-4 bg-danger rounded-t-sm h-[25%] transition-all hover:opacity-80"></div>
+</div>
+<span class="text-[10px] text-[#9db9a8]">Sem 3</span>
+</div>
+<div class="z-10 flex flex-col justify-end items-center gap-1 w-full h-full group cursor-pointer">
+<div class="w-full flex gap-1 items-end h-[80%] justify-center">
+<div class="w-2 sm:w-4 bg-primary rounded-t-sm h-[70%] transition-all hover:opacity-80"></div>
+<div class="w-2 sm:w-4 bg-danger rounded-t-sm h-[40%] transition-all hover:opacity-80"></div>
+</div>
+<span class="text-[10px] text-[#9db9a8]">Sem 4</span>
+</div>
+</div>
+</div>
+<!-- Secondary Chart / Breakdown -->
+<div class="bg-[#1a2620] border border-[#28392f] rounded-xl p-6 flex flex-col">
+<h3 class="text-white text-lg font-bold mb-4">Despesas por Categoria</h3>
+<div class="flex-1 flex flex-col justify-center gap-4">
+<!-- Category Item -->
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-white">Alimentação</span>
+<span class="text-white font-medium">45%</span>
+</div>
+<div class="w-full bg-[#28392f] rounded-full h-2">
+<div class="bg-danger h-2 rounded-full" style="width: 45%"></div>
+</div>
+<p class="text-xs text-[#9db9a8] mt-1">KZ 54.000,00</p>
+</div>
+<!-- Category Item -->
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-white">Moradia</span>
+<span class="text-white font-medium">30%</span>
+</div>
+<div class="w-full bg-[#28392f] rounded-full h-2">
+<div class="bg-orange-500 h-2 rounded-full" style="width: 30%"></div>
+</div>
+<p class="text-xs text-[#9db9a8] mt-1">KZ 36.000,00</p>
+</div>
+<!-- Category Item -->
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-white">Transporte</span>
+<span class="text-white font-medium">15%</span>
+</div>
+<div class="w-full bg-[#28392f] rounded-full h-2">
+<div class="bg-blue-500 h-2 rounded-full" style="width: 15%"></div>
+</div>
+<p class="text-xs text-[#9db9a8] mt-1">KZ 18.000,00</p>
+</div>
+<!-- Category Item -->
+<div>
+<div class="flex justify-between text-sm mb-1">
+<span class="text-white">Outros</span>
+<span class="text-white font-medium">10%</span>
+</div>
+<div class="w-full bg-[#28392f] rounded-full h-2">
+<div class="bg-gray-500 h-2 rounded-full" style="width: 10%"></div>
+</div>
+<p class="text-xs text-[#9db9a8] mt-1">KZ 12.000,00</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Table Section -->
+<div class="bg-[#1a2620] border border-[#28392f] rounded-xl overflow-hidden">
+<div class="p-6 border-b border-[#28392f] flex flex-col sm:flex-row justify-between items-center gap-4">
+<h3 class="text-white text-lg font-bold">Transações Detalhadas</h3>
+<div class="flex items-center gap-2">
+<div class="relative">
+<input class="bg-[#28392f] text-white text-sm rounded-lg pl-8 pr-3 py-1.5 focus:ring-1 focus:ring-primary border-none w-48 sm:w-64" placeholder="Filtrar tabela..."/>
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-[#9db9a8]" style="font-size: 18px;">search</span>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#151f1a] border-b border-[#28392f]">
+<th class="py-4 px-6 text-[#9db9a8] font-medium text-sm">Data</th>
+<th class="py-4 px-6 text-[#9db9a8] font-medium text-sm">Descrição</th>
+<th class="py-4 px-6 text-[#9db9a8] font-medium text-sm">Categoria</th>
+<th class="py-4 px-6 text-[#9db9a8] font-medium text-sm">Tipo</th>
+<th class="py-4 px-6 text-[#9db9a8] font-medium text-sm text-right">Valor (KZ)</th>
+<th class="py-4 px-6 text-[#9db9a8] font-medium text-sm text-center">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#28392f]">
+<!-- Row 1 -->
+<tr class="hover:bg-[#28392f]/50 transition-colors group">
+<td class="py-4 px-6 text-white text-sm">28 Mai 2024</td>
+<td class="py-4 px-6 text-white font-medium text-sm">Consultoria TI</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-[#28392f] px-2.5 py-1 text-xs font-medium text-white border border-[#3e5647]">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Trabalho
+                                    </span>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> Receita
+                                    </span>
+</td>
+<td class="py-4 px-6 text-primary font-bold text-sm text-right">+ 150.000,00</td>
+<td class="py-4 px-6 text-center">
+<button class="text-[#9db9a8] hover:text-white transition-colors p-1">
+<span class="material-symbols-outlined" style="font-size: 18px;">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-[#28392f]/50 transition-colors group">
+<td class="py-4 px-6 text-white text-sm">25 Mai 2024</td>
+<td class="py-4 px-6 text-white font-medium text-sm">Supermercado Kero</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-[#28392f] px-2.5 py-1 text-xs font-medium text-white border border-[#3e5647]">
+<span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> Alimentação
+                                    </span>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-danger/10 text-danger">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span> Despesa
+                                    </span>
+</td>
+<td class="py-4 px-6 text-white font-medium text-sm text-right">- 45.000,00</td>
+<td class="py-4 px-6 text-center">
+<button class="text-[#9db9a8] hover:text-white transition-colors p-1">
+<span class="material-symbols-outlined" style="font-size: 18px;">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-[#28392f]/50 transition-colors group">
+<td class="py-4 px-6 text-white text-sm">20 Mai 2024</td>
+<td class="py-4 px-6 text-white font-medium text-sm">Combustível</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-[#28392f] px-2.5 py-1 text-xs font-medium text-white border border-[#3e5647]">
+<span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> Transporte
+                                    </span>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-danger/10 text-danger">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span> Despesa
+                                    </span>
+</td>
+<td class="py-4 px-6 text-white font-medium text-sm text-right">- 12.000,00</td>
+<td class="py-4 px-6 text-center">
+<button class="text-[#9db9a8] hover:text-white transition-colors p-1">
+<span class="material-symbols-outlined" style="font-size: 18px;">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-[#28392f]/50 transition-colors group">
+<td class="py-4 px-6 text-white text-sm">15 Mai 2024</td>
+<td class="py-4 px-6 text-white font-medium text-sm">Salário Mensal</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-[#28392f] px-2.5 py-1 text-xs font-medium text-white border border-[#3e5647]">
+<span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> Renda Fixa
+                                    </span>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> Receita
+                                    </span>
+</td>
+<td class="py-4 px-6 text-primary font-bold text-sm text-right">+ 300.000,00</td>
+<td class="py-4 px-6 text-center">
+<button class="text-[#9db9a8] hover:text-white transition-colors p-1">
+<span class="material-symbols-outlined" style="font-size: 18px;">more_horiz</span>
+</button>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-[#28392f]/50 transition-colors group">
+<td class="py-4 px-6 text-white text-sm">10 Mai 2024</td>
+<td class="py-4 px-6 text-white font-medium text-sm">Internet Fibra</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 rounded-full bg-[#28392f] px-2.5 py-1 text-xs font-medium text-white border border-[#3e5647]">
+<span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span> Moradia
+                                    </span>
+</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold bg-danger/10 text-danger">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span> Despesa
+                                    </span>
+</td>
+<td class="py-4 px-6 text-white font-medium text-sm text-right">- 15.000,00</td>
+<td class="py-4 px-6 text-center">
+<button class="text-[#9db9a8] hover:text-white transition-colors p-1">
+<span class="material-symbols-outlined" style="font-size: 18px;">more_horiz</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="p-4 border-t border-[#28392f] flex items-center justify-between">
+<p class="text-sm text-[#9db9a8]">Mostrando <span class="text-white font-medium">1-5</span> de <span class="text-white font-medium">42</span> resultados</p>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg border border-[#28392f] text-[#9db9a8] hover:text-white hover:bg-[#28392f] disabled:opacity-50 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">chevron_left</span>
+</button>
+<button class="p-2 rounded-lg border border-[#28392f] text-white bg-[#28392f] hover:bg-[#344a3d] transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

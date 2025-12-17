@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HolyFinanças - Dashboard Principal</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13ec6d",
+              "primary-dark": "#0ea64c",
+              "background-light": "#f6f8f7",
+              "background-dark": "#111814",
+              "surface-dark": "#1a2620",
+              "surface-border": "#28392f",
+              "text-secondary": "#9db9a8",
+              "danger": "#fa5538",
+              "success": "#0bda43",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111814; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b5445; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white h-screen flex overflow-hidden">
+<aside class="w-64 h-full flex-shrink-0 bg-background-light dark:bg-background-dark border-r border-gray-200 dark:border-surface-border flex flex-col justify-between p-4 hidden md:flex">
+<div class="flex flex-col gap-8">
+<div class="flex items-center gap-3 px-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-primary shadow-[0_0_10px_rgba(19,236,109,0.2)]" data-alt="Abstract green financial logo mark" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAA0as71n_TKzIwxgjrbfGVztcvbOV0YSYbLkZjYd9KB0HUNCB5_-gghUSNacZvWm4mUVXyI2-FqnA5UuwLCbCVBLRLeum9MFNYX511i1kP-6trq9H-CC6trtxAX2P7oAxPqpGSp1MwE4NK83F6jBYZDoDjAKPVVUCYAP6zUyWptL8Adn0pWE3a_BNuyimFWpuFDG1YFvr8lQRlicOJVSe-2JvTAbA1ppdHM6M-xLPrvarsXbOxVJqgn5aWFHNHRZ2CdzOrY2c8qdtd");'></div>
+<h1 class="text-xl font-bold leading-normal tracking-tight">HolyFinanças</h1>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-3 rounded-xl bg-surface-dark border border-surface-border shadow-sm group transition-all hover:bg-primary/10" href="#">
+<span class="material-symbols-outlined text-primary">dashboard</span>
+<p class="text-white text-sm font-semibold leading-normal">Visão Geral</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-surface-dark hover:text-white text-text-secondary transition-all" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">receipt_long</span>
+<p class="text-sm font-medium leading-normal">Transações</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-surface-dark hover:text-white text-text-secondary transition-all" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">pie_chart</span>
+<p class="text-sm font-medium leading-normal">Orçamento</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-surface-dark hover:text-white text-text-secondary transition-all" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">flag</span>
+<p class="text-sm font-medium leading-normal">Metas</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-surface-dark hover:text-white text-text-secondary transition-all" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">settings</span>
+<p class="text-sm font-medium leading-normal">Configurações</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<button class="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl h-12 px-4 bg-primary hover:bg-primary-dark transition-colors text-background-dark text-sm font-bold leading-normal tracking-wide shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg">add</span>
+<span class="truncate">Nova Transação</span>
+</button>
+<div class="flex items-center gap-3 px-2 py-2 border-t border-surface-border pt-4">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-surface-border" data-alt="User profile picture placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAmTe0Ht-0qyOtDPL3pR4Rc5jrW24MbevnCoJZx0fwgMCizCfq8gUyJIiLzFZTgQ15ba6aFDlq-I1UtrAKydDNRWR_oVqNYum2ulPuojKrxYug_Txy5HxWOoH_7iIdIYDTOexdIFVmzOYFwFUUFrTSuls-WvXGxq50hdF9ded9obXUQvOflCi1ACGv59seQN3cs45hzR5UAHwc7MgrTTME7_CAwBRiJrUmeOv4UGB1pwb2r5wCrogzdc1KYz-HAR5xUI-OzIvnZwGiL");'></div>
+<div class="flex flex-col overflow-hidden">
+<p class="text-sm font-bold text-white truncate">Pedro Santos</p>
+<p class="text-xs text-text-secondary truncate">Plano Pro</p>
+</div>
+</div>
+</div>
+</aside>
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark">
+<div class="max-w-[1400px] mx-auto p-6 md:p-10 flex flex-col gap-8">
+<header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-3xl md:text-4xl font-black text-gray-900 dark:text-white tracking-tight">Dashboard Principal</h1>
+<p class="text-gray-500 dark:text-text-secondary text-base">Bem-vindo de volta! Aqui está o resumo financeiro deste mês.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-surface-border bg-white dark:bg-surface-dark text-gray-700 dark:text-text-secondary text-sm font-medium hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+                        Outubro, 2023
+                    </button>
+<button class="p-2 rounded-lg border border-gray-300 dark:border-surface-border bg-white dark:bg-surface-dark text-gray-700 dark:text-text-secondary hover:text-primary transition-colors" title="Privacy Mode">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+<button class="p-2 rounded-lg border border-gray-300 dark:border-surface-border bg-white dark:bg-surface-dark text-gray-700 dark:text-text-secondary hover:text-primary transition-colors" title="Notifications">
+<span class="material-symbols-outlined text-[20px] fill-current">notifications</span>
+</button>
+</div>
+</header>
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-primary">account_balance_wallet</span>
+</div>
+<div class="flex flex-col gap-1 z-10">
+<p class="text-gray-500 dark:text-text-secondary text-sm font-semibold uppercase tracking-wider">Saldo Atual</p>
+<h2 class="text-gray-900 dark:text-white text-3xl font-bold tracking-tight">KZ 14.250,00</h2>
+</div>
+<div class="flex items-center gap-2 z-10 mt-auto">
+<span class="material-symbols-outlined text-success text-sm">trending_up</span>
+<span class="text-success text-sm font-bold">+2.4%</span>
+<span class="text-gray-400 dark:text-gray-500 text-xs">vs. mês anterior</span>
+</div>
+</div>
+<div class="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border shadow-sm">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-success/10 text-success">
+<span class="material-symbols-outlined">arrow_downward</span>
+</div>
+<p class="text-gray-500 dark:text-text-secondary text-sm font-semibold uppercase tracking-wider">Receitas</p>
+</div>
+<div>
+<h2 class="text-gray-900 dark:text-white text-2xl font-bold tracking-tight">KZ 5.800,00</h2>
+<p class="text-success text-sm font-medium mt-1">+12% meta atingida</p>
+</div>
+</div>
+<div class="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border shadow-sm">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-danger/10 text-danger">
+<span class="material-symbols-outlined">arrow_upward</span>
+</div>
+<p class="text-gray-500 dark:text-text-secondary text-sm font-semibold uppercase tracking-wider">Despesas</p>
+</div>
+<div>
+<h2 class="text-gray-900 dark:text-white text-2xl font-bold tracking-tight">KZ 3.420,00</h2>
+<p class="text-danger text-sm font-medium mt-1">-5% do limite</p>
+</div>
+</div>
+<div class="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border shadow-sm">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-lg bg-blue-500/10 text-blue-500">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<p class="text-gray-500 dark:text-text-secondary text-sm font-semibold uppercase tracking-wider">Fatura Cartão</p>
+</div>
+<div>
+<h2 class="text-gray-900 dark:text-white text-2xl font-bold tracking-tight">KZ 1.250,00</h2>
+<p class="text-gray-400 dark:text-gray-500 text-sm font-medium mt-1">Vence em 5 dias</p>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 rounded-2xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border p-6 shadow-sm flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Evolução Patrimonial</h3>
+<select class="bg-transparent text-gray-500 dark:text-text-secondary text-sm border-none focus:ring-0 cursor-pointer font-medium">
+<option>Últimos 6 meses</option>
+<option>Este ano</option>
+</select>
+</div>
+<div class="flex-1 min-h-[250px] relative w-full">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 800 250">
+<defs>
+<linearGradient id="gradientGreen" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#13ec6d" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#13ec6d" stop-opacity="0"></stop>
+</linearGradient>
+</defs>
+<line stroke="#28392f" stroke-dasharray="4" x1="0" x2="800" y1="200" y2="200"></line>
+<line stroke="#28392f" stroke-dasharray="4" x1="0" x2="800" y1="150" y2="150"></line>
+<line stroke="#28392f" stroke-dasharray="4" x1="0" x2="800" y1="100" y2="100"></line>
+<line stroke="#28392f" stroke-dasharray="4" x1="0" x2="800" y1="50" y2="50"></line>
+<path d="M0,200 C100,190 150,160 200,150 S350,180 400,130 S550,60 600,80 S750,20 800,10 V250 H0 Z" fill="url(#gradientGreen)"></path>
+<path d="M0,200 C100,190 150,160 200,150 S350,180 400,130 S550,60 600,80 S750,20 800,10" fill="none" stroke="#13ec6d" stroke-linecap="round" stroke-width="3"></path>
+<circle cx="200" cy="150" fill="#111814" r="4" stroke="#13ec6d" stroke-width="2"></circle>
+<circle cx="400" cy="130" fill="#111814" r="4" stroke="#13ec6d" stroke-width="2"></circle>
+<circle cx="600" cy="80" fill="#111814" r="4" stroke="#13ec6d" stroke-width="2"></circle>
+<circle cx="800" cy="10" fill="#13ec6d" r="6"></circle>
+</svg>
+<div class="flex justify-between w-full mt-4 text-xs font-semibold text-gray-400 dark:text-text-secondary">
+<span>Mai</span>
+<span>Jun</span>
+<span>Jul</span>
+<span>Ago</span>
+<span>Set</span>
+<span>Out</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-1 rounded-2xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border p-6 shadow-sm flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Gastos por Categoria</h3>
+</div>
+<div class="flex flex-col gap-6 flex-1 justify-center">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-sm">
+<span class="font-bold text-gray-700 dark:text-white">Moradia</span>
+<span class="text-gray-500 dark:text-text-secondary">KZ 1.800 (45%)</span>
+</div>
+<div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-sm">
+<span class="font-bold text-gray-700 dark:text-white">Mercado</span>
+<span class="text-gray-500 dark:text-text-secondary">KZ 900 (22%)</span>
+</div>
+<div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
+<div class="bg-primary h-2 rounded-full opacity-80" style="width: 22%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-sm">
+<span class="font-bold text-gray-700 dark:text-white">Lazer</span>
+<span class="text-gray-500 dark:text-text-secondary">KZ 450 (12%)</span>
+</div>
+<div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
+<div class="bg-primary h-2 rounded-full opacity-60" style="width: 12%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-sm">
+<span class="font-bold text-gray-700 dark:text-white">Transporte</span>
+<span class="text-gray-500 dark:text-text-secondary">KZ 300 (8%)</span>
+</div>
+<div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
+<div class="bg-primary h-2 rounded-full opacity-40" style="width: 8%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-sm">
+<span class="font-bold text-gray-700 dark:text-white">Saúde</span>
+<span class="text-gray-500 dark:text-text-secondary">KZ 250 (6%)</span>
+</div>
+<div class="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2">
+<div class="bg-primary h-2 rounded-full opacity-30" style="width: 6%"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="rounded-2xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border p-5 flex items-center gap-4 shadow-sm">
+<div class="rounded-full bg-blue-500/10 p-3 h-12 w-12 flex items-center justify-center text-blue-500">
+<span class="material-symbols-outlined">savings</span>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-500 dark:text-text-secondary">Taxa de Poupança</p>
+<p class="text-2xl font-bold text-gray-900 dark:text-white">28%</p>
+</div>
+<div class="ml-auto">
+<span class="inline-flex items-center rounded-full bg-success/10 px-2.5 py-0.5 text-xs font-medium text-success">
+                            Ótimo
+                        </span>
+</div>
+</div>
+<div class="rounded-2xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border p-5 flex items-center gap-4 shadow-sm">
+<div class="rounded-full bg-orange-500/10 p-3 h-12 w-12 flex items-center justify-center text-orange-500">
+<span class="material-symbols-outlined">verified_user</span>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-500 dark:text-text-secondary">Reserva Emergência</p>
+<p class="text-2xl font-bold text-gray-900 dark:text-white">85%</p>
+</div>
+<div class="ml-auto w-16">
+<div class="w-full bg-gray-800 rounded-full h-1.5">
+<div class="bg-orange-500 h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+</div>
+</div>
+<div class="rounded-2xl bg-white dark:bg-surface-dark border border-gray-200 dark:border-surface-border p-5 flex items-center gap-4 shadow-sm">
+<div class="rounded-full bg-purple-500/10 p-3 h-12 w-12 flex items-center justify-center text-purple-500">
+<span class="material-symbols-outlined">show_chart</span>
+</div>
+<div>
+<p class="text-sm font-medium text-gray-500 dark:text-text-secondary">Rentabilidade</p>
+<p class="text-2xl font-bold text-gray-900 dark:text-white">108% CDI</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+
+</body></html>

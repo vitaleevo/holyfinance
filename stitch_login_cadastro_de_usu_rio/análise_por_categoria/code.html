@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HolyFinanças - Análise por Categoria</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                        "surface-dark": "#1c2e24", // Derived for cards
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #102218; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a5244; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111418] dark:text-white font-display overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- SideNavBar -->
+<aside class="hidden lg:flex w-64 flex-col border-r border-[#28392f] bg-background-light dark:bg-background-dark">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-4">
+<div class="flex flex-col px-3 py-2">
+<h1 class="text-[#111418] dark:text-white text-xl font-bold leading-normal">HolyFinanças</h1>
+<p class="text-[#9db9a8] text-xs font-normal leading-normal">Gestão Pessoal</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#28392f] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[#111418] dark:text-white group-hover:text-primary">dashboard</span>
+<p class="text-[#111418] dark:text-white text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#28392f] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[#111418] dark:text-white group-hover:text-primary">receipt_long</span>
+<p class="text-[#111418] dark:text-white text-sm font-medium leading-normal">Transações</p>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20" href="#">
+<span class="material-symbols-outlined text-primary icon-fill">pie_chart</span>
+<p class="text-primary text-sm font-bold leading-normal">Análises</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#28392f] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[#111418] dark:text-white group-hover:text-primary">account_balance_wallet</span>
+<p class="text-[#111418] dark:text-white text-sm font-medium leading-normal">Orçamentos</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#28392f] group transition-colors" href="#">
+<span class="material-symbols-outlined text-[#111418] dark:text-white group-hover:text-primary">settings</span>
+<p class="text-[#111418] dark:text-white text-sm font-medium leading-normal">Configurações</p>
+</a>
+</nav>
+</div>
+<div class="px-3 py-2">
+<div class="flex items-center gap-3 p-3 rounded-lg bg-[#28392f]">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10" data-alt="User profile avatar showing a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC7dCKBhaMt9lRXemhlcwv7wit-hMS4ckTCOqIrKkai8EnmVhgu1AxHotRl_FISVZj8dnS0WoFCjSfV0xFOcAoG8F9tcASe-_UwYbwBFS3wQKAsii2h9fqdqaT1JwZkAHNRSZ9squxezkLgOdAy9qcWfIi8jxXBrD0qGFsANA_oSd9JFm22PMGxJZCmw6ECj5ZNrovM9Kf8Py6wsLef3FhZDCfXXYSWoGIVU5tCNM8NxkMNpNYUc7BQdKqkpj4vDccpJvZWLMSg7T2u");'></div>
+<div class="flex flex-col overflow-hidden">
+<p class="text-white text-sm font-medium truncate">João Silva</p>
+<p class="text-[#9db9a8] text-xs truncate">joao@email.com</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto bg-background-light dark:bg-background-dark relative">
+<!-- TopNavBar -->
+<header class="sticky top-0 z-20 flex items-center justify-between border-b border-[#28392f] bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm px-6 py-4">
+<div class="flex items-center gap-4 text-[#111418] dark:text-white lg:hidden">
+<span class="material-symbols-outlined cursor-pointer">menu</span>
+<h2 class="text-lg font-bold">HolyFinanças</h2>
+</div>
+<!-- Desktop Search -->
+<div class="hidden lg:flex items-center gap-4 w-full justify-between">
+<!-- Breadcrumbs moved inside or below header usually, but here keeping clean header -->
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-[#28392f] p-2 rounded-full">arrow_back</span>
+</div>
+<div class="flex flex-1 max-w-md mx-auto">
+<div class="flex w-full items-center rounded-lg bg-white dark:bg-[#1c2e24] border border-gray-200 dark:border-[#28392f] h-10 px-3">
+<span class="material-symbols-outlined text-[#9db9a8]">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-[#111418] dark:text-white placeholder-[#9db9a8] text-sm ml-2" placeholder="Pesquisar transações, categorias..."/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-[#9db9a8] hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex flex-col flex-1 px-6 py-6 max-w-7xl mx-auto w-full gap-6">
+<!-- Breadcrumbs -->
+<nav class="flex flex-wrap gap-2 text-sm">
+<a class="text-[#9db9a8] hover:text-primary transition-colors" href="#">Home</a>
+<span class="text-[#9db9a8]">/</span>
+<a class="text-[#9db9a8] hover:text-primary transition-colors" href="#">Relatórios</a>
+<span class="text-[#9db9a8]">/</span>
+<span class="text-[#111418] dark:text-white font-medium">Análise de Gastos</span>
+</nav>
+<!-- Page Heading & Filters Row -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="flex flex-col gap-2">
+<h1 class="text-[#111418] dark:text-white text-3xl md:text-4xl font-black tracking-tight">Análise por Categoria</h1>
+<p class="text-[#9db9a8] text-base">Visão detalhada dos gastos em Kwanza (KZ) por categoria.</p>
+</div>
+<!-- Chips / Filters -->
+<div class="flex gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+<button class="flex h-9 items-center justify-center px-4 rounded-lg bg-[#1c2e24] border border-[#28392f] hover:border-primary transition-all text-white text-sm font-medium whitespace-nowrap">
+                            Este Mês
+                        </button>
+<button class="flex h-9 items-center justify-center px-4 rounded-lg bg-primary text-[#102218] text-sm font-bold whitespace-nowrap shadow-[0_0_15px_rgba(19,236,109,0.3)]">
+                            Últimos 90 Dias
+                        </button>
+<button class="flex h-9 items-center justify-center px-4 rounded-lg bg-[#1c2e24] border border-[#28392f] hover:border-primary transition-all text-white text-sm font-medium whitespace-nowrap">
+                            2023
+                        </button>
+<button class="flex h-9 items-center justify-center px-4 rounded-lg bg-[#1c2e24] border border-[#28392f] hover:border-primary transition-all text-white text-sm font-medium whitespace-nowrap">
+<span class="material-symbols-outlined text-sm mr-1">calendar_month</span> Personalizado
+                        </button>
+</div>
+</div>
+<!-- Summary Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Total Expense Card -->
+<div class="bg-white dark:bg-[#1c2e24] p-5 rounded-xl border border-gray-100 dark:border-[#28392f] shadow-sm flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-white">payments</span>
+</div>
+<div>
+<p class="text-[#9db9a8] text-sm font-medium">Total Gasto (90d)</p>
+<h3 class="text-[#111418] dark:text-white text-2xl font-bold mt-1">KZ 854.200,00</h3>
+</div>
+<div class="flex items-center gap-2 mt-2">
+<div class="flex items-center text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded text-xs font-medium">
+<span class="material-symbols-outlined text-sm">trending_up</span> 12%
+                            </div>
+<span class="text-[#9db9a8] text-xs">vs período anterior</span>
+</div>
+</div>
+<!-- Top Category Card -->
+<div class="bg-white dark:bg-[#1c2e24] p-5 rounded-xl border border-gray-100 dark:border-[#28392f] shadow-sm flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">shopping_bag</span>
+</div>
+<div>
+<p class="text-[#9db9a8] text-sm font-medium">Maior Categoria</p>
+<h3 class="text-[#111418] dark:text-white text-2xl font-bold mt-1">Supermercado</h3>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-primary text-sm font-semibold">KZ 320.500,00</span>
+<span class="text-[#9db9a8] text-xs">37% do total</span>
+</div>
+</div>
+<!-- Daily Average Card -->
+<div class="bg-white dark:bg-[#1c2e24] p-5 rounded-xl border border-gray-100 dark:border-[#28392f] shadow-sm flex flex-col justify-between h-32 relative overflow-hidden">
+<div>
+<p class="text-[#9db9a8] text-sm font-medium">Média Diária</p>
+<h3 class="text-[#111418] dark:text-white text-2xl font-bold mt-1">KZ 9.490,00</h3>
+</div>
+<!-- Mini Sparkline visualization using flex bars -->
+<div class="flex items-end gap-1 h-8 mt-1 opacity-60">
+<div class="w-1 bg-primary/30 h-[40%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/50 h-[60%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/30 h-[30%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/70 h-[80%] rounded-t-sm"></div>
+<div class="w-1 bg-primary h-[100%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/60 h-[50%] rounded-t-sm"></div>
+<div class="w-1 bg-primary/40 h-[45%] rounded-t-sm"></div>
+</div>
+</div>
+</div>
+<!-- Charts Section -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Donut Chart Area -->
+<div class="bg-white dark:bg-[#1c2e24] p-6 rounded-xl border border-gray-100 dark:border-[#28392f] flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-[#111418] dark:text-white font-bold text-lg">Distribuição de Gastos</h3>
+<button class="text-[#9db9a8] hover:text-white">
+<span class="material-symbols-outlined">more_horiz</span>
+</button>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-8 justify-center flex-1">
+<!-- CSS-only SVG Donut Chart -->
+<div class="relative size-48 shrink-0">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 36 36">
+<!-- Background Circle -->
+<path class="text-[#28392f]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.8"></path>
+<!-- Segment 1: Supermarket (37%) -->
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="37, 100" stroke-width="3.8"></path>
+<!-- Segment 2: Housing (25%) - offset by 37 -->
+<path class="text-emerald-400/60" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="25, 100" stroke-dashoffset="-37" stroke-width="3.8"></path>
+<!-- Segment 3: Transport (20%) - offset by 62 -->
+<path class="text-teal-600/60" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="20, 100" stroke-dashoffset="-62" stroke-width="3.8"></path>
+<!-- Segment 4: Others (18%) - offset by 82 -->
+<path class="text-gray-600/50" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="18, 100" stroke-dashoffset="-82" stroke-width="3.8"></path>
+</svg>
+<!-- Center Text -->
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-xs text-[#9db9a8]">Total</span>
+<span class="text-white font-bold text-sm">854k</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex flex-col gap-3 w-full sm:w-auto">
+<div class="flex items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-primary"></div>
+<span class="text-sm text-[#9db9a8]">Supermercado</span>
+</div>
+<span class="text-sm font-bold text-white">37%</span>
+</div>
+<div class="flex items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-emerald-400/60"></div>
+<span class="text-sm text-[#9db9a8]">Habitação</span>
+</div>
+<span class="text-sm font-bold text-white">25%</span>
+</div>
+<div class="flex items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-teal-600/60"></div>
+<span class="text-sm text-[#9db9a8]">Transporte</span>
+</div>
+<span class="text-sm font-bold text-white">20%</span>
+</div>
+<div class="flex items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<div class="size-3 rounded-full bg-gray-600/50"></div>
+<span class="text-sm text-[#9db9a8]">Outros</span>
+</div>
+<span class="text-sm font-bold text-white">18%</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Bar Chart Area -->
+<div class="bg-white dark:bg-[#1c2e24] p-6 rounded-xl border border-gray-100 dark:border-[#28392f] flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-[#111418] dark:text-white font-bold text-lg">Evolução Mensal</h3>
+<div class="flex bg-[#28392f] rounded-lg p-0.5">
+<button class="px-3 py-1 bg-primary text-[#102218] rounded text-xs font-bold">Barras</button>
+<button class="px-3 py-1 text-[#9db9a8] hover:text-white text-xs font-medium">Linha</button>
+</div>
+</div>
+<div class="flex flex-col flex-1 justify-end gap-2 relative">
+<!-- Bars Container -->
+<div class="flex justify-between items-end h-48 w-full px-2">
+<!-- Bar Item -->
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="relative w-4 sm:w-8 bg-[#28392f] rounded-t-sm h-full flex items-end overflow-hidden">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-colors h-[40%]"></div>
+</div>
+<span class="text-xs text-[#9db9a8]">Mai</span>
+</div>
+<!-- Bar Item -->
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="relative w-4 sm:w-8 bg-[#28392f] rounded-t-sm h-full flex items-end overflow-hidden">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-colors h-[55%]"></div>
+</div>
+<span class="text-xs text-[#9db9a8]">Jun</span>
+</div>
+<!-- Bar Item -->
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="relative w-4 sm:w-8 bg-[#28392f] rounded-t-sm h-full flex items-end overflow-hidden">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-colors h-[45%]"></div>
+</div>
+<span class="text-xs text-[#9db9a8]">Jul</span>
+</div>
+<!-- Bar Item -->
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="relative w-4 sm:w-8 bg-[#28392f] rounded-t-sm h-full flex items-end overflow-hidden">
+<div class="w-full bg-primary/50 group-hover:bg-primary/70 transition-colors h-[70%]"></div>
+</div>
+<span class="text-xs text-[#9db9a8]">Ago</span>
+</div>
+<!-- Bar Item -->
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="relative w-4 sm:w-8 bg-[#28392f] rounded-t-sm h-full flex items-end overflow-hidden">
+<div class="w-full bg-primary group-hover:bg-primary transition-colors h-[90%] shadow-[0_0_10px_rgba(19,236,109,0.2)]"></div>
+</div>
+<span class="text-xs font-bold text-primary">Set</span>
+</div>
+<!-- Bar Item -->
+<div class="flex flex-col items-center gap-2 group w-full">
+<div class="relative w-4 sm:w-8 bg-[#28392f] rounded-t-sm h-full flex items-end overflow-hidden">
+<div class="w-full bg-primary/40 group-hover:bg-primary/60 transition-colors h-[65%]"></div>
+</div>
+<span class="text-xs text-[#9db9a8]">Out</span>
+</div>
+</div>
+<!-- Dotted Lines for Grid -->
+<div class="absolute inset-0 pointer-events-none flex flex-col justify-between h-48 pb-6">
+<div class="border-t border-dashed border-[#28392f] w-full"></div>
+<div class="border-t border-dashed border-[#28392f] w-full"></div>
+<div class="border-t border-dashed border-[#28392f] w-full"></div>
+<div class="border-t border-dashed border-[#28392f] w-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Categories List -->
+<div class="bg-white dark:bg-[#1c2e24] rounded-xl border border-gray-100 dark:border-[#28392f] flex flex-col overflow-hidden mb-10">
+<div class="p-6 border-b border-[#28392f] flex justify-between items-center">
+<h3 class="text-[#111418] dark:text-white font-bold text-lg">Detalhamento por Categoria</h3>
+<button class="flex items-center gap-2 text-sm text-primary font-medium hover:text-white transition-colors">
+                            Exportar Relatório <span class="material-symbols-outlined text-lg">download</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#111814] text-[#9db9a8] text-xs uppercase tracking-wider">
+<th class="p-4 font-medium">Categoria</th>
+<th class="p-4 font-medium">Percentual</th>
+<th class="p-4 font-medium text-right">Transações</th>
+<th class="p-4 font-medium text-right">Valor (KZ)</th>
+</tr>
+</thead>
+<tbody class="text-sm divide-y divide-[#28392f]">
+<!-- Row 1 -->
+<tr class="group hover:bg-[#28392f]/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-[#28392f] flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-[#102218] transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+</div>
+<div>
+<p class="text-white font-medium">Supermercado</p>
+<p class="text-[#9db9a8] text-xs">Compras mensais e diárias</p>
+</div>
+</div>
+</td>
+<td class="p-4 w-1/4">
+<div class="flex items-center gap-3">
+<div class="flex-1 bg-[#111814] h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[37%] rounded-full"></div>
+</div>
+<span class="text-white font-medium">37%</span>
+</div>
+</td>
+<td class="p-4 text-right text-[#9db9a8]">42</td>
+<td class="p-4 text-right text-white font-bold">320.500,00</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-[#28392f]/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-[#28392f] flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-[#102218] transition-colors">
+<span class="material-symbols-outlined">home</span>
+</div>
+<div>
+<p class="text-white font-medium">Habitação</p>
+<p class="text-[#9db9a8] text-xs">Aluguel, Energia, Água</p>
+</div>
+</div>
+</td>
+<td class="p-4 w-1/4">
+<div class="flex items-center gap-3">
+<div class="flex-1 bg-[#111814] h-2 rounded-full overflow-hidden">
+<div class="bg-emerald-400 h-full w-[25%] rounded-full"></div>
+</div>
+<span class="text-white font-medium">25%</span>
+</div>
+</td>
+<td class="p-4 text-right text-[#9db9a8]">5</td>
+<td class="p-4 text-right text-white font-bold">213.550,00</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-[#28392f]/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-[#28392f] flex items-center justify-center text-teal-500 group-hover:bg-teal-500 group-hover:text-[#102218] transition-colors">
+<span class="material-symbols-outlined">directions_car</span>
+</div>
+<div>
+<p class="text-white font-medium">Transporte</p>
+<p class="text-[#9db9a8] text-xs">Combustível, Táxi, Manutenção</p>
+</div>
+</div>
+</td>
+<td class="p-4 w-1/4">
+<div class="flex items-center gap-3">
+<div class="flex-1 bg-[#111814] h-2 rounded-full overflow-hidden">
+<div class="bg-teal-500 h-full w-[20%] rounded-full"></div>
+</div>
+<span class="text-white font-medium">20%</span>
+</div>
+</td>
+<td class="p-4 text-right text-[#9db9a8]">28</td>
+<td class="p-4 text-right text-white font-bold">170.840,00</td>
+</tr>
+<!-- Row 4 -->
+<tr class="group hover:bg-[#28392f]/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-[#28392f] flex items-center justify-center text-orange-400 group-hover:bg-orange-400 group-hover:text-[#102218] transition-colors">
+<span class="material-symbols-outlined">restaurant</span>
+</div>
+<div>
+<p class="text-white font-medium">Restaurantes</p>
+<p class="text-[#9db9a8] text-xs">Jantares, Lanches</p>
+</div>
+</div>
+</td>
+<td class="p-4 w-1/4">
+<div class="flex items-center gap-3">
+<div class="flex-1 bg-[#111814] h-2 rounded-full overflow-hidden">
+<div class="bg-orange-400 h-full w-[10%] rounded-full"></div>
+</div>
+<span class="text-white font-medium">10%</span>
+</div>
+</td>
+<td class="p-4 text-right text-[#9db9a8]">12</td>
+<td class="p-4 text-right text-white font-bold">85.420,00</td>
+</tr>
+<!-- Row 5 -->
+<tr class="group hover:bg-[#28392f]/50 transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-lg bg-[#28392f] flex items-center justify-center text-purple-400 group-hover:bg-purple-400 group-hover:text-[#102218] transition-colors">
+<span class="material-symbols-outlined">movie</span>
+</div>
+<div>
+<p class="text-white font-medium">Lazer &amp; Entretenimento</p>
+<p class="text-[#9db9a8] text-xs">Cinema, Streaming, Jogos</p>
+</div>
+</div>
+</td>
+<td class="p-4 w-1/4">
+<div class="flex items-center gap-3">
+<div class="flex-1 bg-[#111814] h-2 rounded-full overflow-hidden">
+<div class="bg-purple-400 h-full w-[8%] rounded-full"></div>
+</div>
+<span class="text-white font-medium">8%</span>
+</div>
+</td>
+<td class="p-4 text-right text-[#9db9a8]">8</td>
+<td class="p-4 text-right text-white font-bold">63.890,00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-[#28392f] flex justify-center">
+<button class="text-[#9db9a8] hover:text-white text-sm font-medium transition-colors">Ver todas as categorias</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

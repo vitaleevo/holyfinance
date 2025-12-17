@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HolyFinanças - Acompanhamento de Metas</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Noto+Sans:wght@300..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "primary-hover": "#0fb354",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                        "card-dark": "#1c2720",
+                        "card-border": "#28392f",
+                        "text-secondary": "#9db9a8",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display min-h-screen flex flex-col overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-card-border px-10 py-4 bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined !text-3xl">savings</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">HolyFinanças</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-text-secondary flex border-none bg-card-border items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-card-border focus:border-none h-full placeholder:text-text-secondary px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Buscar metas, transações..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden lg:flex items-center gap-9">
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Transações</a>
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Orçamento</a>
+<a class="text-primary text-sm font-bold leading-normal border-b-2 border-primary pb-0.5" href="#">Metas</a>
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Relatórios</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-text-secondary hover:text-white">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-card-border cursor-pointer" data-alt="User profile picture showing a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAqASlog0mMN_HEECa9TreI6tb9Rk3OkmXHbN7pxe0Zs_keh89WXap-06LQKnpEXNvgE6lH1jwzPqJQ3EDONNm-1vayI1NLotXHgKOwwBk81b5AMYIB1TCPLH0d7Ewbsq5Fac_brkZKoxrgocf_H8peKWkvNwf2eNNd0XTwrwpQDEo552spvi84MNf-s8QcU_OTLu3fM8wn0md0FtRVlqC7Ut9q7yAe4c_Z_u1qI9xrOUBjVfjR6qH8avAH0KyRnxmOncwpT_0XYrTB");'></div>
+</div>
+</div>
+</header>
+<main class="flex-1 px-4 md:px-10 lg:px-40 py-8 w-full max-w-[1440px] mx-auto">
+<!-- Page Header -->
+<div class="flex flex-wrap justify-between items-end gap-4 mb-8">
+<div class="flex flex-col gap-2">
+<h1 class="text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Acompanhamento de Metas</h1>
+<p class="text-text-secondary text-base font-normal leading-normal max-w-2xl">Visualize o progresso dos seus sonhos financeiros e gerencie seus aportes em Kwanza (KZ).</p>
+</div>
+<button class="flex items-center justify-center gap-2 rounded-lg h-12 px-6 bg-primary hover:bg-primary-hover transition-colors text-background-dark text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="truncate">Nova Meta</span>
+</button>
+</div>
+<!-- Stats Overview -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-card-dark border border-card-border shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-text-secondary text-sm font-medium uppercase tracking-wider">Total Economizado</p>
+<span class="bg-[#1f3b2d] text-primary text-xs font-bold px-2 py-1 rounded">+12% este mês</span>
+</div>
+<p class="text-white text-3xl font-bold leading-tight mt-1">KZ 2.450.000</p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-card-dark border border-card-border shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-text-secondary text-sm font-medium uppercase tracking-wider">Metas Ativas</p>
+<span class="material-symbols-outlined text-text-secondary">target</span>
+</div>
+<p class="text-white text-3xl font-bold leading-tight mt-1">4 <span class="text-lg text-text-secondary font-medium">em andamento</span></p>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-card-dark border border-card-border shadow-sm">
+<div class="flex justify-between items-start">
+<p class="text-text-secondary text-sm font-medium uppercase tracking-wider">Próxima Conclusão</p>
+<span class="material-symbols-outlined text-primary">event_upcoming</span>
+</div>
+<p class="text-white text-2xl font-bold leading-tight mt-1 truncate">Viagem (1 mês)</p>
+<div class="w-full bg-card-border h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 92%"></div>
+</div>
+</div>
+</div>
+<!-- Main Content Area: Grid + Sidebar -->
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Left Column: Filters and Cards -->
+<div class="flex-1 flex flex-col gap-6">
+<!-- Filters -->
+<div class="flex overflow-x-auto pb-2 gap-3 no-scrollbar">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary text-background-dark px-4 font-bold text-sm transition-colors">
+                        Todas
+                    </button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-card-dark border border-card-border hover:border-primary/50 text-white px-4 text-sm font-medium transition-colors">
+                        Curto Prazo
+                    </button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-card-dark border border-card-border hover:border-primary/50 text-white px-4 text-sm font-medium transition-colors">
+                        Longo Prazo
+                    </button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-card-dark border border-card-border hover:border-primary/50 text-white px-4 text-sm font-medium transition-colors">
+                        Concluídas
+                    </button>
+</div>
+<!-- Goals Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4">
+<!-- Goal Card 1 -->
+<div class="flex flex-col gap-4 rounded-xl border border-card-border bg-card-dark p-5 hover:border-primary/30 transition-all group">
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-lg bg-[#28392f] flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined">flight</span>
+</div>
+<div>
+<h3 class="text-white text-lg font-bold leading-tight">Viagem para Europa</h3>
+<p class="text-text-secondary text-sm mt-1">Lazer</p>
+</div>
+</div>
+<button class="text-text-secondary hover:text-white p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex flex-col gap-2 mt-2">
+<div class="flex justify-between items-end">
+<span class="text-3xl font-bold text-white tracking-tight">65%</span>
+<div class="text-right">
+<p class="text-xs text-text-secondary uppercase">Valor Atual</p>
+<p class="text-white font-medium">KZ 650.000 <span class="text-text-secondary">/ 1.000.000</span></p>
+</div>
+</div>
+<div class="w-full bg-card-border h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500 ease-out" style="width: 65%"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-card-border mt-1">
+<div class="flex items-center gap-2 text-text-secondary text-sm">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span>4 meses restantes</span>
+</div>
+<button class="text-primary hover:text-white hover:bg-primary/20 px-3 py-1.5 rounded-md text-sm font-bold transition-colors">
+                                + Adicionar Valor
+                            </button>
+</div>
+</div>
+<!-- Goal Card 2 -->
+<div class="flex flex-col gap-4 rounded-xl border border-card-border bg-card-dark p-5 hover:border-primary/30 transition-all group">
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-lg bg-[#28392f] flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div>
+<h3 class="text-white text-lg font-bold leading-tight">Fundo de Emergência</h3>
+<p class="text-text-secondary text-sm mt-1">Segurança</p>
+</div>
+</div>
+<button class="text-text-secondary hover:text-white p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex flex-col gap-2 mt-2">
+<div class="flex justify-between items-end">
+<span class="text-3xl font-bold text-white tracking-tight">25%</span>
+<div class="text-right">
+<p class="text-xs text-text-secondary uppercase">Valor Atual</p>
+<p class="text-white font-medium">KZ 500.000 <span class="text-text-secondary">/ 2.000.000</span></p>
+</div>
+</div>
+<div class="w-full bg-card-border h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500 ease-out" style="width: 25%"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-card-border mt-1">
+<div class="flex items-center gap-2 text-text-secondary text-sm">
+<span class="material-symbols-outlined text-[18px]">all_inclusive</span>
+<span>Permanente</span>
+</div>
+<button class="text-primary hover:text-white hover:bg-primary/20 px-3 py-1.5 rounded-md text-sm font-bold transition-colors">
+                                + Adicionar Valor
+                            </button>
+</div>
+</div>
+<!-- Goal Card 3 -->
+<div class="flex flex-col gap-4 rounded-xl border border-card-border bg-card-dark p-5 hover:border-primary/30 transition-all group">
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-lg bg-[#28392f] flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined">directions_car</span>
+</div>
+<div>
+<h3 class="text-white text-lg font-bold leading-tight">Carro Novo</h3>
+<p class="text-text-secondary text-sm mt-1">Bens Materiais</p>
+</div>
+</div>
+<button class="text-text-secondary hover:text-white p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex flex-col gap-2 mt-2">
+<div class="flex justify-between items-end">
+<span class="text-3xl font-bold text-white tracking-tight">40%</span>
+<div class="text-right">
+<p class="text-xs text-text-secondary uppercase">Valor Atual</p>
+<p class="text-white font-medium">KZ 1.200.000 <span class="text-text-secondary">/ 3.000.000</span></p>
+</div>
+</div>
+<div class="w-full bg-card-border h-3 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full transition-all duration-500 ease-out" style="width: 40%"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-card-border mt-1">
+<div class="flex items-center gap-2 text-text-secondary text-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+<span>12 meses restantes</span>
+</div>
+<button class="text-primary hover:text-white hover:bg-primary/20 px-3 py-1.5 rounded-md text-sm font-bold transition-colors">
+                                + Adicionar Valor
+                            </button>
+</div>
+</div>
+<!-- Goal Card 4 -->
+<div class="flex flex-col gap-4 rounded-xl border border-card-border bg-card-dark p-5 hover:border-primary/30 transition-all group">
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-lg bg-[#28392f] flex items-center justify-center text-white shrink-0">
+<span class="material-symbols-outlined">favorite</span>
+</div>
+<div>
+<h3 class="text-white text-lg font-bold leading-tight">Casamento</h3>
+<p class="text-text-secondary text-sm mt-1">Evento</p>
+</div>
+</div>
+<button class="text-text-secondary hover:text-white p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex flex-col gap-2 mt-2">
+<div class="flex justify-between items-end">
+<span class="text-3xl font-bold text-white tracking-tight">10%</span>
+<div class="text-right">
+<p class="text-xs text-text-secondary uppercase">Valor Atual</p>
+<p class="text-white font-medium">KZ 100.000 <span class="text-text-secondary">/ 1.000.000</span></p>
+</div>
+</div>
+<div class="w-full bg-card-border h-3 rounded-full overflow-hidden">
+<div class="bg-red-500 h-full rounded-full transition-all duration-500 ease-out" style="width: 10%"></div>
+</div>
+<p class="text-xs text-red-400 mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                                Atrasado: Você deveria ter KZ 150.000
+                            </p>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-card-border mt-1">
+<div class="flex items-center gap-2 text-text-secondary text-sm">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span>8 meses restantes</span>
+</div>
+<button class="text-primary hover:text-white hover:bg-primary/20 px-3 py-1.5 rounded-md text-sm font-bold transition-colors">
+                                + Adicionar Valor
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Sidebar: Suggestions -->
+<div class="w-full lg:w-80 shrink-0 flex flex-col gap-6">
+<!-- Boost Container -->
+<div class="rounded-xl bg-card-dark border border-card-border overflow-hidden">
+<div class="bg-primary/10 p-4 border-b border-card-border">
+<div class="flex items-center gap-2 text-primary mb-1">
+<span class="material-symbols-outlined">bolt</span>
+<h3 class="text-base font-bold uppercase tracking-wide">Acelere suas metas</h3>
+</div>
+<p class="text-xs text-text-secondary">Sugestões inteligentes da HolyFinanças</p>
+</div>
+<div class="p-4 flex flex-col gap-4">
+<!-- Suggestion Item 1 -->
+<div class="flex gap-3 items-start">
+<div class="mt-0.5 size-2 rounded-full bg-primary shrink-0"></div>
+<div class="flex flex-col gap-1">
+<p class="text-sm text-white font-medium leading-snug">Corte 10% em "Restaurantes"</p>
+<p class="text-xs text-text-secondary leading-normal">
+                                    Se você economizar KZ 15.000 a mais, pode atingir a meta <span class="text-white font-semibold">Viagem</span> 2 semanas antes.
+                                </p>
+</div>
+</div>
+<div class="h-px bg-card-border w-full"></div>
+<!-- Suggestion Item 2 -->
+<div class="flex gap-3 items-start">
+<div class="mt-0.5 size-2 rounded-full bg-primary shrink-0"></div>
+<div class="flex flex-col gap-1">
+<p class="text-sm text-white font-medium leading-snug">Investir Bônus Salarial</p>
+<p class="text-xs text-text-secondary leading-normal">
+                                    Aporte KZ 50.000 extra no <span class="text-white font-semibold">Carro Novo</span> para reduzir 1 mês do prazo.
+                                </p>
+<button class="text-xs text-primary font-bold text-left mt-1 hover:underline">Simular Aporte</button>
+</div>
+</div>
+</div>
+<div class="p-3 bg-[#16201a] border-t border-card-border text-center">
+<a class="text-xs text-text-secondary hover:text-white transition-colors" href="#">Ver todas as dicas</a>
+</div>
+</div>
+<!-- Motivation Banner -->
+<div class="relative rounded-xl overflow-hidden min-h-[160px] flex flex-col justify-end p-5 bg-gradient-to-t from-black/90 to-transparent">
+<div class="absolute inset-0 bg-cover bg-center -z-10 opacity-60" data-alt="Abstract rising graph line pattern on dark background" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAUpETWkFfiokLS-LzF5j94XucltO-6MxEQfqQZqmEH7meileJwDo5hFDLSxPkO3JiebZmIAElbVVwPhO9DqTwVjIxurFawjiO_79BNENqEtFMZl0UkGBJkICxuX53f9Ni4T2BktyCm_TgdyKEmeqPeCWY1pl4OglaHvC9ZyGWxWNliLdsh1ZexwshfxgkH-9kCJJLmYTX18pEEzmLBO1KmRLAdspob49-BN4Qg8nIJdWAkF1UOkO1sp8Z0JchO9SYP7W_yFSM2g74R");'></div>
+<h3 class="text-white font-bold text-lg mb-1">Mantenha o foco!</h3>
+<p class="text-sm text-gray-300 mb-3">Você já completou 2 metas este ano.</p>
+<button class="bg-white text-black text-xs font-bold py-2 px-4 rounded shadow hover:bg-gray-100 transition-colors self-start">Ver Histórico</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

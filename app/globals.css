@@ -1,0 +1,295 @@
+@import "tailwindcss";
+
+/* Custom theme configuration for Tailwind v4 */
+@theme {
+  /* Colors */
+  --color-primary: #13ec6d;
+  --color-primary-dark: #0ea64c;
+  --color-background-light: #f0f2f1;
+  --color-background-dark: #111814;
+  --color-surface-dark: #1a2620;
+  --color-surface-border: #28392f;
+  --color-text-secondary: #9db9a8;
+  --color-danger: #fa5538;
+  --color-success: #0bda43;
+
+  /* Light mode surface colors */
+  --color-surface-light: #ffffff;
+  --color-surface-border-light: #d1d5db;
+  --color-text-secondary-light: #6b7280;
+
+  /* Font families */
+  --font-display: var(--font-manrope), sans-serif;
+  --font-body: var(--font-noto), sans-serif;
+}
+
+/* ============================================
+   CSS Variables - Light Mode (Default)
+   ============================================ */
+:root {
+  /* Light mode - subtle gray background, white cards */
+  --background: #e8ecea;
+  --foreground: #111814;
+  --surface: #ffffff;
+  --surface-secondary: #f5f7f6;
+  --surface-hover: #f0f2f1;
+  --border: #d1d5db;
+  --border-light: #e5e7eb;
+  --text-primary: #111814;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
+
+  /* Shadows for light mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+/* ============================================
+   CSS Variables - Dark Mode
+   ============================================ */
+.dark {
+  --background: #111814;
+  --foreground: #ffffff;
+  --surface: #1a2620;
+  --surface-secondary: #1f2d26;
+  --surface-hover: #28392f;
+  --border: #28392f;
+  --border-light: #1f2d26;
+  --text-primary: #ffffff;
+  --text-secondary: #9db9a8;
+  --text-muted: #6b8f7a;
+
+  /* Shadows for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+}
+
+/* ============================================
+   Base body styling
+   ============================================ */
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ============================================
+   Theme-adaptive class overrides
+   ============================================ */
+
+/* Background classes */
+.bg-background-dark {
+  background-color: var(--background) !important;
+}
+
+.bg-surface-dark {
+  background-color: var(--surface) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Border classes */
+.border-surface-border {
+  border-color: var(--border) !important;
+}
+
+/* Text classes */
+.text-white {
+  color: var(--text-primary) !important;
+}
+
+.text-text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+/* ============================================
+   Light Mode Specific Styles
+   ============================================ */
+:root:not(.dark) {
+
+  /* Cards get subtle shadows and white background */
+  .bg-surface-dark {
+    background-color: #ffffff !important;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+    border: 1px solid #e5e7eb;
+  }
+
+  /* Stronger borders for light mode */
+  .border-surface-border {
+    border-color: #d1d5db !important;
+  }
+
+  /* Sidebar in light mode */
+  aside.bg-background-dark {
+    background-color: #ffffff !important;
+    border-right-color: #e5e7eb !important;
+  }
+
+  /* Primary button text */
+  .text-background-dark {
+    color: #111814 !important;
+  }
+
+  /* Inputs and selects */
+  input,
+  select,
+  textarea {
+    background-color: #f9fafb !important;
+    border-color: #d1d5db !important;
+    color: #111814 !important;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #13ec6d !important;
+    box-shadow: 0 0 0 2px rgba(19, 236, 109, 0.1);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af !important;
+  }
+
+  /* Table header background */
+  thead tr {
+    background-color: #f3f4f6 !important;
+  }
+
+  /* Hover states */
+  .hover\:bg-surface-dark\/50:hover,
+  .hover\:bg-surface-border:hover {
+    background-color: #f3f4f6 !important;
+  }
+
+  /* Calendar picker */
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: none;
+  }
+
+  /* Charts */
+  .recharts-cartesian-grid line {
+    stroke: #e5e7eb;
+  }
+}
+
+/* ============================================
+   Dark Mode Specific Styles  
+   ============================================ */
+.dark {
+
+  input,
+  select,
+  textarea {
+    background-color: #111814;
+    border-color: #28392f;
+    color: #ffffff;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #6b8f7a;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+}
+
+/* ============================================
+   Utility classes
+   ============================================ */
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* ============================================
+   Custom scrollbar
+   ============================================ */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ============================================
+   Smooth transitions
+   ============================================ */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+*:where([class*="animate-"]),
+*:where([class*="transition-none"]) {
+  transition: none;
+}
+
+/* ============================================
+   Material Icons
+   ============================================ */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.icon-filled {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+/* ============================================
+   Form elements
+   ============================================ */
+select {
+  background-image: none;
+}
+
+/* Number input - hide spinners */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

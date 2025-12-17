@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Central de Notificações - HolyFinanças</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#111814",
+                        "surface-dark": "#1a2620",
+                        "border-dark": "#28392f",
+                        "text-secondary": "#9db9a8",
+                        "danger": "#ef4444",
+                        "warning": "#f59e0b",
+                        "info": "#3b82f6",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better aesthetics in dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111814; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3c5245; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-gray-200 dark:border-b-border-dark px-10 py-3 bg-background-light dark:bg-background-dark">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">HolyFinanças</h2>
+</div>
+<nav class="hidden lg:flex items-center gap-9">
+<a class="text-slate-600 dark:text-text-secondary text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-text-secondary text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Transações</a>
+<a class="text-slate-600 dark:text-text-secondary text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Orçamento</a>
+<a class="text-slate-600 dark:text-text-secondary text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Relatórios</a>
+<a class="text-slate-600 dark:text-text-secondary text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Metas</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-text-secondary">search</span>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-1 focus:ring-primary border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark h-full placeholder:text-slate-400 dark:placeholder:text-text-secondary pl-10 pr-4 text-sm font-normal leading-normal transition-all" placeholder="Buscar..." value=""/>
+</div>
+</label>
+<div class="flex items-center gap-4">
+<button class="relative text-slate-600 dark:text-text-secondary hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 size-2.5 bg-primary rounded-full border-2 border-background-light dark:border-background-dark"></span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-green-400 text-background-dark text-sm font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20">
+<span class="truncate">Nova Transação</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-border-dark cursor-pointer" data-alt="User profile picture showing a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAm7IQEgIJxSwyeD4JDImIPud4qNcJlyOHWTViryDqLPuz7KmGqeD6FDVEEKwrFMVLmfFtlSD3ApeLIsqz-st6zegnuNFbtAmoGVmPIPGgBmnwNwaCe0hEvumSGuS1qdWQ0jPJoY0vFyYwXBxV9XIzHe6TfjAGdW_0oOfRs7ZL0SN00Lx2x4Yqrj-A_HZHbKbGCXbBXr_QBqS6szDJJ-pK4bbu-Z8LeJJR-oj_5-YjzZNGgMz38kAI6QanhvJrMBIPOdjyN8psZ8tNi");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<div class="flex flex-1 w-full max-w-[1440px] mx-auto">
+<!-- Sidebar Navigation -->
+<aside class="hidden lg:flex flex-col w-72 border-r border-gray-200 dark:border-border-dark p-6 sticky top-[73px] h-[calc(100vh-73px)]">
+<div class="flex flex-col gap-6">
+<div>
+<h1 class="text-slate-900 dark:text-white text-lg font-bold leading-tight mb-1">Filtros</h1>
+<p class="text-slate-500 dark:text-text-secondary text-sm">Categorias de alerta</p>
+</div>
+<nav class="flex flex-col gap-1">
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 dark:bg-surface-dark border border-transparent dark:border-border-dark text-primary dark:text-white group transition-all hover:bg-primary/20">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">inbox</span>
+<span class="text-sm font-bold flex-1 text-left">Todas</span>
+<span class="bg-primary text-background-dark text-xs font-bold px-2 py-0.5 rounded-full">12</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-surface-dark transition-all group">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">mark_email_unread</span>
+<span class="text-sm font-medium flex-1 text-left group-hover:text-slate-900 dark:group-hover:text-white">Não lidas</span>
+<span class="bg-gray-200 dark:bg-border-dark text-slate-600 dark:text-text-secondary text-xs font-bold px-2 py-0.5 rounded-full group-hover:text-white">5</span>
+</button>
+<div class="h-px bg-gray-200 dark:bg-border-dark my-2"></div>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-surface-dark transition-all group">
+<span class="material-symbols-outlined text-danger group-hover:scale-110 transition-transform">warning</span>
+<span class="text-sm font-medium text-left group-hover:text-slate-900 dark:group-hover:text-white">Urgente</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-surface-dark transition-all group">
+<span class="material-symbols-outlined text-warning group-hover:scale-110 transition-transform">receipt_long</span>
+<span class="text-sm font-medium text-left group-hover:text-slate-900 dark:group-hover:text-white">Contas a Pagar</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-surface-dark transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">trending_up</span>
+<span class="text-sm font-medium text-left group-hover:text-slate-900 dark:group-hover:text-white">Recebimentos</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-surface-dark transition-all group">
+<span class="material-symbols-outlined text-purple-400 group-hover:scale-110 transition-transform">emoji_events</span>
+<span class="text-sm font-medium text-left group-hover:text-slate-900 dark:group-hover:text-white">Conquistas</span>
+</button>
+</nav>
+<div class="mt-auto bg-gradient-to-br from-surface-dark to-border-dark rounded-xl p-4 border border-border-dark relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/20 rounded-full blur-2xl"></div>
+<p class="text-white text-sm font-bold mb-1 relative z-10">Mantenha o foco!</p>
+<p class="text-text-secondary text-xs mb-3 relative z-10">Você completou 80% das suas metas este mês.</p>
+<div class="w-full bg-black/30 rounded-full h-1.5 mb-1 relative z-10">
+<div class="bg-primary h-1.5 rounded-full w-[80%]"></div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0">
+<!-- Page Header -->
+<div class="px-6 py-8 md:px-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<h1 class="text-3xl md:text-4xl font-black tracking-[-0.033em] text-slate-900 dark:text-white mb-2">Central de Notificações</h1>
+<p class="text-slate-500 dark:text-text-secondary text-base">Gerencie seus alertas financeiros e mantenha suas contas em dia.</p>
+</div>
+<!-- Toolbar for mobile/tablet responsive actions -->
+<div class="flex items-center gap-2 self-start md:self-auto">
+<button class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-text-secondary hover:text-slate-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined text-[20px]">done_all</span>
+<span class="hidden sm:inline">Marcar todas como lidas</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-text-secondary hover:text-danger hover:bg-danger/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete_sweep</span>
+<span class="hidden sm:inline">Limpar lidas</span>
+</button>
+</div>
+</div>
+<!-- Notifications List -->
+<div class="flex flex-col gap-3">
+<!-- Date Separator -->
+<div class="flex items-center gap-4 py-2">
+<p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-text-secondary">Hoje</p>
+<div class="h-px flex-1 bg-gray-200 dark:bg-border-dark"></div>
+</div>
+<!-- Item 1: Urgent Bill (Unread) -->
+<div class="group relative flex flex-col sm:flex-row gap-4 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-[#202f27] border-l-4 border-l-danger border-y border-r border-gray-200 dark:border-border-dark dark:border-l-danger p-4 rounded-r-lg shadow-sm transition-all duration-200">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-danger/10 text-danger shrink-0 size-12">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex flex-col justify-center gap-1">
+<div class="flex items-center gap-2">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-tight">Conta de Luz Vencida</p>
+<span class="size-2 bg-danger rounded-full animate-pulse"></span>
+</div>
+<p class="text-slate-500 dark:text-text-secondary text-sm">Vencimento: <strong>Hoje</strong> | Valor: R$ 150,00</p>
+<p class="text-slate-400 dark:text-text-secondary/60 text-xs mt-1">2 horas atrás</p>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+<button class="flex-1 sm:flex-none h-9 px-4 rounded-lg bg-danger text-white text-sm font-bold hover:bg-red-600 transition-colors shadow-lg shadow-danger/20">
+                                Pagar Agora
+                            </button>
+<button class="size-9 flex items-center justify-center rounded-lg text-slate-400 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-border-dark hover:text-slate-900 dark:hover:text-white transition-colors" title="Marcar como lida">
+<span class="material-symbols-outlined text-[20px]">check</span>
+</button>
+</div>
+</div>
+<!-- Item 2: Budget Warning (Unread) -->
+<div class="group relative flex flex-col sm:flex-row gap-4 bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-[#202f27] border-l-4 border-l-warning border-y border-r border-gray-200 dark:border-border-dark dark:border-l-warning p-4 rounded-r-lg shadow-sm transition-all duration-200">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-warning/10 text-warning shrink-0 size-12">
+<span class="material-symbols-outlined">pie_chart</span>
+</div>
+<div class="flex flex-col justify-center gap-1">
+<div class="flex items-center gap-2">
+<p class="text-slate-900 dark:text-white text-base font-bold leading-tight">Orçamento de Lazer excedido</p>
+<span class="size-2 bg-primary rounded-full"></span>
+</div>
+<p class="text-slate-500 dark:text-text-secondary text-sm">Você atingiu 90% do seu limite mensal de R$ 500,00.</p>
+<p class="text-slate-400 dark:text-text-secondary/60 text-xs mt-1">4 horas atrás</p>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+<button class="flex-1 sm:flex-none h-9 px-4 rounded-lg border border-gray-200 dark:border-border-dark bg-transparent text-slate-900 dark:text-white text-sm font-medium hover:bg-gray-100 dark:hover:bg-border-dark transition-colors">
+                                Ver Detalhes
+                            </button>
+<button class="size-9 flex items-center justify-center rounded-lg text-slate-400 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-border-dark hover:text-slate-900 dark:hover:text-white transition-colors" title="Marcar como lida">
+<span class="material-symbols-outlined text-[20px]">check</span>
+</button>
+</div>
+</div>
+<!-- Item 3: Income (Read) -->
+<div class="group relative flex flex-col sm:flex-row gap-4 bg-gray-50 dark:bg-background-dark/50 hover:bg-white dark:hover:bg-surface-dark border border-gray-200 dark:border-border-dark p-4 rounded-lg transition-all duration-200 opacity-80 hover:opacity-100">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0 size-12">
+<span class="material-symbols-outlined">attach_money</span>
+</div>
+<div class="flex flex-col justify-center gap-1">
+<p class="text-slate-700 dark:text-gray-200 text-base font-medium leading-tight">Salário Recebido</p>
+<p class="text-slate-500 dark:text-text-secondary text-sm">Transferência de EMPRESA LTDA no valor de R$ 5.400,00 confirmada.</p>
+<p class="text-slate-400 dark:text-text-secondary/60 text-xs mt-1">8 horas atrás</p>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+<!-- Actions hidden for read items until hover, or kept minimal -->
+<button class="size-9 flex items-center justify-center rounded-lg text-slate-400 dark:text-text-secondary hover:text-danger hover:bg-danger/10 transition-colors ml-auto" title="Excluir notificação">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Date Separator -->
+<div class="flex items-center gap-4 py-2 mt-4">
+<p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-text-secondary">Ontem</p>
+<div class="h-px flex-1 bg-gray-200 dark:bg-border-dark"></div>
+</div>
+<!-- Item 4: Achievement (Read) -->
+<div class="group relative flex flex-col sm:flex-row gap-4 bg-gray-50 dark:bg-background-dark/50 hover:bg-white dark:hover:bg-surface-dark border border-gray-200 dark:border-border-dark p-4 rounded-lg transition-all duration-200 opacity-80 hover:opacity-100">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-purple-500/10 text-purple-400 shrink-0 size-12">
+<span class="material-symbols-outlined">trophy</span>
+</div>
+<div class="flex flex-col justify-center gap-1">
+<p class="text-slate-700 dark:text-gray-200 text-base font-medium leading-tight">Novo Marco Alcançado!</p>
+<p class="text-slate-500 dark:text-text-secondary text-sm">Parabéns! Você atingiu R$ 10.000,00 em economias.</p>
+<p class="text-slate-400 dark:text-text-secondary/60 text-xs mt-1">Ontem às 14:30</p>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+<button class="size-9 flex items-center justify-center rounded-lg text-slate-400 dark:text-text-secondary hover:text-danger hover:bg-danger/10 transition-colors ml-auto" title="Excluir notificação">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<!-- Item 5: Investment Reminder (Read) -->
+<div class="group relative flex flex-col sm:flex-row gap-4 bg-gray-50 dark:bg-background-dark/50 hover:bg-white dark:hover:bg-surface-dark border border-gray-200 dark:border-border-dark p-4 rounded-lg transition-all duration-200 opacity-80 hover:opacity-100">
+<div class="flex items-start gap-4 flex-1">
+<div class="flex items-center justify-center rounded-xl bg-info/10 text-info shrink-0 size-12">
+<span class="material-symbols-outlined">calendar_clock</span>
+</div>
+<div class="flex flex-col justify-center gap-1">
+<p class="text-slate-700 dark:text-gray-200 text-base font-medium leading-tight">Lembrete de Aporte</p>
+<p class="text-slate-500 dark:text-text-secondary text-sm">Dia programado para investir no Tesouro Direto.</p>
+<p class="text-slate-400 dark:text-text-secondary/60 text-xs mt-1">Ontem às 09:00</p>
+</div>
+</div>
+<div class="flex items-center gap-2 self-end sm:self-center shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+<button class="size-9 flex items-center justify-center rounded-lg text-slate-400 dark:text-text-secondary hover:text-danger hover:bg-danger/10 transition-colors ml-auto" title="Excluir notificação">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+</button>
+</div>
+</div>
+<div class="flex justify-center mt-8 mb-12">
+<button class="text-slate-500 dark:text-text-secondary text-sm font-medium hover:text-primary transition-colors flex items-center gap-2">
+                            Carregar mais notificações
+                            <span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

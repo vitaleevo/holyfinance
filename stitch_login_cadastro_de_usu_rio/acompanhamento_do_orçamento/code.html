@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Acompanhamento do Orçamento - HolyFinanças</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#13ec6d",
+            "background-light": "#f6f8f7",
+            "background-dark": "#102218",
+            "surface-dark": "#1c2e24",
+            "surface-darker": "#111814",
+            "border-dark": "#28392f",
+            "text-secondary": "#9db9a8",
+          },
+          fontFamily: {
+            "display": ["Manrope", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem", 
+            "2xl": "1rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #102218; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b5445; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Sidebar -->
+<aside class="hidden w-72 flex-col border-r border-border-dark bg-surface-darker lg:flex">
+<div class="flex h-16 items-center gap-3 px-6 py-4 border-b border-border-dark">
+<div class="size-8 text-primary flex items-center justify-center rounded-full bg-primary/10">
+<span class="material-symbols-outlined icon-fill">savings</span>
+</div>
+<h1 class="text-xl font-bold tracking-tight text-white">HolyFinanças</h1>
+</div>
+<nav class="flex-1 overflow-y-auto px-4 py-6 space-y-1">
+<div class="mb-6">
+<div class="px-2 mb-2 text-xs font-semibold uppercase tracking-wider text-text-secondary">Menu Principal</div>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-text-secondary hover:bg-border-dark hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Visão Geral</span>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 bg-primary/10 text-primary border border-primary/20 transition-colors" href="#">
+<span class="material-symbols-outlined icon-fill">pie_chart</span>
+<span class="font-medium">Orçamento</span>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-text-secondary hover:bg-border-dark hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-medium">Transações</span>
+</a>
+<a class="flex items-center gap-3 rounded-lg px-3 py-2 text-text-secondary hover:bg-border-dark hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-medium">Relatórios</span>
+</a>
+</div>
+<div>
+<div class="px-2 mb-2 text-xs font-semibold uppercase tracking-wider text-text-secondary">Histórico Recente</div>
+<a class="flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-text-secondary hover:bg-border-dark hover:text-white transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-medium">Outubro 2023</span>
+</div>
+<span class="text-xs rounded-full bg-green-900/40 text-green-400 px-2 py-0.5">OK</span>
+</a>
+<a class="flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-text-secondary hover:bg-border-dark hover:text-white transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-medium">Setembro 2023</span>
+</div>
+<span class="text-xs rounded-full bg-red-900/40 text-red-400 px-2 py-0.5">-2%</span>
+</a>
+<a class="flex items-center justify-between gap-3 rounded-lg px-3 py-2 text-text-secondary hover:bg-border-dark hover:text-white transition-colors" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-medium">Agosto 2023</span>
+</div>
+<span class="text-xs rounded-full bg-green-900/40 text-green-400 px-2 py-0.5">OK</span>
+</a>
+</div>
+</nav>
+<div class="border-t border-border-dark p-4">
+<button class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-text-secondary hover:bg-border-dark hover:text-white transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-medium">Sair</span>
+</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex flex-1 flex-col h-full overflow-hidden">
+<!-- Header -->
+<header class="flex h-16 items-center justify-between border-b border-border-dark bg-background-dark/80 px-8 backdrop-blur-md z-10">
+<div class="flex items-center gap-4 lg:hidden">
+<button class="text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="text-lg font-bold text-white">HolyFinanças</span>
+</div>
+<div class="hidden lg:flex flex-1 max-w-md">
+<div class="relative w-full">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary material-symbols-outlined text-[20px]">search</span>
+<input class="h-10 w-full rounded-lg border-none bg-border-dark pl-10 pr-4 text-sm text-white placeholder-text-secondary focus:ring-1 focus:ring-primary/50" placeholder="Pesquisar categoria ou transação..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative flex size-10 items-center justify-center rounded-lg hover:bg-border-dark text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2.5 right-2.5 size-2 rounded-full bg-primary ring-2 ring-background-dark"></span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-lg hover:bg-border-dark text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-px bg-border-dark mx-2"></div>
+<button class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-primary text-background-dark font-bold flex items-center justify-center">JD</div>
+<div class="hidden md:block text-left">
+<p class="text-sm font-medium text-white leading-none">João Doe</p>
+<p class="text-xs text-text-secondary mt-1">Plano Premium</p>
+</div>
+</button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8">
+<!-- Page Title & Actions -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-3xl font-extrabold text-white tracking-tight">Acompanhamento do Orçamento</h2>
+<p class="text-text-secondary mt-1">Gerencie e compare seus gastos mensais (Valores em KZ)</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative group">
+<select class="appearance-none h-10 pl-4 pr-10 rounded-lg bg-surface-dark border border-border-dark text-white text-sm font-medium focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer">
+<option>Novembro 2023</option>
+<option>Outubro 2023</option>
+<option>Setembro 2023</option>
+</select>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none material-symbols-outlined text-sm">expand_more</span>
+</div>
+<button class="h-10 px-4 bg-primary hover:bg-green-400 text-background-dark text-sm font-bold rounded-lg transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+                            Ajustar Orçamento
+                        </button>
+</div>
+</div>
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Total Budget -->
+<div class="p-6 rounded-xl bg-surface-dark border border-border-dark relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-white">account_balance_wallet</span>
+</div>
+<p class="text-text-secondary text-sm font-medium mb-1">Orçamento Total</p>
+<h3 class="text-2xl font-bold text-white mb-2">KZ 500.000</h3>
+<div class="flex items-center gap-2">
+<span class="bg-border-dark text-text-secondary text-xs px-2 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">remove</span> 0% vs mês anterior
+                            </span>
+</div>
+</div>
+<!-- Current Spend -->
+<div class="p-6 rounded-xl bg-surface-dark border border-border-dark relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-white">credit_card</span>
+</div>
+<p class="text-text-secondary text-sm font-medium mb-1">Gasto Atual</p>
+<h3 class="text-2xl font-bold text-white mb-2">KZ 350.000</h3>
+<div class="flex items-center gap-2">
+<span class="bg-red-900/30 text-red-400 text-xs px-2 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +5% rápido demais
+                            </span>
+</div>
+<div class="w-full bg-border-dark h-1 mt-4 rounded-full overflow-hidden">
+<div class="bg-white h-full rounded-full" style="width: 70%"></div>
+</div>
+</div>
+<!-- Available -->
+<div class="p-6 rounded-xl bg-surface-dark border border-primary/30 relative overflow-hidden group shadow-[0_0_15px_-3px_rgba(19,236,109,0.1)]">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">savings</span>
+</div>
+<p class="text-primary text-sm font-medium mb-1">Disponível</p>
+<h3 class="text-2xl font-bold text-white mb-2">KZ 150.000</h3>
+<div class="flex items-center gap-2">
+<span class="bg-primary/20 text-primary text-xs px-2 py-0.5 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_flat</span> Dentro da meta
+                            </span>
+</div>
+<div class="w-full bg-border-dark h-1 mt-4 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 30%"></div>
+</div>
+</div>
+</div>
+<!-- Main Budget Table -->
+<div class="bg-surface-dark border border-border-dark rounded-xl overflow-hidden flex flex-col">
+<div class="p-6 border-b border-border-dark flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+<h3 class="text-lg font-bold text-white">Detalhamento por Categoria</h3>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 text-xs font-medium text-text-secondary hover:text-white bg-border-dark rounded-md transition-colors">Exportar CSV</button>
+<button class="px-3 py-1.5 text-xs font-medium text-background-dark bg-text-secondary hover:bg-white rounded-md transition-colors">Adicionar Categoria</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-darker/50 text-text-secondary text-xs uppercase tracking-wider border-b border-border-dark">
+<th class="px-6 py-4 font-semibold w-1/4">Categoria</th>
+<th class="px-6 py-4 font-semibold text-right">Planejado (KZ)</th>
+<th class="px-6 py-4 font-semibold text-right">Realizado (KZ)</th>
+<th class="px-6 py-4 font-semibold text-right">Disponível (KZ)</th>
+<th class="px-6 py-4 font-semibold w-1/5">Status</th>
+<th class="px-6 py-4 font-semibold w-12 text-center">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-dark text-sm">
+<!-- Row 1: Housing -->
+<tr class="group hover:bg-surface-darker/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">home</span>
+</div>
+<div>
+<p class="font-medium text-white">Habitação</p>
+<p class="text-xs text-text-secondary">Aluguel, Luz, Água</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-medium text-text-secondary">200.000</td>
+<td class="px-6 py-4 text-right font-bold text-white">195.000</td>
+<td class="px-6 py-4 text-right font-medium text-primary">5.000</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between text-xs">
+<span class="text-white">97%</span>
+</div>
+<div class="h-2 w-full bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-blue-400 rounded-full" style="width: 97%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Food -->
+<tr class="group hover:bg-surface-darker/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-lg bg-yellow-500/10 text-yellow-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">restaurant</span>
+</div>
+<div>
+<p class="font-medium text-white">Alimentação</p>
+<p class="text-xs text-text-secondary">Supermercado, Restaurantes</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-medium text-text-secondary">100.000</td>
+<td class="px-6 py-4 text-right font-bold text-white">80.000</td>
+<td class="px-6 py-4 text-right font-medium text-primary">20.000</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between text-xs">
+<span class="text-white">80%</span>
+</div>
+<div class="h-2 w-full bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 80%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Transport -->
+<tr class="group hover:bg-surface-darker/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">directions_car</span>
+</div>
+<div>
+<p class="font-medium text-white">Transporte</p>
+<p class="text-xs text-text-secondary">Combustível, Manutenção</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-medium text-text-secondary">50.000</td>
+<td class="px-6 py-4 text-right font-bold text-white">45.000</td>
+<td class="px-6 py-4 text-right font-medium text-primary">5.000</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between text-xs">
+<span class="text-white">90%</span>
+</div>
+<div class="h-2 w-full bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-yellow-400 rounded-full" style="width: 90%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Leisure - OVER BUDGET -->
+<tr class="group bg-red-900/5 hover:bg-red-900/10 transition-colors border-l-2 border-l-red-500">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-lg bg-pink-500/10 text-pink-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">movie</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<p class="font-medium text-white">Lazer</p>
+<span class="material-symbols-outlined text-red-500 text-[16px]" title="Acima do Orçamento">warning</span>
+</div>
+<p class="text-xs text-text-secondary">Cinema, Assinaturas</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-medium text-text-secondary">20.000</td>
+<td class="px-6 py-4 text-right font-bold text-red-400">25.000</td>
+<td class="px-6 py-4 text-right font-medium text-red-400">-5.000</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between text-xs">
+<span class="text-red-400 font-bold">125%</span>
+</div>
+<div class="h-2 w-full bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-red-500 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 5: Health -->
+<tr class="group hover:bg-surface-darker/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-lg bg-teal-500/10 text-teal-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">medical_services</span>
+</div>
+<div>
+<p class="font-medium text-white">Saúde</p>
+<p class="text-xs text-text-secondary">Farmácia, Consultas</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-medium text-text-secondary">30.000</td>
+<td class="px-6 py-4 text-right font-bold text-white">5.000</td>
+<td class="px-6 py-4 text-right font-medium text-primary">25.000</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between text-xs">
+<span class="text-white">16%</span>
+</div>
+<div class="h-2 w-full bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 16%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 6: Education -->
+<tr class="group hover:bg-surface-darker/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-9 rounded-lg bg-orange-500/10 text-orange-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">school</span>
+</div>
+<div>
+<p class="font-medium text-white">Educação</p>
+<p class="text-xs text-text-secondary">Livros, Cursos</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-medium text-text-secondary">100.000</td>
+<td class="px-6 py-4 text-right font-bold text-white">0</td>
+<td class="px-6 py-4 text-right font-medium text-primary">100.000</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between text-xs">
+<span class="text-white">0%</span>
+</div>
+<div class="h-2 w-full bg-border-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 0%"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-center">
+<button class="text-text-secondary hover:text-white transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Footer / Tips -->
+<div class="flex flex-col md:flex-row gap-4">
+<div class="flex-1 bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 rounded-xl p-6 flex items-start gap-4">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">lightbulb</span>
+</div>
+<div>
+<h4 class="text-white font-bold mb-1">Dica de Economia</h4>
+<p class="text-text-secondary text-sm">Seus gastos com Lazer estão 25% acima do planejado. Considere revisar assinaturas de streaming não utilizadas.</p>
+</div>
+</div>
+<div class="flex-1 bg-surface-dark border border-border-dark rounded-xl p-6 flex items-start gap-4">
+<div class="size-10 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-blue-400">trending_up</span>
+</div>
+<div>
+<h4 class="text-white font-bold mb-1">Projeção Mensal</h4>
+<p class="text-text-secondary text-sm">Neste ritmo, você terminará o mês com um saldo positivo de KZ 145.000. Continue assim!</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HolyFinanças - Relatórios</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                        "surface-dark": "#1c2b23",
+                        "surface-hover": "#25382e",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #102218; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a5242; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden">
+<div class="flex h-screen w-full relative">
+<!-- Sidebar -->
+<aside class="hidden lg:flex w-72 flex-col border-r border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark shrink-0">
+<div class="flex items-center gap-3 px-6 py-6">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shadow-lg shadow-primary/10" data-alt="Abstract green financial logo mark" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAGIZSpx0w0pZMynFH8SEmdZQMBWKhTd-v-0lK7EM5ZjPxdTKkW1CCfmCzIhA4VS8WRCALVVyuVpbv9F8G-r5JM12PwwpZqbsncPn6DpvefeuSKlHTaVDrW8ZR073vCGUSPH_Rv-UIrC90b9iKfoGFV_CsF3_bTcmIcPrBmttFOylFHpkQKl2xSm5N-JX54J5u2Vu3YVO2q95AwaC4P9fzIWx1Bm03UgdPYRwhgpqF6B3SSKwwKwsIy0FtlpHjv5wf0gKastjR_fnJF");'>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">HolyFinanças</h1>
+<p class="text-slate-500 dark:text-[#9db9a8] text-xs font-medium uppercase tracking-wider">Gestão Pessoal</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 px-4 py-4 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-surface-hover transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+<p class="text-sm font-medium">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-surface-hover transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">compare_arrows</span>
+<p class="text-sm font-medium">Transações</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">bar_chart</span>
+<p class="text-sm font-bold">Relatórios</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-surface-hover transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">savings</span>
+<p class="text-sm font-medium">Orçamento</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-surface-hover transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">settings</span>
+<p class="text-sm font-medium">Configurações</p>
+</a>
+</nav>
+<div class="p-4 mt-auto">
+<div class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-200 dark:hover:bg-surface-hover transition-colors cursor-pointer">
+<div class="size-8 rounded-full bg-slate-300 dark:bg-slate-700 overflow-hidden bg-cover bg-center" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAnCsxKwrIo22TxuORLklI__PUirjasrHKaHIjJcoQfpq4myy6o5oO59YDIVpKKg8BR5zXJ9bZJ3eo29G8my_r3EeDaQog9SpbmXAtCGai2Vaec06VkXK0G91PVrvVlP8ATsrl2IwCEJW74Z0ueUoUIGnE5ed37e57oUUxiNXpBKbCXm4RLSNbD0nW-He01FME5xRGoGMnkJ-A1LeEgUQLtvGkx2jrWdvrwi5ZnNjtd-7g_lcLXG1hKysEqfiZrgi9Tb9snNNUEPe3E");'></div>
+<div class="flex flex-col">
+<p class="text-sm font-medium dark:text-white">Usuário Demo</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Plano Pro</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Mobile Header -->
+<div class="lg:hidden flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark">
+<div class="font-bold text-lg dark:text-white">HolyFinanças</div>
+<span class="material-symbols-outlined dark:text-white">menu</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 lg:p-10 scroll-smooth">
+<div class="max-w-6xl mx-auto flex flex-col gap-8 pb-12">
+<!-- Page Heading -->
+<div class="flex flex-wrap justify-between items-end gap-4">
+<div class="flex flex-col gap-2">
+<h2 class="text-3xl lg:text-4xl font-black leading-tight tracking-tight dark:text-white text-slate-900">
+                                Visão Geral de Relatórios
+                            </h2>
+<p class="text-slate-500 dark:text-[#9db9a8] text-base lg:text-lg max-w-2xl">
+                                Explore sua saúde financeira através de análises detalhadas e métricas personalizadas para tomar melhores decisões.
+                            </p>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-dark border border-slate-700 hover:border-primary text-sm font-medium text-white transition-all">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+<span>Outubro 2023</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 dark:text-[#9db9a8] text-sm font-medium">Patrimônio Líquido</p>
+<span class="material-symbols-outlined text-primary">account_balance</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<p class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">R$ 145.200,00</p>
+</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+<p class="text-primary text-sm font-medium">+5.2%</p>
+<p class="text-slate-400 text-xs ml-1">vs mês anterior</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 dark:text-[#9db9a8] text-sm font-medium">Economia Mensal</p>
+<span class="material-symbols-outlined text-primary">savings</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<p class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">R$ 3.500,00</p>
+</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+<p class="text-primary text-sm font-medium">+1.1%</p>
+<p class="text-slate-400 text-xs ml-1">vs mês anterior</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center justify-between">
+<p class="text-slate-500 dark:text-[#9db9a8] text-sm font-medium">Retorno Investimentos</p>
+<span class="material-symbols-outlined text-primary">percent</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<p class="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white">+12,5%</p>
+</div>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-primary text-sm">trending_up</span>
+<p class="text-primary text-sm font-medium">+0.5%</p>
+<p class="text-slate-400 text-xs ml-1">vs meta anual</p>
+</div>
+</div>
+</div>
+<!-- Reports Grid Header -->
+<div class="flex items-center justify-between pt-4">
+<h2 class="text-xl lg:text-2xl font-bold dark:text-white text-slate-900">Relatórios Disponíveis</h2>
+<button class="text-primary text-sm font-bold hover:underline">Ver Todos</button>
+</div>
+<!-- Reports Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="group flex flex-col rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary transition-all duration-300 cursor-pointer overflow-hidden relative shadow-sm hover:shadow-lg hover:shadow-primary/5">
+<div class="h-2 bg-gradient-to-r from-primary to-green-400 w-full absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="p-6 flex flex-col h-full">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-2xl">account_balance_wallet</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Receitas e Despesas</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-6 flex-1">
+                                    Compare suas fontes de renda com seus gastos mensais para entender seu saldo líquido.
+                                </p>
+<div class="flex items-center text-primary text-sm font-bold mt-auto">
+<span>Visualizar Relatório</span>
+<span class="material-symbols-outlined text-sm ml-1 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary transition-all duration-300 cursor-pointer overflow-hidden relative shadow-sm hover:shadow-lg hover:shadow-primary/5">
+<div class="h-2 bg-gradient-to-r from-primary to-green-400 w-full absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="p-6 flex flex-col h-full">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-2xl">timeline</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Fluxo de Caixa</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-6 flex-1">
+                                    Acompanhe a entrada e saída de dinheiro ao longo do tempo para prever liquidez futura.
+                                </p>
+<div class="flex items-center text-primary text-sm font-bold mt-auto">
+<span>Visualizar Relatório</span>
+<span class="material-symbols-outlined text-sm ml-1 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary transition-all duration-300 cursor-pointer overflow-hidden relative shadow-sm hover:shadow-lg hover:shadow-primary/5">
+<div class="h-2 bg-gradient-to-r from-primary to-green-400 w-full absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="p-6 flex flex-col h-full">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-2xl">donut_small</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Análise por Categoria</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-6 flex-1">
+                                    Descubra para onde vai seu dinheiro detalhadamente, segmentado por categorias de despesa.
+                                </p>
+<div class="flex items-center text-primary text-sm font-bold mt-auto">
+<span>Visualizar Relatório</span>
+<span class="material-symbols-outlined text-sm ml-1 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group flex flex-col rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary transition-all duration-300 cursor-pointer overflow-hidden relative shadow-sm hover:shadow-lg hover:shadow-primary/5">
+<div class="h-2 bg-gradient-to-r from-primary to-green-400 w-full absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="p-6 flex flex-col h-full">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-2xl">account_balance</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Balanço Patrimonial</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-6 flex-1">
+                                    Uma visão consolidada de todos os seus ativos e passivos para medir sua riqueza real.
+                                </p>
+<div class="flex items-center text-primary text-sm font-bold mt-auto">
+<span>Visualizar Relatório</span>
+<span class="material-symbols-outlined text-sm ml-1 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group flex flex-col rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary transition-all duration-300 cursor-pointer overflow-hidden relative shadow-sm hover:shadow-lg hover:shadow-primary/5">
+<div class="h-2 bg-gradient-to-r from-primary to-green-400 w-full absolute top-0 left-0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="p-6 flex flex-col h-full">
+<div class="size-12 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+<span class="material-symbols-outlined text-primary text-2xl">trending_up</span>
+</div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors">Relatório de Investimentos</h3>
+<p class="text-slate-500 dark:text-slate-400 text-sm mb-6 flex-1">
+                                    Acompanhe a performance de sua carteira, dividendos recebidos e alocação de ativos.
+                                </p>
+<div class="flex items-center text-primary text-sm font-bold mt-auto">
+<span>Visualizar Relatório</span>
+<span class="material-symbols-outlined text-sm ml-1 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Card 6 (Promo/Coming Soon) -->
+<div class="group flex flex-col rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-transparent hover:border-slate-500 transition-all duration-300 cursor-pointer items-center justify-center min-h-[240px]">
+<div class="size-12 rounded-full bg-slate-200 dark:bg-surface-dark flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 text-2xl">add</span>
+</div>
+<h3 class="text-base font-bold text-slate-500 dark:text-slate-400">Criar Relatório Personalizado</h3>
+<p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Em breve</p>
+</div>
+</div>
+<!-- Recent Activity Section -->
+<div class="rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-800 p-6 mt-4">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Acessados Recentemente</h3>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-xl">donut_small</span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Análise por Categoria</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Hoje, 10:30</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-xl">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-xl">timeline</span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Fluxo de Caixa</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Ontem, 16:45</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-xl">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-surface-hover transition-colors cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-900 dark:text-white">Receitas e Despesas</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">20 Out, 09:15</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-xl">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

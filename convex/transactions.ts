@@ -1,0 +1,201 @@
+import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+import { createNotification } from "./notifications";
+
+export const get = query({
+    args: {
+        userId: v.optional(v.id("users")),
+    },
+    handler: async (ctx, args) => {
+        if (!args.userId) return [];
+
+        return await ctx.db
+            .query("transactions")
+            .withIndex("by_user", (q) => q.eq("userId", args.userId!))
+            .order("desc")
+            .collect();
+    },
+});
+
+export const create = mutation({
+    args: {
+        userId: v.id("users"),
+        description: v.string(),
+        amount: v.number(),
+        type: v.string(),
+        category: v.string(),
+        date: v.string(),
+        account: v.string(),
+        status: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const id = await ctx.db.insert("transactions", args);
+
+        // Update Account Balance
+        const account = await ctx.db
+            .query("accounts")
+            .withIndex("by_user", (q) => q.eq("userId", args.userId))
+            .filter((q) => q.eq(q.field("name"), args.account))
+            .first();
+
+        if (account) {
+            let newBalance = account.balance ?? 0;
+            if (args.type === "income") {
+                newBalance += args.amount;
+            } else {
+                newBalance -= args.amount;
+            }
+            await ctx.db.patch(account._id, { balance: newBalance });
+
+        }
+
+        // Check Budget Limit (Negative Objective)
+        if (args.type === "expense") {
+            const limitDoc = await ctx.db
+                .query("budgetLimits")
+                .withIndex("by_user", (q) => q.eq("userId", args.userId))
+                .filter((q) => q.eq(q.field("category"), args.category))
+                .first();
+
+            if (limitDoc) {
+                // Calculate total spend this month for this category
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+                const transactions = await ctx.db
+                    .query("transactions")
+                    .withIndex("by_user", (q) => q.eq("userId", args.userId))
+                    .filter((q) => q.and(
+                        q.eq(q.field("category"), args.category),
+                        q.eq(q.field("type"), "expense"),
+                        q.gte(q.field("date"), startOfMonth)
+                    ))
+                    .collect();
+
+                // Note: 'transactions' includes the one we just inserted? 
+                // ctx.db.insert returns ID, but query consistency in same mutation usually includes it? 
+                // Convex consistency allows "read your writes".
+                // But date format might vary. Assuming ISO.
+
+                const totalSpent = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+
+                if (totalSpent > limitDoc.limit) {
+                    const ideas = [
+                        "Tente reduzir gastos supérfluos nesta categoria até o fim do mês.",
+                        "Reveja suas assinaturas ou compras recorrentes.",
+                        "Prepare sua próxima refeição em casa para economizar."
+                    ];
+                    const idea = ideas[Math.floor(Math.random() * ideas.length)];
+
+                    await createNotification(ctx, {
+                        userId: args.userId,
+                        title: `Orçamento Excedido: ${args.category} ⚠️`,
+                        message: `Você ultrapassou o limite de ${limitDoc.limit} para ${args.category}. Gasto atual: ${totalSpent}.\n\n💡 Ideia: ${idea}`,
+                        type: "warning", // Negative
+                        isImportant: true,
+                    });
+                }
+            }
+        }
+
+        return id;
+    },
+});
+
+export const update = mutation({
+    args: {
+        id: v.id("transactions"),
+        userId: v.id("users"),
+        description: v.string(),
+        amount: v.number(),
+        type: v.string(),
+        category: v.string(),
+        date: v.string(),
+        account: v.string(),
+        status: v.string(),
+    },
+    handler: async (ctx, args) => {
+        const { id, userId, ...newData } = args;
+        const oldTransaction = await ctx.db.get(id);
+
+        if (!oldTransaction) {
+            throw new Error("Transaction not found");
+        }
+
+        // Verify ownership
+        if (oldTransaction.userId !== userId) {
+            throw new Error("Unauthorized");
+        }
+
+        await ctx.db.patch(id, newData);
+
+        // Revert old transaction effect on account
+        const oldAccount = await ctx.db
+            .query("accounts")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .filter((q) => q.eq(q.field("name"), oldTransaction.account))
+            .first();
+
+        if (oldAccount) {
+            let balance = oldAccount.balance ?? 0;
+            if (oldTransaction.type === "income") {
+                balance -= oldTransaction.amount;
+            } else {
+                balance += oldTransaction.amount;
+            }
+            await ctx.db.patch(oldAccount._id, { balance });
+        }
+
+        // Apply new transaction effect on account
+        const newAccount = await ctx.db
+            .query("accounts")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .filter((q) => q.eq(q.field("name"), newData.account))
+            .first();
+
+        if (newAccount) {
+            let balance = newAccount.balance ?? 0;
+            if (newData.type === "income") {
+                balance += newData.amount;
+            } else {
+                balance -= newData.amount;
+            }
+            await ctx.db.patch(newAccount._id, { balance });
+        }
+    },
+});
+
+export const remove = mutation({
+    args: {
+        id: v.id("transactions"),
+        userId: v.id("users"),
+    },
+    handler: async (ctx, args) => {
+        const transaction = await ctx.db.get(args.id);
+        if (!transaction) return;
+
+        // Verify ownership
+        if (transaction.userId !== args.userId) {
+            throw new Error("Unauthorized");
+        }
+
+        await ctx.db.delete(args.id);
+
+        // Revert Account Balance
+        const account = await ctx.db
+            .query("accounts")
+            .withIndex("by_user", (q) => q.eq("userId", args.userId))
+            .filter((q) => q.eq(q.field("name"), transaction.account))
+            .first();
+
+        if (account) {
+            let balance = account.balance ?? 0;
+            if (transaction.type === "income") {
+                balance -= transaction.amount;
+            } else {
+                balance += transaction.amount;
+            }
+            await ctx.db.patch(account._id, { balance });
+        }
+    },
+});

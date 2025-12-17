@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registro de Dívidas - HolyFinanças</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                        "surface-dark": "#1c2720",
+                        "surface-darker": "#111814",
+                        "border-dark": "#28392f",
+                        "text-secondary": "#9db9a8",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better look in dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111814; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #28392f; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3b5445; 
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex flex-col overflow-x-hidden text-slate-900 dark:text-white">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-border-dark bg-background-light dark:bg-background-dark px-6 md:px-10 py-3">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 text-primary">
+<svg class="h-full w-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">HolyFinanças</h2>
+</div>
+<!-- Desktop Menu -->
+<div class="hidden lg:flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-slate-600 dark:text-text-secondary hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-text-secondary hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Transações</a>
+<a class="text-primary text-sm font-medium leading-normal" href="#">Dívidas</a>
+<a class="text-slate-600 dark:text-text-secondary hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Orçamento</a>
+<a class="text-slate-600 dark:text-text-secondary hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Relatórios</a>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center overflow-hidden rounded-lg size-10 bg-slate-100 dark:bg-border-dark text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-[#3b5445] transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="flex items-center justify-center overflow-hidden rounded-lg size-10 bg-slate-100 dark:bg-border-dark text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-[#3b5445] transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-primary/20" data-alt="User profile picture showing a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDeHZxe9EfxtF1EruNzGOxe7lapswaOrMyADBRlI_l4QlxD-h8KNpjhaARpJngJMGrGrLxJk9wA1zQ30l1DXOQAf46wsLLnOYYpwxBYZPFcfMOGpwvg6CaTuuE0RDn3fe_Q1MdO7bAYLw0fm_0IJRnx_kCSiZcWepVQJorcL_QUb0lZEyTAE7LX5Xlcyb-YwlZiS71UdHFPlzwi7iK6r0f5AEatlbQjmX7dcczlZkAbSjyvhGBQe8z286dOYg4anyzVQAMWSBho7UYb");'></div>
+</div>
+<!-- Mobile Menu Icon -->
+<button class="lg:hidden text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-4 md:px-10 py-8">
+<!-- Page Header -->
+<div class="flex flex-wrap justify-between items-end gap-6 mb-8">
+<div class="flex min-w-72 flex-col gap-2">
+<div class="flex items-center gap-2 mb-1">
+<span class="bg-primary/10 text-primary p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-xl">account_balance_wallet</span>
+</span>
+<span class="text-primary font-semibold text-sm tracking-wide uppercase">Gestão Financeira</span>
+</div>
+<h1 class="text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Registro de Dívidas</h1>
+<p class="text-slate-500 dark:text-text-secondary text-base font-normal leading-normal max-w-2xl">
+                    Adicione uma nova dívida ou financiamento ao seu controle. O sistema calculará automaticamente os juros e parcelas futuras.
+                </p>
+</div>
+<div class="flex gap-3">
+<button class="hidden sm:flex items-center justify-center h-10 px-4 rounded-lg border border-slate-200 dark:border-border-dark text-slate-600 dark:text-text-secondary font-bold text-sm hover:bg-slate-50 dark:hover:bg-border-dark transition-colors">
+                    Cancelar
+                </button>
+<button class="flex items-center justify-center h-10 px-6 rounded-lg bg-primary text-surface-darker font-bold text-sm hover:bg-opacity-90 transition-opacity shadow-[0_0_15px_rgba(19,236,109,0.3)]">
+<span class="material-symbols-outlined text-[18px] mr-2">save</span>
+                    Salvar Dívida
+                </button>
+</div>
+</div>
+<!-- Main Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+<!-- Form Section (Left - 2 Cols) -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Card 1: Basic Details -->
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-6">
+<h2 class="text-lg font-bold flex items-center gap-2 mb-6 border-b border-slate-100 dark:border-border-dark pb-4">
+<span class="material-symbols-outlined text-primary">description</span>
+                        Dados Principais
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<label class="flex flex-col gap-2">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">Credor / Instituição</span>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+<span class="material-symbols-outlined text-[20px]">business</span>
+</span>
+<input class="w-full pl-11 pr-4 h-12 rounded-lg bg-slate-50 dark:bg-surface-darker border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-400 dark:placeholder:text-text-secondary/50" placeholder="Ex: Banco BAI, Cartão VISA..." type="text"/>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">Categoria</span>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+<span class="material-symbols-outlined text-[20px]">category</span>
+</span>
+<select class="w-full pl-11 pr-4 h-12 rounded-lg bg-slate-50 dark:bg-surface-darker border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none appearance-none transition-all cursor-pointer">
+<option disabled="" selected="" value="">Selecione o tipo</option>
+<option value="credit_card">Cartão de Crédito</option>
+<option value="personal_loan">Empréstimo Pessoal</option>
+<option value="financing">Financiamento Imobiliário</option>
+<option value="financing_auto">Financiamento Veicular</option>
+<option value="other">Outros</option>
+</select>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</span>
+</div>
+</label>
+<label class="flex flex-col gap-2 md:col-span-2">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">Descrição Opcional</span>
+<textarea class="w-full p-4 h-24 rounded-lg bg-slate-50 dark:bg-surface-darker border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none resize-none transition-all placeholder:text-slate-400 dark:placeholder:text-text-secondary/50" placeholder="Adicione notas sobre essa dívida..."></textarea>
+</label>
+</div>
+</div>
+<!-- Card 2: Financial Details -->
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-6">
+<h2 class="text-lg font-bold flex items-center gap-2 mb-6 border-b border-slate-100 dark:border-border-dark pb-4">
+<span class="material-symbols-outlined text-primary">payments</span>
+                        Valores e Prazos
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+<label class="flex flex-col gap-2">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">Valor Total (KZ)</span>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-semibold">KZ</span>
+<input class="w-full pl-12 pr-4 h-12 rounded-lg bg-slate-50 dark:bg-surface-darker border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none font-medium text-lg transition-all placeholder:text-slate-400 dark:placeholder:text-text-secondary/50" placeholder="0,00" type="text"/>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">Data do 1º Vencimento</span>
+<div class="relative">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+<span class="material-symbols-outlined text-[20px]">calendar_today</span>
+</span>
+<input class="w-full pl-11 pr-4 h-12 rounded-lg bg-slate-50 dark:bg-surface-darker border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all [color-scheme:light] dark:[color-scheme:dark]" type="date"/>
+</div>
+</label>
+</div>
+<div class="p-5 bg-slate-50 dark:bg-surface-darker rounded-lg border border-slate-200 dark:border-border-dark">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-sm font-bold text-slate-700 dark:text-white uppercase tracking-wider">Configuração de Juros</h3>
+<div class="flex items-center gap-2">
+<span class="text-xs text-slate-500 dark:text-text-secondary">Juros Compostos</span>
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 border-slate-300 appearance-none cursor-pointer checked:right-0 checked:border-primary" id="toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-300 cursor-pointer dark:bg-border-dark" for="toggle"></label>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<label class="flex flex-col gap-2">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">Taxa de Juros (%)</span>
+<div class="flex gap-2">
+<input class="flex-1 px-4 h-12 rounded-lg bg-white dark:bg-[#151e18] border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-400" placeholder="0.00" type="number"/>
+<select class="w-28 px-2 h-12 rounded-lg bg-white dark:bg-[#151e18] border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white text-sm focus:border-primary outline-none">
+<option>Ao Mês</option>
+<option>Ao Ano</option>
+</select>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<div class="flex justify-between">
+<span class="text-sm font-medium text-slate-700 dark:text-slate-200">Número de Parcelas</span>
+<span class="text-sm font-bold text-primary">12x</span>
+</div>
+<div class="flex items-center gap-4 h-12">
+<input class="w-full h-2 bg-slate-200 dark:bg-border-dark rounded-lg appearance-none cursor-pointer accent-primary" max="120" min="1" type="range" value="12"/>
+<input class="w-20 px-2 text-center h-10 rounded-lg bg-white dark:bg-[#151e18] border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none" type="number" value="12"/>
+</div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar (Right - 1 Col) -->
+<div class="lg:col-span-1 space-y-6">
+<!-- Simulation Summary Widget -->
+<div class="sticky top-24 bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-0 overflow-hidden shadow-lg">
+<div class="bg-primary p-6">
+<h3 class="text-surface-darker font-extrabold text-lg mb-1">Resumo da Simulação</h3>
+<p class="text-surface-darker/80 text-sm">Projeção estimada baseada nos dados.</p>
+</div>
+<div class="p-6 space-y-6">
+<div class="flex flex-col gap-1">
+<span class="text-sm text-slate-500 dark:text-text-secondary font-medium">Parcela Mensal Estimada</span>
+<div class="flex items-baseline gap-1">
+<span class="text-xs text-slate-500 dark:text-text-secondary font-medium self-start mt-1">KZ</span>
+<span class="text-3xl font-black text-slate-900 dark:text-white">54.200<span class="text-lg text-slate-400 dark:text-gray-500">,00</span></span>
+</div>
+</div>
+<div class="h-px bg-slate-100 dark:bg-border-dark"></div>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500 dark:text-text-secondary">Valor Principal</span>
+<span class="font-bold text-slate-900 dark:text-white">KZ 500.000,00</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500 dark:text-text-secondary">Total de Juros</span>
+<span class="font-bold text-red-500 dark:text-red-400">+ KZ 150.400,00</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500 dark:text-text-secondary">CET (Anual)</span>
+<span class="font-bold text-slate-900 dark:text-white">14.5%</span>
+</div>
+</div>
+<div class="h-px bg-slate-100 dark:bg-border-dark"></div>
+<div class="bg-slate-50 dark:bg-surface-darker rounded-lg p-4 border border-slate-200 dark:border-border-dark">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-text-secondary">Total a Pagar</span>
+<span class="text-xl font-black text-primary">KZ 650.400,00</span>
+</div>
+</div>
+</div>
+<div class="bg-slate-50 dark:bg-[#151e18] px-6 py-4 border-t border-slate-200 dark:border-border-dark">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">info</span>
+<p class="text-xs text-slate-500 dark:text-text-secondary leading-relaxed">
+                                Os valores podem variar dependendo da data de fechamento da fatura ou reajustes contratuais da instituição.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Action Bar (Sticky Bottom) -->
+<div class="sm:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-surface-dark border-t border-slate-200 dark:border-border-dark p-4 z-40">
+<div class="flex gap-3">
+<button class="flex-1 flex items-center justify-center h-12 rounded-lg border border-slate-200 dark:border-border-dark text-slate-600 dark:text-text-secondary font-bold text-sm">
+                Cancelar
+            </button>
+<button class="flex-1 flex items-center justify-center h-12 rounded-lg bg-primary text-surface-darker font-bold text-sm shadow-[0_0_15px_rgba(19,236,109,0.3)]">
+                Salvar
+            </button>
+</div>
+</div>
+</body></html>

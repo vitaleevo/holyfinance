@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Configurações de Notificações - HolyFinanças</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#102218",
+                        "surface-dark": "#1c2720",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased overflow-hidden">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Side Navigation -->
+<aside class="hidden lg:flex w-[280px] flex-col border-r border-white/10 bg-background-dark h-full">
+<div class="flex flex-col h-full p-4 justify-between">
+<div class="flex flex-col gap-8">
+<!-- User Profile / Brand -->
+<div class="flex gap-3 items-center px-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-12 shadow-lg border border-white/10" data-alt="Abstract green geometric pattern representing finance" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDwRPUyKaAVokpbs1ti-woNAfZd4_AbhmI6AslP2E9sG1QmA6iQCjttrJUMF9dGSfV27RB6TxSdMfNrApKgLzMJp3GbkZ2Va_XXXj-DCMrjYK-hHJUG_GQqKzpsLnBKjRIH-8WFwBErjiJCtk-slZkvQNWsjnlw8pQebZfHfZE_t9_BxB2qWGusNaxlaYhCAyNvJMkNngV9sE_0mWr8GgbL11pAecX7AZ5rHbKagU153SBQYEz-gfqX6ObrYygVIfcInEqnsfNGBG1t");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-lg font-bold leading-tight">HolyFinanças</h1>
+<p class="text-[#9db9a8] text-sm font-normal">Gestão Pessoal</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-primary transition-colors">pie_chart</span>
+<p class="text-[#9db9a8] text-sm font-medium group-hover:text-white transition-colors">Visão Geral</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-primary transition-colors">credit_card</span>
+<p class="text-[#9db9a8] text-sm font-medium group-hover:text-white transition-colors">Transações</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-primary transition-colors">account_balance</span>
+<p class="text-[#9db9a8] text-sm font-medium group-hover:text-white transition-colors">Orçamento</p>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined text-[#9db9a8] group-hover:text-primary transition-colors">description</span>
+<p class="text-[#9db9a8] text-sm font-medium group-hover:text-white transition-colors">Relatórios</p>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 border border-primary/20" href="#">
+<span class="material-symbols-filled text-primary">settings</span>
+<p class="text-white text-sm font-bold">Configurações</p>
+</a>
+</nav>
+</div>
+<!-- Bottom Links -->
+<div class="px-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined text-[#9db9a8]">logout</span>
+<p class="text-[#9db9a8] text-sm font-medium">Sair</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full min-w-0 overflow-y-auto bg-background-dark relative scroll-smooth">
+<div class="w-full max-w-[1000px] mx-auto px-6 py-8 md:py-12 flex flex-col gap-8">
+<!-- Page Heading -->
+<div class="flex flex-col gap-3">
+<h1 class="text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Configurações de Notificações</h1>
+<p class="text-[#9db9a8] text-base md:text-lg font-normal leading-normal max-w-2xl">
+                        Personalize como e quando você deseja ser alertado sobre suas finanças. Gerencie alertas de contas, orçamentos e canais de entrega.
+                    </p>
+</div>
+<!-- Separator -->
+<div class="h-px w-full bg-white/10"></div>
+<!-- Settings Group: Alertas de Contas -->
+<div class="flex flex-col gap-4">
+<h2 class="text-white text-xl font-bold leading-tight px-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">receipt_long</span>
+                        Alertas de Contas
+                    </h2>
+<div class="flex flex-col bg-surface-dark/50 rounded-2xl border border-white/5 overflow-hidden">
+<!-- Item 1: Lembretes de Vencimento -->
+<div class="flex items-center justify-between p-5 border-b border-white/5 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-white flex items-center justify-center rounded-xl bg-surface-dark border border-white/10 shrink-0 size-12">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-base font-medium">Lembretes de Vencimento</p>
+<p class="text-[#9db9a8] text-sm font-normal">Receber alertas antes que suas contas vençam</p>
+</div>
+</div>
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-surface-dark border border-white/10 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200">
+<div class="h-full w-[27px] rounded-full bg-white shadow-sm"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+<!-- Item 2: Antecedência (Dependent Setting) -->
+<div class="flex flex-wrap items-center justify-between p-5 gap-4 border-b border-white/5 bg-black/20">
+<div class="flex items-center gap-4 pl-[4rem]"> <!-- Indented -->
+<div class="flex flex-col">
+<p class="text-white text-sm font-medium">Antecedência do Alerta</p>
+<p class="text-[#9db9a8] text-xs font-normal">Quantos dias antes do vencimento</p>
+</div>
+</div>
+<div class="relative min-w-[140px]">
+<select class="w-full appearance-none rounded-lg bg-surface-dark border border-white/10 py-2.5 pl-4 pr-10 text-sm text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+<option value="1">1 dia antes</option>
+<option value="2">2 dias antes</option>
+<option selected="" value="3">3 dias antes</option>
+<option value="7">7 dias antes</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#9db9a8]">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Item 3: Contas Pagas -->
+<div class="flex items-center justify-between p-5 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-white flex items-center justify-center rounded-xl bg-surface-dark border border-white/10 shrink-0 size-12">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-base font-medium">Confirmação de Pagamento</p>
+<p class="text-[#9db9a8] text-sm font-normal">Notificar quando uma conta for marcada como paga</p>
+</div>
+</div>
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-surface-dark border border-white/10 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200">
+<div class="h-full w-[27px] rounded-full bg-white shadow-sm"></div>
+<input class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+</div>
+<!-- Settings Group: Orçamento -->
+<div class="flex flex-col gap-4">
+<h2 class="text-white text-xl font-bold leading-tight px-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">savings</span>
+                        Orçamento e Metas
+                    </h2>
+<div class="flex flex-col bg-surface-dark/50 rounded-2xl border border-white/5 overflow-hidden">
+<!-- Item 1: Alerta de Limite -->
+<div class="flex items-center justify-between p-5 border-b border-white/5 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-white flex items-center justify-center rounded-xl bg-surface-dark border border-white/10 shrink-0 size-12">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-base font-medium">Alerta de Limite de Gastos</p>
+<p class="text-[#9db9a8] text-sm font-normal">Avisar quando o orçamento estiver próximo do fim</p>
+</div>
+</div>
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-surface-dark border border-white/10 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200">
+<div class="h-full w-[27px] rounded-full bg-white shadow-sm"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+<!-- Item 2: Threshold Input -->
+<div class="flex flex-wrap items-center justify-between p-5 gap-4 border-b border-white/5 bg-black/20">
+<div class="flex items-center gap-4 pl-[4rem]">
+<div class="flex flex-col">
+<p class="text-white text-sm font-medium">Limite para Alerta</p>
+<p class="text-[#9db9a8] text-xs font-normal">Porcentagem do orçamento consumido</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="relative w-[140px]">
+<select class="w-full appearance-none rounded-lg bg-surface-dark border border-white/10 py-2.5 pl-4 pr-10 text-sm text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+<option value="50">50%</option>
+<option selected="" value="80">80%</option>
+<option value="90">90%</option>
+<option value="100">100%</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#9db9a8]">
+<span class="material-symbols-outlined text-sm">percent</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Item 3: Resumo Semanal -->
+<div class="flex items-center justify-between p-5 hover:bg-white/5 transition-colors">
+<div class="flex items-center gap-4">
+<div class="text-white flex items-center justify-center rounded-xl bg-surface-dark border border-white/10 shrink-0 size-12">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-base font-medium">Relatório Semanal</p>
+<p class="text-[#9db9a8] text-sm font-normal">Receber um resumo da sua saúde financeira toda segunda-feira</p>
+</div>
+</div>
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-surface-dark border border-white/10 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200">
+<div class="h-full w-[27px] rounded-full bg-white shadow-sm"></div>
+<input class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+</div>
+<!-- Settings Group: Canais de Comunicação -->
+<div class="flex flex-col gap-4">
+<h2 class="text-white text-xl font-bold leading-tight px-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">send</span>
+                        Canais de Entrega
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Card: Email -->
+<div class="flex flex-col p-5 bg-surface-dark/50 rounded-2xl border border-white/5 hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="text-white flex items-center justify-center rounded-xl bg-surface-dark border border-white/10 shrink-0 size-10">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<label class="relative flex h-[24px] w-[40px] cursor-pointer items-center rounded-full border-none bg-surface-dark border border-white/10 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200">
+<div class="h-full w-[20px] rounded-full bg-white shadow-sm"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+<h3 class="text-white font-bold text-lg mb-1">E-mail</h3>
+<p class="text-[#9db9a8] text-sm">Receba resumos detalhados e alertas importantes diretamente na sua caixa de entrada.</p>
+<div class="mt-4 pt-4 border-t border-white/5">
+<input class="w-full bg-transparent border-none p-0 text-sm text-[#9db9a8] focus:ring-0 cursor-not-allowed opacity-60" disabled="" type="email" value="usuario@holyfinancas.com"/>
+</div>
+</div>
+<!-- Card: Push -->
+<div class="flex flex-col p-5 bg-surface-dark/50 rounded-2xl border border-white/5 hover:border-primary/30 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="text-white flex items-center justify-center rounded-xl bg-surface-dark border border-white/10 shrink-0 size-10">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<label class="relative flex h-[24px] w-[40px] cursor-pointer items-center rounded-full border-none bg-surface-dark border border-white/10 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200">
+<div class="h-full w-[20px] rounded-full bg-white shadow-sm"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+<h3 class="text-white font-bold text-lg mb-1">Notificações Push</h3>
+<p class="text-[#9db9a8] text-sm">Alertas instantâneos no navegador ou celular para eventos urgentes.</p>
+<div class="mt-4 pt-4 border-t border-white/5 flex items-center gap-2">
+<span class="size-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs text-primary font-medium">Ativo neste dispositivo</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="flex flex-col-reverse md:flex-row justify-end items-center gap-4 mt-4 pb-20">
+<button class="w-full md:w-auto px-6 py-3 rounded-xl border border-white/10 text-white font-bold hover:bg-white/5 transition-colors focus:ring-2 focus:ring-white/20">
+                        Restaurar Padrões
+                    </button>
+<button class="w-full md:w-auto px-8 py-3 rounded-xl bg-primary text-background-dark font-extrabold hover:bg-[#11d862] hover:shadow-[0_0_20px_rgba(19,236,109,0.3)] transition-all focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background-dark">
+                        Salvar Alterações
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

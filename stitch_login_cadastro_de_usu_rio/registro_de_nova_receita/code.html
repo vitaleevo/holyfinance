@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registro de Nova Receita - HolyFinanças</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13ec6d",
+              "background-light": "#f6f8f7",
+              "background-dark": "#102218",
+              "surface-dark": "#1c2720",
+              "border-dark": "#28392f",
+              "text-muted": "#9db9a8"
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden selection:bg-primary/30 selection:text-primary">
+<div class="flex h-screen w-full overflow-hidden">
+<aside class="hidden lg:flex w-72 flex-col border-r border-border-dark bg-background-dark p-4">
+<div class="flex flex-col gap-4">
+<div class="flex flex-col px-3 py-2">
+<h1 class="text-white text-xl font-bold leading-normal tracking-tight">HolyFinanças</h1>
+<p class="text-text-muted text-sm font-normal leading-normal">Gestão Pessoal</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-surface-dark transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white">dashboard</span>
+<p class="text-text-muted group-hover:text-white text-sm font-medium leading-normal">Visão Geral</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg bg-[#28392f]" href="#">
+<span class="material-symbols-outlined text-primary fill-1">account_balance_wallet</span>
+<p class="text-white text-sm font-medium leading-normal">Receitas</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-surface-dark transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white">credit_card</span>
+<p class="text-text-muted group-hover:text-white text-sm font-medium leading-normal">Despesas</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-surface-dark transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white">track_changes</span>
+<p class="text-text-muted group-hover:text-white text-sm font-medium leading-normal">Metas</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-surface-dark transition-colors group" href="#">
+<span class="material-symbols-outlined text-text-muted group-hover:text-white">settings</span>
+<p class="text-text-muted group-hover:text-white text-sm font-medium leading-normal">Configurações</p>
+</a>
+</nav>
+</div>
+<div class="mt-auto flex items-center gap-3 px-3 py-4 border-t border-border-dark">
+<div class="h-10 w-10 rounded-full bg-surface-dark flex items-center justify-center overflow-hidden border border-border-dark">
+<img alt="User profile picture" class="h-full w-full object-cover" data-alt="Portrait of a young woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS0OFWYk5RvcQA3qR4PwiA8Ix7gIZ5pr1Rqqc3LFC68xrZrjiWnFawDNxZW3YTAQDr_deab0cDjX1tBhjsjIlPVKwqAD2dZm1MhhB2RBXL7KXSKEiVdy1vKN3Xdnr8q9G1lLFVqwR_kojdO-x-xWXM9FYFO0BwPzwpy8M4OdnjNwvYdcrVW65UgkLqILsedzye_dDtcq0wXxHzCvmqz0cbF22trjQqV9ghEhOzoi-hd7qXQpg2HSHo-DMDSujdZSIz5ymTKHwlSQ93"/>
+</div>
+<div class="flex flex-col">
+<p class="text-white text-sm font-medium">Ana Silva</p>
+<p class="text-text-muted text-xs">ana.silva@email.com</p>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col h-full overflow-y-auto relative">
+<header class="sticky top-0 z-20 flex items-center justify-between border-b border-border-dark bg-background-dark/80 backdrop-blur-md px-6 py-4 lg:px-10">
+<div class="flex items-center gap-4 text-white">
+<button class="lg:hidden p-1 text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="text-white text-lg font-bold leading-tight tracking-tight">Nova Receita</h2>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 hover:bg-surface-dark text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="hidden sm:flex items-center justify-center rounded-lg h-10 w-10 hover:bg-surface-dark text-white transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+</header>
+<div class="flex-1 flex justify-center p-4 md:p-8 lg:p-12">
+<div class="w-full max-w-[800px] flex flex-col gap-8">
+<div class="flex flex-col gap-2">
+<h1 class="text-white text-3xl md:text-4xl font-bold tracking-tight">Registro de Nova Receita</h1>
+<p class="text-text-muted text-base font-normal">Preencha os detalhes da sua entrada financeira para manter seu controle em dia.</p>
+</div>
+<form class="flex flex-col gap-8 bg-surface-dark/30 rounded-2xl p-6 md:p-8 border border-border-dark/50" onsubmit="event.preventDefault()">
+<div class="flex flex-col gap-3">
+<label class="text-text-muted text-sm font-medium uppercase tracking-wider">Valor da Receita</label>
+<div class="relative group">
+<span class="absolute left-6 top-1/2 -translate-y-1/2 text-3xl md:text-4xl font-bold text-primary opacity-80 group-focus-within:opacity-100 transition-opacity">KZ</span>
+<input autofocus="" class="w-full bg-background-dark border-2 border-border-dark focus:border-primary text-primary text-3xl md:text-5xl font-bold py-6 md:py-8 pl-20 md:pl-24 pr-6 rounded-xl focus:ring-0 focus:outline-none placeholder-primary/20 transition-all shadow-inner" placeholder="0,00" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<label class="flex flex-col gap-2">
+<span class="text-white text-sm font-medium">Data da Transação</span>
+<div class="relative">
+<input class="w-full bg-surface-dark border border-[#3b5445] text-white rounded-lg h-12 px-4 focus:ring-1 focus:ring-primary focus:border-primary transition-colors cursor-pointer appearance-none" type="date"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">calendar_today</span>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-white text-sm font-medium">Categoria</span>
+<div class="relative">
+<select class="w-full bg-surface-dark border border-[#3b5445] text-white rounded-lg h-12 px-4 focus:ring-1 focus:ring-primary focus:border-primary transition-colors appearance-none cursor-pointer">
+<option disabled="" selected="" value="">Selecione uma categoria</option>
+<option value="salary">Salário</option>
+<option value="freelance">Freelance</option>
+<option value="investments">Investimentos</option>
+<option value="gift">Presente</option>
+<option value="other">Outros</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">expand_more</span>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-white text-sm font-medium">Conta de Destino</span>
+<div class="relative">
+<select class="w-full bg-surface-dark border border-[#3b5445] text-white rounded-lg h-12 px-4 focus:ring-1 focus:ring-primary focus:border-primary transition-colors appearance-none cursor-pointer">
+<option selected="" value="nubank">NuBank (KZ 1.250,00)</option>
+<option value="inter">Banco Inter (KZ 450,20)</option>
+<option value="itaú">Itaú (KZ 3.000,00)</option>
+<option value="wallet">Carteira Física (KZ 120,00)</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">account_balance</span>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-white text-sm font-medium">Status</span>
+<div class="flex items-center gap-4 h-12">
+<label class="flex items-center gap-2 cursor-pointer">
+<input checked="" class="text-primary focus:ring-primary bg-surface-dark border-border-dark" name="status" type="radio"/>
+<span class="text-white text-sm">Recebido</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="text-primary focus:ring-primary bg-surface-dark border-border-dark" name="status" type="radio"/>
+<span class="text-white text-sm">Pendente</span>
+</label>
+</div>
+</label>
+</div>
+<label class="flex flex-col gap-2">
+<span class="text-white text-sm font-medium">Descrição <span class="text-text-muted font-normal">(Opcional)</span></span>
+<textarea class="w-full bg-surface-dark border border-[#3b5445] text-white rounded-lg p-4 focus:ring-1 focus:ring-primary focus:border-primary transition-colors resize-none placeholder-text-muted/50" placeholder="Ex: Pagamento do projeto de design web..." rows="3"></textarea>
+</label>
+<div class="flex flex-col gap-2">
+<span class="text-white text-sm font-medium">Comprovante</span>
+<div class="border-2 border-dashed border-[#3b5445] hover:border-primary/50 bg-surface-dark/50 rounded-xl p-6 flex flex-col items-center justify-center gap-3 transition-colors cursor-pointer group">
+<div class="h-10 w-10 rounded-full bg-surface-dark flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-text-muted group-hover:text-primary">cloud_upload</span>
+</div>
+<div class="text-center">
+<p class="text-white text-sm font-medium group-hover:text-primary transition-colors">Clique para enviar</p>
+<p class="text-text-muted text-xs mt-1">PNG, JPG ou PDF (Max. 5MB)</p>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-end gap-4 pt-4 border-t border-border-dark mt-2">
+<button class="px-6 py-3 rounded-lg text-white text-sm font-bold hover:bg-surface-dark transition-colors" type="button">
+                                Cancelar
+                            </button>
+<button class="px-8 py-3 rounded-lg bg-primary hover:bg-[#0fd660] text-background-dark text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center gap-2" type="submit">
+<span class="material-symbols-outlined text-[20px]">check</span>
+                                Salvar Receita
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

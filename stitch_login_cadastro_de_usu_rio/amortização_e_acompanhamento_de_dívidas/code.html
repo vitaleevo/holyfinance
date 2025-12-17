@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-AO"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HolyFinanças - Amortização e Dívidas</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13ec6d",
+                        "background-light": "#f6f8f7",
+                        "background-dark": "#111814",
+                        "surface-dark": "#1c2620",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden transition-colors duration-200">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Sidebar -->
+<aside class="hidden lg:flex w-64 flex-col border-r border-slate-200 dark:border-[#28392f] bg-surface-light dark:bg-[#111814]">
+<div class="flex flex-col h-full p-4 justify-between">
+<div class="flex flex-col gap-8">
+<!-- Logo -->
+<div class="flex gap-3 items-center px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Abstract green financial logo mark" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAOAjYeOcUbnHAho0ugPF9DK7LwNiqF7udXHKdUZURIEDxIbMVjaFUvg1zUjIHjcXoCMry82b3qjywT5II8_GVHIkjXu_MuvKWBJwYdSe2ocISP-WmDJBEI8NuvI7R1iTe58Elpm6991Q-Qbg52MwIFQAwFhjoqm2fxiFVdaeoRNP3MP6mfW53JHqP1vBVOl3la1n8fv4dlOYTNn8M1fahmScXYIrc2lGsqPvc5aDOwj6zhtmsE_Hhz3FTVL6qUHHnWMb6ya5iceeqg");'></div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-base font-bold leading-normal">HolyFinanças</h1>
+<p class="text-slate-500 dark:text-[#9db9a8] text-xs font-normal leading-normal">Gestão Pessoal</p>
+</div>
+</div>
+<!-- Navigation -->
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2620] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">pie_chart</span>
+<span class="text-sm font-medium">Visão Geral</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined icon-fill">credit_card</span>
+<span class="text-sm font-medium">Dívidas</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2620] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">currency_exchange</span>
+<span class="text-sm font-medium">Orçamento</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2620] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">trending_up</span>
+<span class="text-sm font-medium">Investimentos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1c2620] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">person</span>
+<span class="text-sm font-medium">Perfil</span>
+</a>
+</nav>
+</div>
+<!-- Bottom User Actions -->
+<div class="flex items-center gap-3 px-3 py-2 border-t border-slate-200 dark:border-[#28392f] mt-4 pt-4">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-primary/50" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBZfBQ1OYOS1czk0upljJEoRI8A5g77eTSdBOrRSGiCpsTVr4dviANvi_39hecnflv6ll05rxTQIXT0QTpy938hj8wf9-WWEPKRoNjiQ6_0HLqUcXdg1ro_CLC1AFGIrWa2ii3Of_dJoMid4o11_fXcINKn-HhNk7V3ll90K_f-LsC2ZUf9eFrt8E9p0silTvXSSAmLNy4XtIaMMptIugW0g_6wqECXNCzFiVg-jzwbCR1vet8uIDj7QvbWYU6BNSyKUDjD2u9OBtbj");'></div>
+<div class="flex flex-col">
+<p class="text-sm font-medium text-slate-900 dark:text-white">João Silva</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Plano Pro</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full relative overflow-y-auto">
+<!-- Top Navbar -->
+<header class="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 dark:border-[#28392f] bg-white/80 dark:bg-[#111814]/90 backdrop-blur-md px-6 py-4">
+<div class="flex items-center gap-4 lg:hidden">
+<button class="text-slate-500 hover:text-primary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-lg font-bold">HolyFinanças</h1>
+</div>
+<div class="hidden lg:flex items-center gap-4">
+<h2 class="text-xl font-bold dark:text-white">Amortização e Dívidas</h2>
+</div>
+<div class="flex items-center gap-4 ml-auto">
+<!-- Search -->
+<div class="hidden md:flex items-center bg-slate-100 dark:bg-[#28392f] rounded-lg px-3 py-2 w-64">
+<span class="material-symbols-outlined text-slate-400 dark:text-[#9db9a8] text-xl">search</span>
+<input class="bg-transparent border-none text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#9db9a8] focus:ring-0 w-full ml-2" placeholder="Buscar dívida..." type="text"/>
+</div>
+<!-- Actions -->
+<button class="relative p-2 text-slate-500 hover:text-primary dark:text-[#9db9a8] dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full"></span>
+</button>
+<button class="hidden md:flex items-center justify-center px-4 py-2 bg-primary hover:bg-primary/90 text-slate-900 text-sm font-bold rounded-lg transition-colors shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-lg mr-2">add</span>
+                        Nova Dívida
+                    </button>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-4 md:p-8 max-w-7xl mx-auto w-full flex flex-col gap-8">
+<!-- Heading & Stats -->
+<section class="flex flex-col gap-6">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div class="flex flex-col gap-1">
+<h2 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Visão Geral</h2>
+<p class="text-slate-500 dark:text-[#9db9a8]">Resumo do seu progresso rumo à liberdade financeira.</p>
+</div>
+<div class="flex gap-2 bg-slate-100 dark:bg-[#1c2620] p-1 rounded-lg">
+<button class="px-3 py-1.5 rounded-md bg-white dark:bg-[#28392f] shadow-sm text-xs font-medium text-slate-900 dark:text-white">Visão Atual</button>
+<button class="px-3 py-1.5 rounded-md hover:bg-white/50 dark:hover:bg-[#28392f]/50 text-xs font-medium text-slate-500 dark:text-[#9db9a8] transition-colors">Simulação</button>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Stat Card 1 -->
+<div class="bg-white dark:bg-[#1c2620] p-5 rounded-xl border border-slate-200 dark:border-[#28392f] shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-slate-400 dark:text-white">account_balance_wallet</span>
+</div>
+<p class="text-sm font-medium text-slate-500 dark:text-[#9db9a8]">Dívida Total Restante</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">KZ 1.500.000</p>
+<div class="flex items-center gap-1 mt-3">
+<span class="bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-1.5 py-0.5 rounded flex items-center">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_down</span> 5%
+                                </span>
+<span class="text-xs text-slate-400 dark:text-[#9db9a8]/70">vs mês anterior</span>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-white dark:bg-[#1c2620] p-5 rounded-xl border border-slate-200 dark:border-[#28392f] shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-slate-400 dark:text-white">calendar_today</span>
+</div>
+<p class="text-sm font-medium text-slate-500 dark:text-[#9db9a8]">Comprometimento Mensal</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">KZ 45.000</p>
+<div class="flex items-center gap-1 mt-3">
+<span class="text-xs text-slate-400 dark:text-[#9db9a8]/70">Próximo: 15 Out</span>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-white dark:bg-[#1c2620] p-5 rounded-xl border border-slate-200 dark:border-[#28392f] shadow-sm relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">check_circle</span>
+</div>
+<p class="text-sm font-medium text-slate-500 dark:text-[#9db9a8]">Total Pago</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white mt-1">KZ 320.000</p>
+<div class="w-full bg-slate-100 dark:bg-[#28392f] h-1.5 rounded-full mt-4 overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 21%"></div>
+</div>
+<p class="text-xs text-right mt-1 text-primary">21% concluído</p>
+</div>
+<!-- Stat Card 4 -->
+<div class="bg-gradient-to-br from-[#1c2620] to-[#111814] dark:from-[#28392f] dark:to-[#1c2620] p-5 rounded-xl border border-slate-200 dark:border-[#28392f] shadow-sm relative overflow-hidden text-white">
+<p class="text-sm font-medium text-[#9db9a8]">Previsão de Quitação</p>
+<p class="text-2xl font-bold mt-1">Outubro 2025</p>
+<p class="text-xs text-[#9db9a8] mt-2 leading-relaxed">Mantenha o ritmo atual para se libertar em 12 meses.</p>
+<button class="mt-3 text-xs font-bold text-primary hover:text-white transition-colors flex items-center">
+                                Simular antecipação <span class="material-symbols-outlined text-sm ml-1">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Main Content Split -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- Left Column: Active Debts List -->
+<div class="xl:col-span-2 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Dívidas Ativas</h3>
+<button class="text-sm text-primary hover:text-primary/80 font-medium">Ver Histórico</button>
+</div>
+<div class="bg-white dark:bg-[#1c2620] border border-slate-200 dark:border-[#28392f] rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-[#222e26] border-b border-slate-200 dark:border-[#28392f]">
+<th class="p-4 text-xs font-semibold text-slate-500 dark:text-[#9db9a8] uppercase tracking-wider">Credor / Descrição</th>
+<th class="p-4 text-xs font-semibold text-slate-500 dark:text-[#9db9a8] uppercase tracking-wider text-right">Saldo Restante</th>
+<th class="p-4 text-xs font-semibold text-slate-500 dark:text-[#9db9a8] uppercase tracking-wider w-1/4">Progresso</th>
+<th class="p-4 text-xs font-semibold text-slate-500 dark:text-[#9db9a8] uppercase tracking-wider">Próx. Venc.</th>
+<th class="p-4 text-xs font-semibold text-slate-500 dark:text-[#9db9a8] uppercase tracking-wider text-center">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-[#28392f]">
+<!-- Row 1 -->
+<tr class="group hover:bg-slate-50 dark:hover:bg-[#222e26] transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+<span class="material-symbols-outlined">directions_car</span>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-white text-sm">Financiamento Auto</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Taxa: 12.5% a.a.</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-right">
+<p class="font-bold text-slate-900 dark:text-white">KZ 800.000</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Original: KZ 2M</p>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 mb-1 justify-between">
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">60% Pago</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-[#111814] h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 60%"></div>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-slate-900 dark:text-white">15 Out</span>
+<span class="text-xs text-amber-500 font-medium">Em 5 dias</span>
+</div>
+</td>
+<td class="p-4 text-center">
+<button class="inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors" title="Registrar Pagamento">
+<span class="material-symbols-outlined">payments</span>
+</button>
+<button class="inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors" title="Detalhes">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="group hover:bg-slate-50 dark:hover:bg-[#222e26] transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400">
+<span class="material-symbols-outlined">school</span>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-white text-sm">Crédito Estudantil</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Taxa: 8.0% a.a.</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-right">
+<p class="font-bold text-slate-900 dark:text-white">KZ 500.000</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Original: KZ 600k</p>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 mb-1 justify-between">
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">16% Pago</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-[#111814] h-2 rounded-full overflow-hidden">
+<div class="bg-purple-500 h-full rounded-full" style="width: 16%"></div>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-slate-900 dark:text-white">01 Nov</span>
+<span class="text-xs text-slate-500 dark:text-[#9db9a8]">Em 20 dias</span>
+</div>
+</td>
+<td class="p-4 text-center">
+<button class="inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors" title="Registrar Pagamento">
+<span class="material-symbols-outlined">payments</span>
+</button>
+<button class="inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors" title="Detalhes">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="group hover:bg-slate-50 dark:hover:bg-[#222e26] transition-colors">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-600 dark:text-red-400">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<div>
+<p class="font-bold text-slate-900 dark:text-white text-sm">Cartão de Crédito</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Taxa: 45.0% a.a.</p>
+</div>
+</div>
+</td>
+<td class="p-4 text-right">
+<p class="font-bold text-slate-900 dark:text-white">KZ 200.000</p>
+<p class="text-xs text-slate-500 dark:text-[#9db9a8]">Original: KZ 200k</p>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2 mb-1 justify-between">
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">0% Pago</span>
+</div>
+<div class="w-full bg-slate-200 dark:bg-[#111814] h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 0%"></div>
+</div>
+</td>
+<td class="p-4">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-slate-900 dark:text-white">10 Out</span>
+<span class="text-xs text-red-500 font-bold">Vence Hoje</span>
+</div>
+</td>
+<td class="p-4 text-center">
+<button class="inline-flex items-center justify-center p-2 rounded-lg text-primary bg-primary/10 hover:bg-primary/20 transition-colors" title="Pagar Agora">
+<span class="material-symbols-outlined">payments</span>
+</button>
+<button class="inline-flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-colors" title="Detalhes">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-slate-200 dark:border-[#28392f] bg-slate-50 dark:bg-[#1c2620]/50 flex justify-center">
+<button class="text-sm text-slate-500 dark:text-[#9db9a8] hover:text-primary transition-colors flex items-center font-medium">
+                                    Carregar mais dívidas <span class="material-symbols-outlined text-lg ml-1">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Strategy Chart Section -->
+<div class="bg-white dark:bg-[#1c2620] border border-slate-200 dark:border-[#28392f] rounded-xl p-6 shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Estratégia de Pagamento</h3>
+<p class="text-sm text-slate-500 dark:text-[#9db9a8]">Comparativo Bola de Neve vs. Avalanche</p>
+</div>
+<div class="flex gap-2 text-xs font-bold">
+<div class="flex items-center gap-1">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-slate-600 dark:text-slate-300">Atual</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-3 h-3 rounded-full bg-blue-500"></span>
+<span class="text-slate-600 dark:text-slate-300">Otimizado</span>
+</div>
+</div>
+</div>
+<!-- Simple SVG Chart Representation -->
+<div class="w-full h-48 relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 400 150">
+<!-- Grid lines -->
+<line stroke="#28392f" stroke-width="1" x1="0" x2="400" y1="150" y2="150"></line>
+<line stroke="#28392f" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="400" y1="100" y2="100"></line>
+<line stroke="#28392f" stroke-dasharray="4 4" stroke-width="1" x1="0" x2="400" y1="50" y2="50"></line>
+<!-- Current Path (Green) -->
+<path d="M0 20 Q 100 30, 200 80 T 400 150" fill="none" stroke="#13ec6d" stroke-width="3"></path>
+<path d="M0 20 Q 100 30, 200 80 T 400 150 V 150 H 0 Z" fill="url(#grad1)" opacity="0.2"></path>
+<!-- Optimized Path (Blue) -->
+<path d="M0 20 Q 80 40, 150 110 T 320 150" fill="none" stroke="#3b82f6" stroke-dasharray="6 4" stroke-width="3"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" style="stop-color:#13ec6d;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#13ec6d;stop-opacity:0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<!-- Month Labels -->
+<div class="flex justify-between text-xs text-slate-500 dark:text-[#9db9a8] mt-2 px-2">
+<span>Out 2024</span>
+<span>Fev 2025</span>
+<span>Jun 2025</span>
+<span>Out 2025</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Simulator & Info -->
+<div class="flex flex-col gap-6">
+<!-- Simulator Card -->
+<div class="bg-white dark:bg-[#1c2620] border border-slate-200 dark:border-[#28392f] rounded-xl overflow-hidden shadow-sm">
+<div class="p-6 border-b border-slate-200 dark:border-[#28392f] bg-slate-50 dark:bg-[#222e26]">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">calculate</span>
+                                    Simulador
+                                </h3>
+<p class="text-sm text-slate-500 dark:text-[#9db9a8]">Simule um pagamento antecipado.</p>
+</div>
+<div class="p-6 flex flex-col gap-4">
+<div>
+<label class="block text-xs font-bold text-slate-500 dark:text-[#9db9a8] mb-1 uppercase">Valor Extra (KZ)</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">KZ</span>
+<input class="w-full bg-slate-100 dark:bg-[#111814] border border-slate-200 dark:border-[#28392f] rounded-lg py-3 pl-10 pr-3 text-slate-900 dark:text-white focus:ring-primary focus:border-primary font-bold" type="text" value="50.000"/>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold text-slate-500 dark:text-[#9db9a8] mb-2 uppercase">Tipo de Redução</label>
+<div class="grid grid-cols-2 gap-2">
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="sim_type" type="radio"/>
+<div class="text-center py-2 px-3 rounded-lg border border-slate-200 dark:border-[#28392f] bg-slate-50 dark:bg-[#111814] text-slate-600 dark:text-slate-300 text-sm font-medium peer-checked:bg-primary/20 peer-checked:text-primary peer-checked:border-primary transition-all">
+                                                Prazo
+                                            </div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="sim_type" type="radio"/>
+<div class="text-center py-2 px-3 rounded-lg border border-slate-200 dark:border-[#28392f] bg-slate-50 dark:bg-[#111814] text-slate-600 dark:text-slate-300 text-sm font-medium peer-checked:bg-primary/20 peer-checked:text-primary peer-checked:border-primary transition-all">
+                                                Parcela
+                                            </div>
+</label>
+</div>
+</div>
+<div class="bg-primary/5 border border-primary/10 rounded-lg p-4 mt-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5">savings</span>
+<div class="flex flex-col">
+<p class="text-sm font-bold text-slate-900 dark:text-white">Resultado:</p>
+<p class="text-xs text-slate-600 dark:text-slate-300 mt-1">Você economizará <span class="text-primary font-bold">KZ 15.000</span> em juros e quitará 3 meses antes!</p>
+</div>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-slate-900 font-bold py-3 px-4 rounded-lg transition-colors mt-2 shadow-lg shadow-primary/20">
+                                    Aplicar Simulação
+                                </button>
+</div>
+</div>
+<!-- Educational / Tip Card -->
+<div class="bg-gradient-to-br from-blue-900 to-indigo-900 dark:from-[#222e26] dark:to-[#1c2620] rounded-xl p-6 relative overflow-hidden text-white shadow-md">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+<h4 class="font-bold text-lg relative z-10">Dica Financeira</h4>
+<p class="text-sm text-blue-100 dark:text-[#9db9a8] mt-2 relative z-10 leading-relaxed">
+                                O método <strong>Avalanche</strong> (pagar dívidas com juros maiores primeiro) economiza mais dinheiro no longo prazo do que o método Bola de Neve.
+                            </p>
+<button class="mt-4 text-xs font-bold text-white bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors relative z-10">
+                                Saiba mais
+                            </button>
+</div>
+<!-- Payment History Mini -->
+<div class="bg-white dark:bg-[#1c2620] border border-slate-200 dark:border-[#28392f] rounded-xl p-6 shadow-sm">
+<h4 class="text-sm font-bold text-slate-500 dark:text-[#9db9a8] uppercase mb-4">Últimos Pagamentos</h4>
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-[#28392f]">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900 dark:text-white">Financ. Auto</span>
+<span class="text-xs text-slate-500 dark:text-[#9db9a8]">15 Set 2024</span>
+</div>
+<span class="text-sm font-bold text-primary">+ KZ 45.000</span>
+</div>
+<div class="flex justify-between items-center pb-3 border-b border-slate-100 dark:border-[#28392f]">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900 dark:text-white">Cartão Crédito</span>
+<span class="text-xs text-slate-500 dark:text-[#9db9a8]">10 Set 2024</span>
+</div>
+<span class="text-sm font-bold text-primary">+ KZ 20.000</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-900 dark:text-white">Crédito Estud.</span>
+<span class="text-xs text-slate-500 dark:text-[#9db9a8]">01 Set 2024</span>
+</div>
+<span class="text-sm font-bold text-primary">+ KZ 10.000</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Toggle Dark Mode Button (For Demo Purposes) -->
+<div class="fixed bottom-6 right-6 z-50">
+<button class="bg-slate-900 dark:bg-primary text-white dark:text-slate-900 p-3 rounded-full shadow-lg hover:scale-110 transition-transform" onclick="document.documentElement.classList.toggle('dark')">
+<span class="material-symbols-outlined block dark:hidden">dark_mode</span>
+<span class="material-symbols-outlined hidden dark:block">light_mode</span>
+</button>
+</div>
+</body></html>

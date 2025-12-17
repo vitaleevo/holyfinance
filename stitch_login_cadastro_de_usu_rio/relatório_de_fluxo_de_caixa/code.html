@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Relatório de Fluxo de Caixa - HolyFinanças</title>
+<!-- Google Fonts: Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13ec6d",
+              "primary-dark": "#0eb553",
+              "background-light": "#f6f8f7",
+              "background-dark": "#102218",
+              "surface-dark": "#1A2C22",
+              "surface-light": "#ffffff",
+              "danger": "#ff5252",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for better aesthetics in dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #102218; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2d4a3e; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #13ec6d; 
+        }
+
+        /* Striped pattern for projection bars */
+        .bg-striped-primary {
+            background-image: linear-gradient(45deg, #13ec6d 25%, #0f2b1d 25%, #0f2b1d 50%, #13ec6d 50%, #13ec6d 75%, #0f2b1d 75%, #0f2b1d 100%);
+            background-size: 10px 10px;
+        }
+        .bg-striped-danger {
+            background-image: linear-gradient(45deg, #ff5252 25%, #2b1515 25%, #2b1515 50%, #ff5252 50%, #ff5252 75%, #2b1515 75%, #2b1515 100%);
+            background-size: 10px 10px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden selection:bg-primary selection:text-black">
+<div class="flex h-screen w-full">
+<!-- Side Navigation -->
+<aside class="hidden w-72 flex-col border-r border-gray-200 dark:border-[#2d4a3e] bg-white dark:bg-background-dark lg:flex">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-8">
+<!-- Logo -->
+<div class="flex flex-col px-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">savings</span>
+<h1 class="text-xl font-bold tracking-tight">HolyFinanças</h1>
+</div>
+<p class="text-gray-500 dark:text-[#9db9a8] text-xs font-medium pl-10">Gestão Pessoal Inteligente</p>
+</div>
+<!-- Menu Items -->
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-[#9db9a8] hover:bg-gray-100 dark:hover:bg-[#1A2C22] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">grid_view</span>
+<span class="text-sm font-medium">Visão Geral</span>
+</a>
+<!-- Active Item -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 dark:bg-[#1A2C22] text-primary border-r-4 border-primary" href="#">
+<span class="material-symbols-outlined fill-1">bar_chart</span>
+<span class="text-sm font-bold">Fluxo de Caixa</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-[#9db9a8] hover:bg-gray-100 dark:hover:bg-[#1A2C22] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">list_alt</span>
+<span class="text-sm font-medium">Transações</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-[#9db9a8] hover:bg-gray-100 dark:hover:bg-[#1A2C22] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">account_balance_wallet</span>
+<span class="text-sm font-medium">Orçamento</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-[#9db9a8] hover:bg-gray-100 dark:hover:bg-[#1A2C22] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">description</span>
+<span class="text-sm font-medium">Relatórios</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Menu -->
+<div class="flex flex-col gap-2 border-t border-gray-200 dark:border-[#2d4a3e] pt-4">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 dark:text-[#9db9a8] hover:bg-gray-100 dark:hover:bg-[#1A2C22] transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">settings</span>
+<span class="text-sm font-medium">Configurações</span>
+</a>
+<div class="flex items-center gap-3 px-3 py-2.5 mt-2">
+<div class="bg-gradient-to-br from-primary to-green-800 h-10 w-10 rounded-full flex items-center justify-center text-black font-bold text-sm" data-alt="User Avatar Placeholder">
+                            JD
+                        </div>
+<div class="flex flex-col">
+<p class="text-sm font-bold text-gray-900 dark:text-white">João Dala</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">Conta Premium</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto">
+<div class="max-w-[1200px] mx-auto p-6 md:p-8 lg:p-10 flex flex-col gap-8">
+<!-- Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="flex flex-col gap-2">
+<h2 class="text-3xl md:text-4xl font-black tracking-tight text-gray-900 dark:text-white">Relatório de Fluxo de Caixa</h2>
+<p class="text-gray-500 dark:text-[#9db9a8] text-base font-normal max-w-2xl">
+                            Acompanhe suas entradas, saídas e a projeção do seu saldo em Kwanza (KZ).
+                        </p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 h-10 px-4 rounded-lg border border-gray-300 dark:border-[#2d4a3e] text-gray-700 dark:text-white bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-[#2d4a3e] transition text-sm font-bold">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+<span>Mês Atual</span>
+</button>
+<button class="flex items-center gap-2 h-10 px-6 rounded-lg bg-primary hover:bg-primary-dark text-black text-sm font-bold transition shadow-[0_0_15px_rgba(19,236,109,0.3)]">
+<span class="material-symbols-outlined text-[20px]">download</span>
+<span>Exportar</span>
+</button>
+</div>
+</div>
+<!-- Filters (Chips) -->
+<div class="flex flex-wrap gap-2 pb-2 border-b border-gray-200 dark:border-[#2d4a3e]">
+<button class="flex h-8 items-center justify-center px-4 rounded-full bg-primary text-black text-sm font-bold transition">
+                        Este Mês
+                    </button>
+<button class="flex h-8 items-center justify-center px-4 rounded-full bg-gray-200 dark:bg-[#1A2C22] text-gray-700 dark:text-[#9db9a8] hover:text-white hover:bg-gray-300 dark:hover:bg-[#2d4a3e] text-sm font-medium transition">
+                        Último Trimestre
+                    </button>
+<button class="flex h-8 items-center justify-center px-4 rounded-full bg-gray-200 dark:bg-[#1A2C22] text-gray-700 dark:text-[#9db9a8] hover:text-white hover:bg-gray-300 dark:hover:bg-[#2d4a3e] text-sm font-medium transition">
+                        Semestre Atual
+                    </button>
+<button class="flex h-8 items-center justify-center px-4 rounded-full bg-gray-200 dark:bg-[#1A2C22] text-gray-700 dark:text-[#9db9a8] hover:text-white hover:bg-gray-300 dark:hover:bg-[#2d4a3e] text-sm font-medium transition">
+                        Este Ano
+                    </button>
+<button class="flex h-8 items-center justify-center px-4 rounded-full border border-dashed border-gray-400 dark:border-[#9db9a8] text-gray-700 dark:text-[#9db9a8] hover:border-primary hover:text-primary text-sm font-medium transition">
+                        Personalizado
+                    </button>
+</div>
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Income Card -->
+<div class="p-5 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-[#2d4a3e] shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-start justify-between">
+<div class="p-2 rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<span class="flex items-center text-primary text-xs font-bold bg-primary/10 px-2 py-1 rounded-full">+15% vs mês ant.</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium mb-1">Entradas Totais</p>
+<h3 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">KZ 850.000</h3>
+</div>
+</div>
+<!-- Expense Card -->
+<div class="p-5 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-[#2d4a3e] shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-start justify-between">
+<div class="p-2 rounded-lg bg-danger/20 text-danger">
+<span class="material-symbols-outlined">trending_down</span>
+</div>
+<span class="flex items-center text-danger text-xs font-bold bg-danger/10 px-2 py-1 rounded-full">+2% vs mês ant.</span>
+</div>
+<div>
+<p class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium mb-1">Saídas Totais</p>
+<h3 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">KZ 420.500</h3>
+</div>
+</div>
+<!-- Balance Card -->
+<div class="p-5 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-[#2d4a3e] shadow-sm flex flex-col justify-between gap-4">
+<div class="flex items-start justify-between">
+<div class="p-2 rounded-lg bg-blue-500/20 text-blue-400">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+</div>
+<div>
+<p class="text-gray-500 dark:text-[#9db9a8] text-sm font-medium mb-1">Saldo Acumulado</p>
+<h3 class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">KZ 429.500</h3>
+</div>
+</div>
+<!-- Projected Card -->
+<div class="p-5 rounded-2xl bg-gradient-to-br from-gray-800 to-black dark:from-[#1c2e24] dark:to-[#0f1d16] border border-gray-100 dark:border-[#2d4a3e] shadow-sm flex flex-col justify-between gap-4 relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex items-start justify-between z-10">
+<div class="p-2 rounded-lg bg-white/10 text-white">
+<span class="material-symbols-outlined">query_stats</span>
+</div>
+<span class="flex items-center text-primary text-xs font-bold bg-black/40 px-2 py-1 rounded-full border border-primary/20">Projeção</span>
+</div>
+<div class="z-10">
+<p class="text-gray-400 text-sm font-medium mb-1">Saldo Projetado (Próx. Mês)</p>
+<h3 class="text-2xl font-bold text-white tracking-tight">KZ 510.000</h3>
+</div>
+</div>
+</div>
+<!-- Main Chart Section -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- Chart Container -->
+<div class="xl:col-span-2 rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-[#2d4a3e] p-6 shadow-sm">
+<div class="flex justify-between items-start mb-8">
+<div>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Fluxo Mensal</h3>
+<p class="text-sm text-gray-500 dark:text-[#9db9a8]">Comparativo de Entradas e Saídas (Últimos 6 Meses)</p>
+</div>
+<!-- Legend -->
+<div class="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-[#9db9a8]">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span>Entrada</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-danger"></div>
+<span>Saída</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-sm bg-striped-primary border border-primary/30"></div>
+<span>Projeção</span>
+</div>
+</div>
+</div>
+<!-- CSS Bar Chart -->
+<div class="relative h-[300px] w-full mt-4 pb-8">
+<!-- Y-axis lines -->
+<div class="absolute inset-0 flex flex-col justify-between text-xs text-gray-400 dark:text-gray-600 pointer-events-none">
+<div class="border-b border-gray-100 dark:border-[#2d4a3e]/50 w-full h-0"></div>
+<div class="border-b border-gray-100 dark:border-[#2d4a3e]/50 w-full h-0"></div>
+<div class="border-b border-gray-100 dark:border-[#2d4a3e]/50 w-full h-0"></div>
+<div class="border-b border-gray-100 dark:border-[#2d4a3e]/50 w-full h-0"></div>
+<div class="border-b border-gray-100 dark:border-[#2d4a3e]/50 w-full h-0"></div>
+</div>
+<!-- Bars Container -->
+<div class="flex h-full items-end justify-between px-2 sm:px-8 relative z-10 gap-2 sm:gap-4">
+<!-- Month: Jan -->
+<div class="flex flex-col items-center gap-2 group flex-1">
+<div class="relative flex items-end gap-1 h-full w-full justify-center">
+<!-- Income Bar -->
+<div class="w-3 sm:w-6 bg-primary rounded-t-sm hover:opacity-80 transition-all relative group/bar" style="height: 60%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 transition whitespace-nowrap pointer-events-none z-20">KZ 600k</div>
+</div>
+<!-- Expense Bar -->
+<div class="w-3 sm:w-6 bg-danger rounded-t-sm hover:opacity-80 transition-all relative group/bar" style="height: 40%;">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] py-1 px-2 rounded opacity-0 group-hover/bar:opacity-100 transition whitespace-nowrap pointer-events-none z-20">KZ 400k</div>
+</div>
+</div>
+<span class="text-xs font-bold text-gray-500 dark:text-gray-400">Jan</span>
+</div>
+<!-- Month: Fev -->
+<div class="flex flex-col items-center gap-2 group flex-1">
+<div class="relative flex items-end gap-1 h-full w-full justify-center">
+<div class="w-3 sm:w-6 bg-primary rounded-t-sm hover:opacity-80 transition-all" style="height: 55%;"></div>
+<div class="w-3 sm:w-6 bg-danger rounded-t-sm hover:opacity-80 transition-all" style="height: 50%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-500 dark:text-gray-400">Fev</span>
+</div>
+<!-- Month: Mar -->
+<div class="flex flex-col items-center gap-2 group flex-1">
+<div class="relative flex items-end gap-1 h-full w-full justify-center">
+<div class="w-3 sm:w-6 bg-primary rounded-t-sm hover:opacity-80 transition-all" style="height: 75%;"></div>
+<div class="w-3 sm:w-6 bg-danger rounded-t-sm hover:opacity-80 transition-all" style="height: 35%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-500 dark:text-gray-400">Mar</span>
+</div>
+<!-- Month: Abr -->
+<div class="flex flex-col items-center gap-2 group flex-1">
+<div class="relative flex items-end gap-1 h-full w-full justify-center">
+<div class="w-3 sm:w-6 bg-primary rounded-t-sm hover:opacity-80 transition-all" style="height: 80%;"></div>
+<div class="w-3 sm:w-6 bg-danger rounded-t-sm hover:opacity-80 transition-all" style="height: 45%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-500 dark:text-gray-400">Abr</span>
+</div>
+<!-- Month: Mai (Current) -->
+<div class="flex flex-col items-center gap-2 group flex-1">
+<div class="relative flex items-end gap-1 h-full w-full justify-center">
+<div class="w-3 sm:w-6 bg-primary rounded-t-sm hover:opacity-80 transition-all shadow-[0_0_10px_rgba(19,236,109,0.4)]" style="height: 85%;"></div>
+<div class="w-3 sm:w-6 bg-danger rounded-t-sm hover:opacity-80 transition-all" style="height: 42%;"></div>
+</div>
+<span class="text-xs font-bold text-primary">Mai</span>
+</div>
+<!-- Month: Jun (Projection) -->
+<div class="flex flex-col items-center gap-2 group flex-1 opacity-90">
+<div class="relative flex items-end gap-1 h-full w-full justify-center border-l border-dashed border-gray-600 pl-2 sm:pl-4">
+<div class="w-3 sm:w-6 bg-striped-primary rounded-t-sm hover:opacity-80 transition-all border-t border-r border-l border-primary/50" style="height: 90%;"></div>
+<div class="w-3 sm:w-6 bg-striped-danger rounded-t-sm hover:opacity-80 transition-all border-t border-r border-l border-danger/50" style="height: 45%;"></div>
+</div>
+<span class="text-xs font-bold text-gray-400 italic">Jun (Proj)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Breakdown / Top Categories -->
+<div class="rounded-2xl bg-white dark:bg-surface-dark border border-gray-100 dark:border-[#2d4a3e] p-0 shadow-sm flex flex-col overflow-hidden">
+<div class="p-6 border-b border-gray-100 dark:border-[#2d4a3e]">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Maiores Movimentações</h3>
+<p class="text-sm text-gray-500 dark:text-[#9db9a8]">Destaques do período selecionado</p>
+</div>
+<div class="flex-1 overflow-y-auto max-h-[350px]">
+<table class="w-full text-left text-sm">
+<thead class="bg-gray-50 dark:bg-black/20 sticky top-0 backdrop-blur-md">
+<tr>
+<th class="px-6 py-3 font-medium text-gray-500 dark:text-[#9db9a8]">Categoria</th>
+<th class="px-6 py-3 font-medium text-gray-500 dark:text-[#9db9a8] text-right">Valor</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100 dark:divide-[#2d4a3e]">
+<!-- Item 1 -->
+<tr class="group hover:bg-gray-50 dark:hover:bg-[#2d4a3e]/30 transition">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">work</span>
+</div>
+<div>
+<p class="font-bold text-gray-900 dark:text-white">Salário</p>
+<p class="text-xs text-gray-500">05 Mai, 2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<p class="font-bold text-primary">+ KZ 650.000</p>
+</td>
+</tr>
+<!-- Item 2 -->
+<tr class="group hover:bg-gray-50 dark:hover:bg-[#2d4a3e]/30 transition">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">home</span>
+</div>
+<div>
+<p class="font-bold text-gray-900 dark:text-white">Aluguel</p>
+<p class="text-xs text-gray-500">10 Mai, 2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<p class="font-bold text-danger">- KZ 150.000</p>
+</td>
+</tr>
+<!-- Item 3 -->
+<tr class="group hover:bg-gray-50 dark:hover:bg-[#2d4a3e]/30 transition">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">shopping_cart</span>
+</div>
+<div>
+<p class="font-bold text-gray-900 dark:text-white">Mercado</p>
+<p class="text-xs text-gray-500">12 Mai, 2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<p class="font-bold text-danger">- KZ 85.000</p>
+</td>
+</tr>
+<!-- Item 4 -->
+<tr class="group hover:bg-gray-50 dark:hover:bg-[#2d4a3e]/30 transition">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+</div>
+<div>
+<p class="font-bold text-gray-900 dark:text-white">Investimentos</p>
+<p class="text-xs text-gray-500">15 Mai, 2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<p class="font-bold text-primary">+ KZ 45.000</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-gray-100 dark:border-[#2d4a3e] bg-gray-50 dark:bg-black/20">
+<button class="w-full text-center text-sm font-bold text-primary hover:text-primary-dark transition">Ver todas as transações</button>
+</div>
+</div>
+</div>
+<!-- Footer / Disclaimer -->
+<div class="flex items-center justify-center py-6 text-center">
+<p class="text-xs text-gray-500 dark:text-[#9db9a8]/60">
+                        * As projeções são estimativas baseadas em seu histórico de gastos dos últimos 6 meses. Valores em Kwanza Angolano (KZ).
+                    </p>
+</div>
+</div>
+</main>
+</div>
+</body></html>
