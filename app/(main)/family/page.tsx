@@ -2,10 +2,10 @@
 
 import React, { useState } from 'react';
 import { useMutation, useQuery } from "convex/react";
-import { api } from "../../../../convex/_generated/api";
-import { useAuth } from '../../../context/AuthContext';
+import { api } from "../../../convex/_generated/api";
+import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "../../../convex/_generated/dataModel";
 
 // Types
 interface FamilyMember {
@@ -14,6 +14,7 @@ interface FamilyMember {
     email: string;
     role: string;
     avatarStorageId?: Id<"_storage">;
+    familyRelationship?: string;
 }
 
 interface FamilyData {
@@ -26,7 +27,7 @@ interface FamilyData {
     members: FamilyMember[];
 }
 
-export default function FamilySettingsPage() {
+export default function FamilyPage() {
     const { user, token } = useAuth();
     const router = useRouter();
 
@@ -162,7 +163,7 @@ export default function FamilySettingsPage() {
     // 1. Loading State
     if (familyData === undefined) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-[60vh] flex items-center justify-center">
                 <div className="flex flex-col items-center gap-4">
                     <div className="size-12 rounded-full border-4 border-primary border-t-transparent animate-spin" />
                     <p className="text-text-secondary">Carregando informações da família...</p>
@@ -186,17 +187,12 @@ export default function FamilySettingsPage() {
     // 2. User HAS a Family -> Show Dashboard
     if (familyData) {
         return (
-            <div className="flex flex-col gap-8 max-w-5xl mx-auto p-4 md:p-8">
+            <div className="flex flex-col gap-8">
                 {error && <Alert type="error" message={error} onClose={() => setError("")} />}
                 {success && <Alert type="success" message={success} onClose={() => setSuccess("")} />}
 
                 {/* Header */}
                 <header className="relative">
-                    <button onClick={() => router.back()} className="text-sm text-text-secondary hover:text-white mb-6 flex items-center gap-1.5 transition-colors">
-                        <span className="material-symbols-outlined text-lg">arrow_back</span>
-                        Voltar às Configurações
-                    </button>
-
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div className="flex items-center gap-4">
                             <div className="size-16 rounded-2xl bg-gradient-to-br from-primary/20 to-emerald-600/10 border border-primary/30 flex items-center justify-center">
@@ -225,53 +221,89 @@ export default function FamilySettingsPage() {
                 </header>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Invite Card */}
-                    <div className="lg:col-span-1 bg-gradient-to-br from-surface-dark to-background-dark border border-surface-border rounded-2xl p-6 flex flex-col gap-5">
-                        <div className="flex items-center gap-4">
-                            <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                <span className="material-symbols-outlined">qr_code_2</span>
-                            </div>
-                            <div>
-                                <h3 className="text-white font-bold text-lg">Código de Convite</h3>
-                                <p className="text-text-secondary text-sm">Compartilhe para adicionar membros</p>
-                            </div>
-                        </div>
-
-                        <div
-                            className="relative bg-background-dark p-5 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/60 cursor-pointer transition-all group"
-                            onClick={handleCopyCode}
-                        >
-                            <div className="flex items-center justify-center gap-3">
-                                <span className="text-3xl font-mono font-black text-primary tracking-[0.3em]">
-                                    {familyData?.family?.code}
-                                </span>
-                                <span className={`material-symbols-outlined transition-all ${copied ? 'text-emerald-400 scale-110' : 'text-text-secondary group-hover:text-white'}`}>
-                                    {copied ? 'check_circle' : 'content_copy'}
-                                </span>
-                            </div>
-                            <p className="text-center text-xs text-text-secondary mt-3">
-                                {copied ? '✓ Copiado!' : 'Clique para copiar'}
-                            </p>
-                        </div>
-
-                        {/* Role Legend */}
-                        <div className="mt-auto pt-4 border-t border-surface-border/50">
-                            <p className="text-xs text-text-secondary mb-3 font-medium uppercase tracking-wider">Níveis de Acesso</p>
-                            <div className="space-y-2 text-sm">
-                                <div className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-yellow-500" />
-                                    <span className="text-yellow-400">Admin</span>
-                                    <span className="text-text-secondary">— Controle total</span>
+                    {/* Invite Card - Only for Admin/Partner */}
+                    <div className="lg:col-span-1 flex flex-col gap-6">
+                        {familyData?.family?.code !== "******" ? (
+                            <div className="bg-gradient-to-br from-surface-dark to-background-dark border border-surface-border rounded-2xl p-6 flex flex-col gap-5 h-full">
+                                <div className="flex items-center gap-4">
+                                    <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                        <span className="material-symbols-outlined">qr_code_2</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-white font-bold text-lg">Código de Convite</h3>
+                                        <p className="text-text-secondary text-sm">Compartilhe para adicionar membros</p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-primary" />
-                                    <span className="text-primary">Parceiro</span>
-                                    <span className="text-text-secondary">— Acesso total</span>
+
+                                <div
+                                    className="relative bg-background-dark p-5 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/60 cursor-pointer transition-all group"
+                                    onClick={handleCopyCode}
+                                >
+                                    <div className="flex items-center justify-center gap-3">
+                                        <span className="text-3xl font-mono font-black text-primary tracking-[0.3em]">
+                                            {familyData?.family?.code}
+                                        </span>
+                                        <span className={`material-symbols-outlined transition-all ${copied ? 'text-emerald-400 scale-110' : 'text-text-secondary group-hover:text-white'}`}>
+                                            {copied ? 'check_circle' : 'content_copy'}
+                                        </span>
+                                    </div>
+                                    <p className="text-center text-xs text-text-secondary mt-3">
+                                        {copied ? '✓ Copiado!' : 'Clique para copiar'}
+                                    </p>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <span className="w-2 h-2 rounded-full bg-blue-400" />
-                                    <span className="text-blue-400">Membro</span>
-                                    <span className="text-text-secondary">— Limitado</span>
+
+                                {/* Plan Info */}
+                                <div className="mt-auto pt-4 border-t border-surface-border/50">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <p className="text-xs text-text-secondary font-medium uppercase tracking-wider">Membros</p>
+                                        <span className="text-xs font-bold text-primary">{familyData?.members?.length} / 5</span>
+                                    </div>
+                                    <div className="w-full h-1.5 bg-background-dark rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full bg-primary rounded-full transition-all duration-500"
+                                            style={{ width: `${(familyData?.members?.length / 5) * 100}%` }}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="bg-surface-dark/50 border border-surface-border/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-4 h-full border-dashed">
+                                <div className="size-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                                    <span className="material-symbols-outlined">lock</span>
+                                </div>
+                                <div>
+                                    <h4 className="text-white font-bold text-sm">Acesso Limitado</h4>
+                                    <p className="text-text-secondary text-xs mt-1">
+                                        Apenas Administradores e Parceiros podem ver e compartilhar o código de convite.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Role Legend Card */}
+                        <div className="bg-surface-dark/30 border border-surface-border/30 rounded-2xl p-6">
+                            <p className="text-xs text-text-secondary mb-4 font-medium uppercase tracking-wider">Níveis de Acesso</p>
+                            <div className="space-y-3 text-sm">
+                                <div className="flex items-center gap-3">
+                                    <span className="w-2 h-2 rounded-full bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.4)]" />
+                                    <div>
+                                        <p className="text-yellow-400 font-bold leading-none">Admin</p>
+                                        <p className="text-text-secondary text-[10px] mt-1">Gestão total da família</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <span className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
+                                    <div>
+                                        <p className="text-primary font-bold leading-none">Parceiro</p>
+                                        <p className="text-text-secondary text-[10px] mt-1">Acesso e convite</p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <span className="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.4)]" />
+                                    <div>
+                                        <p className="text-blue-400 font-bold leading-none">Membro</p>
+                                        <p className="text-text-secondary text-[10px] mt-1">Apenas visualização</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -314,11 +346,16 @@ export default function FamilySettingsPage() {
                                                 )}
                                             </p>
                                             <p className="text-sm text-text-secondary truncate">{member.email}</p>
-                                            <div className="flex items-center gap-1.5 mt-1">
+                                            <div className="flex items-center gap-2 mt-1">
                                                 <span className={`w-2 h-2 rounded-full ${member.role === 'admin' ? 'bg-yellow-500' : member.role === 'partner' ? 'bg-emerald-500' : 'bg-blue-400'}`} />
                                                 <span className={`text-xs font-medium capitalize ${member.role === 'admin' ? 'text-yellow-400' : member.role === 'partner' ? 'text-emerald-400' : 'text-blue-400'}`}>
                                                     {member.role === 'admin' ? '👑 Administrador' : member.role === 'partner' ? '💚 Parceiro' : '👤 Membro'}
                                                 </span>
+                                                {member.familyRelationship && (
+                                                    <span className="text-xs text-text-secondary">
+                                                        • {member.familyRelationship}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
 
@@ -437,16 +474,11 @@ export default function FamilySettingsPage() {
 
     // 3. User HAS NO Family -> Show Create/Join Options
     return (
-        <div className="flex flex-col gap-8 max-w-4xl mx-auto p-4 md:p-8">
+        <div className="flex flex-col gap-8">
             {error && <Alert type="error" message={error} onClose={() => setError("")} />}
             {success && <Alert type="success" message={success} onClose={() => setSuccess("")} />}
 
             <header>
-                <button onClick={() => router.back()} className="text-sm text-text-secondary hover:text-white mb-6 flex items-center gap-1.5 transition-colors">
-                    <span className="material-symbols-outlined text-lg">arrow_back</span>
-                    Voltar às Configurações
-                </button>
-
                 <div className="flex items-center gap-4 mb-2">
                     <div className="size-16 rounded-2xl bg-gradient-to-br from-primary/20 to-emerald-600/10 border border-primary/30 flex items-center justify-center">
                         <span className="material-symbols-outlined text-3xl text-primary">family_restroom</span>

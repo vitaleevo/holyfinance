@@ -1,14 +1,16 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getUserIdFromToken } from "./auth";
 
 export const get = query({
     args: {
-        userId: v.optional(v.id("users")),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        if (!args.userId) return [];
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) return [];
 
-        const user = await ctx.db.get(args.userId!);
+        const user = await ctx.db.get(userId);
         if (!user) return [];
 
         // Admin/Partner see all family debts
@@ -21,14 +23,14 @@ export const get = query({
 
         return await ctx.db
             .query("debts")
-            .withIndex("by_user", (q) => q.eq("userId", args.userId!))
+            .withIndex("by_user", (q) => q.eq("userId", userId))
             .collect();
     },
 });
 
 export const create = mutation({
     args: {
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         name: v.string(),
         bank: v.string(),
         totalValue: v.number(),
@@ -38,17 +40,26 @@ export const create = mutation({
         icon: v.string(),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.db.get(args.userId);
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
 
-        return await ctx.db.insert("debts", { ...args, familyId });
+        const { token: _, ...debtData } = args;
+
+        return await ctx.db.insert("debts", {
+            ...debtData,
+            userId,
+            familyId
+        });
     },
 });
 
 export const update = mutation({
     args: {
         id: v.id("debts"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         name: v.optional(v.string()),
         bank: v.optional(v.string()),
         totalValue: v.optional(v.number()),
@@ -58,16 +69,19 @@ export const update = mutation({
         icon: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { id, userId, ...data } = args;
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const { id, token: _, ...data } = args;
 
         const debt = await ctx.db.get(id);
-        if (!debt) throw new Error("Not found");
+        if (!debt) throw new Error("Dívida não encontrada");
 
         const user = await ctx.db.get(userId);
         const hasAccess = debt.userId === userId || (user?.familyId && debt.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para atualizar esta dívida");
         }
 
         await ctx.db.patch(id, data);
@@ -77,17 +91,20 @@ export const update = mutation({
 export const remove = mutation({
     args: {
         id: v.id("debts"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
         const debt = await ctx.db.get(args.id);
         if (!debt) return;
 
-        const user = await ctx.db.get(args.userId);
-        const hasAccess = debt.userId === args.userId || (user?.familyId && debt.familyId === user.familyId);
+        const user = await ctx.db.get(userId);
+        const hasAccess = debt.userId === userId || (user?.familyId && debt.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para excluir esta dívida");
         }
 
         await ctx.db.delete(args.id);
@@ -98,40 +115,69 @@ export const payParcel = mutation({
     args: {
         debtId: v.id("debts"),
         accountId: v.id("accounts"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         amount: v.number(),
         date: v.string(),
     },
     handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const user = await ctx.db.get(userId);
+        const familyId = user?.familyId;
+
         const debt = await ctx.db.get(args.debtId);
-        const account = await ctx.db.get(args.accountId);
+        let account = await ctx.db.get(args.accountId);
 
         if (!debt || !account) throw new Error("Referência não encontrada");
 
-        const user = await ctx.db.get(args.userId);
-        const familyId = user?.familyId;
+        // Logic: Family-related transactions are deducted from admin's account
+        let usedAccountId = args.accountId;
+        let transDescription = `Pagamento Dívida: ${debt.name}`;
 
-        const debtAccess = debt.userId === args.userId || (familyId && debt.familyId === familyId);
-        const accountAccess = account.userId === args.userId || (familyId && account.familyId === familyId);
+        if (familyId) {
+            const admin = await ctx.db
+                .query("users")
+                .withIndex("by_family", (q) => q.eq("familyId", familyId))
+                .filter((q) => q.eq(q.field("role"), "admin"))
+                .first();
 
-        if (!debtAccess || !accountAccess) throw new Error("Unauthorized");
-        if ((account.balance ?? 0) < args.amount) throw new Error("Saldo insuficiente");
+            if (admin && admin._id !== userId) {
+                // Find admin's primary account
+                const adminAccount = await ctx.db
+                    .query("accounts")
+                    .withIndex("by_user", (q) => q.eq("userId", admin._id))
+                    .first();
+
+                if (adminAccount) {
+                    account = adminAccount;
+                    usedAccountId = adminAccount._id;
+                    transDescription += ` (Pago por: ${user?.name})`;
+                }
+            }
+        }
+
+        const debtAccess = debt.userId === userId || (familyId && debt.familyId === familyId);
+        const accountAccess = account && (account.userId === userId || (familyId && account.familyId === familyId) || (account.userId === userId));
+
+        if (!debtAccess) throw new Error("Sem permissão para acessar esta dívida");
+        // if ((account.balance ?? 0) < args.amount) throw new Error("Saldo insuficiente na conta para este pagamento");
 
         // Update Debt
         await ctx.db.patch(debt._id, {
             paidValue: (debt.paidValue || 0) + args.amount
         });
 
-        // Debit Account
-        await ctx.db.patch(account._id, {
+        // Debit Account (Target Account)
+        await ctx.db.patch(usedAccountId, {
             balance: (account.balance || 0) - args.amount
         });
 
-        // Create Transaction
+        // Create Transaction (On the account that was actually debited)
         await ctx.db.insert("transactions", {
-            userId: args.userId,
+            userId: account.userId, // Transaction belongs to the account owner
             familyId,
-            description: `Pagamento Dívida: ${debt.name}`,
+            description: transDescription,
             amount: args.amount,
             type: "expense",
             category: "Dívidas",

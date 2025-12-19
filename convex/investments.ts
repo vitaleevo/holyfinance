@@ -1,14 +1,16 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getUserIdFromToken } from "./auth";
 
 export const get = query({
     args: {
-        userId: v.optional(v.id("users")),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        if (!args.userId) return [];
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) return [];
 
-        const user = await ctx.db.get(args.userId!);
+        const user = await ctx.db.get(userId);
         if (!user) return [];
 
         // Admin/Partner see all family investments
@@ -21,14 +23,14 @@ export const get = query({
 
         return await ctx.db
             .query("investments")
-            .withIndex("by_user", (q) => q.eq("userId", args.userId!))
+            .withIndex("by_user", (q) => q.eq("userId", userId))
             .collect();
     },
 });
 
 export const create = mutation({
     args: {
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         ticker: v.string(),
         name: v.string(),
         type: v.string(),
@@ -37,17 +39,24 @@ export const create = mutation({
         accountId: v.optional(v.id("accounts")),
     },
     handler: async (ctx, args) => {
-        const { accountId, ...investmentData } = args;
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
 
-        const user = await ctx.db.get(args.userId);
+        const { accountId, token, ...investmentData } = args;
+
+        const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
 
-        const id = await ctx.db.insert("investments", { ...investmentData, familyId });
+        const id = await ctx.db.insert("investments", {
+            ...investmentData,
+            userId,
+            familyId
+        });
 
         // Debit from account if specified
         if (accountId) {
             const account = await ctx.db.get(accountId);
-            const accountAccess = account && (account.userId === args.userId || (familyId && account.familyId === familyId));
+            const accountAccess = account && (account.userId === userId || (familyId && account.familyId === familyId));
             if (accountAccess) {
                 const totalCost = args.quantity * args.price;
                 await ctx.db.patch(accountId, {
@@ -63,7 +72,7 @@ export const create = mutation({
 export const update = mutation({
     args: {
         id: v.id("investments"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         ticker: v.optional(v.string()),
         name: v.optional(v.string()),
         type: v.optional(v.string()),
@@ -71,16 +80,19 @@ export const update = mutation({
         price: v.optional(v.number()),
     },
     handler: async (ctx, args) => {
-        const { id, userId, ...data } = args;
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const { id, token, ...data } = args;
 
         const investment = await ctx.db.get(id);
-        if (!investment) throw new Error("Not found");
+        if (!investment) throw new Error("Investimento não encontrado");
 
         const user = await ctx.db.get(userId);
         const hasAccess = investment.userId === userId || (user?.familyId && investment.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para atualizar este investimento");
         }
 
         await ctx.db.patch(id, data);
@@ -90,17 +102,20 @@ export const update = mutation({
 export const remove = mutation({
     args: {
         id: v.id("investments"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
         const investment = await ctx.db.get(args.id);
         if (!investment) return;
 
-        const user = await ctx.db.get(args.userId);
-        const hasAccess = investment.userId === args.userId || (user?.familyId && investment.familyId === user.familyId);
+        const user = await ctx.db.get(userId);
+        const hasAccess = investment.userId === userId || (user?.familyId && investment.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para remover este investimento");
         }
 
         await ctx.db.delete(args.id);

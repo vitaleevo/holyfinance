@@ -10,6 +10,7 @@ interface User {
     name: string;
     email: string;
     avatarUrl?: string | null;
+    familyRelationship?: string | null;
 }
 
 interface AuthContextType {
@@ -53,6 +54,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         name: currentUser.name,
         email: currentUser.email,
         avatarUrl: currentUser.avatarUrl,
+        familyRelationship: currentUser.familyRelationship,
     } : null;
 
     const login = async (email: string, password: string) => {
@@ -60,8 +62,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const result = await loginMutation({ email, password });
             localStorage.setItem(TOKEN_KEY, result.token);
             setToken(result.token);
-        } catch (error: any) {
-            throw new Error(error.message || "Erro ao fazer login");
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Erro ao fazer login";
+            throw new Error(message);
         }
     };
 
@@ -70,8 +73,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             const result = await registerMutation({ name, email, password });
             localStorage.setItem(TOKEN_KEY, result.token);
             setToken(result.token);
-        } catch (error: any) {
-            throw new Error(error.message || "Erro ao criar conta");
+        } catch (error: unknown) {
+            const message = error instanceof Error ? error.message : "Erro ao criar conta";
+            throw new Error(message);
         }
     };
 

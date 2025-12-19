@@ -40,17 +40,17 @@ export default function MainLayout({
     }
 
     return (
-        <>
+        <div className="flex h-screen w-full bg-background-dark overflow-hidden">
             <TransactionModal />
             <Sidebar />
             <main className="flex-1 flex flex-col h-full overflow-hidden relative">
                 <MobileNav />
-                <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-10 pb-24 md:pb-8 scroll-smooth">
-                    <div className="max-w-[1400px] mx-auto w-full h-full">
+                <div className="flex-1 overflow-y-auto p-6 md:p-10 lg:p-12 pb-32 md:pb-12 scroll-smooth">
+                    <div className="max-w-[1400px] mx-auto w-full h-full pb-10">
                         {children}
                     </div>
                 </div>
             </main>
-        </>
+        </div>
     );
 }

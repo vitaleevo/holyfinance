@@ -29,6 +29,7 @@ export default function SettingsPage() {
     const [email, setEmail] = useState(user?.email || "");
     const [phone, setPhone] = useState("");
     const [currency, setCurrency] = useState("Kwanza (AOA)");
+    const [familyRelationship, setFamilyRelationship] = useState("");
 
     // Email Config State
     const [emailHost, setEmailHost] = useState("");
@@ -51,6 +52,7 @@ export default function SettingsPage() {
             setEmail(userProfile.email || "");
             setPhone(userProfile.phone || "");
             setCurrency(userProfile.currency || "Kwanza (AOA)");
+            setFamilyRelationship(userProfile.familyRelationship || "");
         } else if (user) {
             setName(user.name);
             setEmail(user.email);
@@ -121,7 +123,8 @@ export default function SettingsPage() {
                 token: token ?? undefined,
                 name,
                 phone,
-                currency
+                currency,
+                familyRelationship
             });
 
             // Save email settings
@@ -230,6 +233,24 @@ export default function SettingsPage() {
                                     <option>Kwanza (AOA)</option>
                                     <option>Dólar (USD)</option>
                                     <option>Euro (EUR)</option>
+                                </select>
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-bold text-text-secondary uppercase">Parentesco Familiar</label>
+                                <select
+                                    value={familyRelationship}
+                                    onChange={(e) => setFamilyRelationship(e.target.value)}
+                                    className="bg-background-dark border border-surface-border rounded-lg px-4 py-2 text-white focus:border-primary outline-none transition-colors"
+                                >
+                                    <option value="">Selecione...</option>
+                                    <option value="Pai">Pai</option>
+                                    <option value="Mãe">Mãe</option>
+                                    <option value="Filho">Filho(a)</option>
+                                    <option value="Cônjuge">Cônjuge</option>
+                                    <option value="Irmão">Irmão/Irmã</option>
+                                    <option value="Primo">Primo(a)</option>
+                                    <option value="Avô">Avô/Avó</option>
+                                    <option value="Outro">Outro</option>
                                 </select>
                             </div>
                         </div>

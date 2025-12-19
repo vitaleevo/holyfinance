@@ -85,7 +85,17 @@ export const join = mutation({
             .withIndex("by_code", (q) => q.eq("code", args.code.toUpperCase()))
             .first();
 
-        if (!family) throw new Error("Invalid family code");
+        if (!family) throw new Error("Código de convite inválido ou expirado.");
+
+        // Rule: Limit family size to 5 members
+        const currentMembers = await ctx.db
+            .query("users")
+            .withIndex("by_family", (q) => q.eq("familyId", family._id))
+            .collect();
+
+        if (currentMembers.length >= 5) {
+            throw new Error("Esta família já atingiu o limite máximo de 5 membros.");
+        }
 
         await ctx.db.patch(userId, {
             familyId: family._id,
@@ -130,6 +140,7 @@ export const get = query({
         if (!user || !user.familyId) return null;
 
         const family = await ctx.db.get(user.familyId);
+        if (!family) return null;
 
         // Get members
         const members = await ctx.db
@@ -137,14 +148,22 @@ export const get = query({
             .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
             .collect();
 
+        // Security Layer: Mask code for simple members
+        const hasFullAccess = user.role === 'admin' || user.role === 'partner';
+        const secureFamily = {
+            ...family,
+            code: hasFullAccess ? family.code : "******"
+        };
+
         return {
-            family,
+            family: secureFamily,
             members: members.map(m => ({
                 id: m._id,
                 name: m.name,
                 email: m.email,
                 role: m.role,
-                avatarStorageId: m.avatarStorageId
+                avatarStorageId: m.avatarStorageId,
+                familyRelationship: m.familyRelationship
             }))
         };
     },
@@ -185,6 +204,112 @@ export const updateMemberRole = mutation({
         }
 
         await ctx.db.patch(args.memberId, { role: args.newRole });
+
+        return { success: true };
+    },
+});
+
+// Remove member from family (admin only)
+export const removeMember = mutation({
+    args: {
+        memberId: v.id("users"),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Unauthorized");
+
+        const currentUser = await ctx.db.get(userId);
+        if (!currentUser || currentUser.role !== 'admin') {
+            throw new Error("Only admin can remove members");
+        }
+
+        const member = await ctx.db.get(args.memberId);
+        if (!member) throw new Error("Member not found");
+
+        // Ensure same family
+        if (member.familyId !== currentUser.familyId) {
+            throw new Error("Member not in your family");
+        }
+
+        // Cannot remove self
+        if (member._id === userId) {
+            throw new Error("Cannot remove yourself. Use 'leave' instead or transfer admin first.");
+        }
+
+        // Remove member from family (keep their data orphan for individual access)
+        await ctx.db.patch(args.memberId, { familyId: undefined, role: undefined });
+
+        return { success: true };
+    },
+});
+
+// Leave family voluntarily
+export const leave = mutation({
+    args: {
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Unauthorized");
+
+        const user = await ctx.db.get(userId);
+        if (!user || !user.familyId) throw new Error("Not in a family");
+
+        // If admin, check if there are other members
+        if (user.role === 'admin') {
+            const members = await ctx.db
+                .query("users")
+                .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+                .collect();
+
+            if (members.length > 1) {
+                // Find another admin or partner to transfer
+                const successor = members.find(m => m._id !== userId && (m.role === 'partner' || m.role === 'admin'));
+                if (successor) {
+                    await ctx.db.patch(successor._id, { role: 'admin' });
+                } else {
+                    throw new Error("You must promote another member to admin before leaving, or remove all members first.");
+                }
+            }
+        }
+
+        // Leave family
+        await ctx.db.patch(userId, { familyId: undefined, role: undefined });
+
+        return { success: true };
+    },
+});
+
+// Transfer admin role to another member
+export const transferAdmin = mutation({
+    args: {
+        newAdminId: v.id("users"),
+        token: v.optional(v.string())
+    },
+    handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Unauthorized");
+
+        const currentUser = await ctx.db.get(userId);
+        if (!currentUser || currentUser.role !== 'admin') {
+            throw new Error("Only admin can transfer admin role");
+        }
+
+        const newAdmin = await ctx.db.get(args.newAdminId);
+        if (!newAdmin) throw new Error("Member not found");
+
+        if (newAdmin.familyId !== currentUser.familyId) {
+            throw new Error("Member not in your family");
+        }
+
+        if (newAdmin._id === userId) {
+            throw new Error("You are already the admin");
+        }
+
+        // Transfer admin
+        await ctx.db.patch(args.newAdminId, { role: 'admin' });
+        await ctx.db.patch(userId, { role: 'partner' });
 
         return { success: true };
     },

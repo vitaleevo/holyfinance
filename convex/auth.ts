@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, QueryCtx } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { hashSync, compareSync } from "bcryptjs";
 
@@ -167,13 +167,14 @@ export const getCurrentUser = query({
             phone: user.phone,
             currency: user.currency,
             avatarUrl,
+            familyRelationship: user.familyRelationship,
         };
     },
 });
 
 // Helper function to get userId from token (for use in other mutations)
 export async function getUserIdFromToken(
-    ctx: any,
+    ctx: QueryCtx,
     token: string | undefined
 ): Promise<Id<"users"> | null> {
     if (!token) return null;

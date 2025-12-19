@@ -1,14 +1,16 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getUserIdFromToken } from "./auth";
 
 export const get = query({
     args: {
-        userId: v.optional(v.id("users")),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        if (!args.userId) return [];
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) return [];
 
-        const user = await ctx.db.get(args.userId!);
+        const user = await ctx.db.get(userId);
         if (!user) return [];
 
         // If user is in a family AND has full access (admin/partner), show all family data
@@ -22,25 +24,32 @@ export const get = query({
         // Members only see their own accounts
         return await ctx.db
             .query("accounts")
-            .withIndex("by_user", (q) => q.eq("userId", args.userId!))
+            .withIndex("by_user", (q) => q.eq("userId", userId))
             .collect();
     },
 });
 
 export const create = mutation({
     args: {
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         name: v.string(),
         type: v.string(),
         balance: v.number(),
         bankName: v.string(),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.db.get(args.userId);
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
 
         return await ctx.db.insert("accounts", {
-            ...args,
+            userId,
+            name: args.name,
+            type: args.type,
+            balance: args.balance,
+            bankName: args.bankName,
             familyId,
         });
     },
@@ -49,23 +58,26 @@ export const create = mutation({
 export const update = mutation({
     args: {
         id: v.id("accounts"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         name: v.optional(v.string()),
         type: v.optional(v.string()),
         balance: v.optional(v.number()),
         bankName: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { id, userId, ...data } = args;
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const { id, token, ...data } = args;
 
         const account = await ctx.db.get(id);
-        if (!account) throw new Error("Not found");
+        if (!account) throw new Error("Conta não encontrada");
 
         const user = await ctx.db.get(userId);
         const hasAccess = account.userId === userId || (user?.familyId && account.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para alterar esta conta");
         }
 
         await ctx.db.patch(id, data);
@@ -75,17 +87,20 @@ export const update = mutation({
 export const remove = mutation({
     args: {
         id: v.id("accounts"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
         const account = await ctx.db.get(args.id);
         if (!account) return;
 
-        const user = await ctx.db.get(args.userId);
-        const hasAccess = account.userId === args.userId || (user?.familyId && account.familyId === user.familyId);
+        const user = await ctx.db.get(userId);
+        const hasAccess = account.userId === userId || (user?.familyId && account.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para remover esta conta");
         }
 
         await ctx.db.delete(args.id);

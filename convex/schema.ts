@@ -18,6 +18,7 @@ export default defineSchema({
     avatarStorageId: v.optional(v.id("_storage")),
     familyId: v.optional(v.id("families")), // Link to family
     role: v.optional(v.string()), // "admin" | "partner" | "member"
+    familyRelationship: v.optional(v.string()), // "Pai", "Mãe", "Filho", "Primo", etc.
   })
     .index("by_email", ["email"])
     .index("by_family", ["familyId"]),
@@ -55,7 +56,7 @@ export default defineSchema({
     category: v.string(),
     date: v.string(),
     account: v.string(), // Name of account, linked via logic
-    status: v.optional(v.string()),
+    status: v.optional(v.union(v.literal("paid"), v.literal("pending"), v.literal("completed"))),
   })
     .index("by_user", ["userId"])
     .index("by_family", ["familyId"]),
@@ -131,4 +132,16 @@ export default defineSchema({
     fromEmail: v.string(),
     secure: v.boolean(),
   }).index("by_user", ["userId"]),
+
+  categories: defineTable({
+    userId: v.id("users"),
+    familyId: v.optional(v.id("families")),
+    name: v.string(),
+    type: v.string(), // "income" | "expense"
+    icon: v.optional(v.string()), // Material ID
+    color: v.optional(v.string()), // Hex
+    isDefault: v.boolean(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_family", ["familyId"]),
 });

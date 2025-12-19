@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
-import { Transaction, Goal, Account, BudgetLimit, Investment, Debt, AppSettings } from '../types';
+import { Transaction, Goal, Account, BudgetLimit, Investment, Debt, AppSettings, TransactionType } from '../types';
 import { useAuth } from './AuthContext';
 
 interface TransactionContextType {
@@ -57,28 +57,37 @@ interface TransactionContextType {
 const TransactionContext = createContext<TransactionContextType | undefined>(undefined);
 
 export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const { userId } = useAuth();
+    const { token } = useAuth();
 
     // --- UI STATE ---
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
 
-    // --- CONVEX DATA (filtered by userId) ---
-    const convexTransactions = useQuery(api.transactions.get, { userId: userId ?? undefined });
-    const convexGoals = useQuery(api.goals.get, { userId: userId ?? undefined });
-    const convexAccounts = useQuery(api.accounts.get, { userId: userId ?? undefined });
-    const convexBudgets = useQuery(api.budgets.get, { userId: userId ?? undefined });
-    const convexInvestments = useQuery(api.investments.get, { userId: userId ?? undefined });
-    const convexDebts = useQuery(api.debts.get, { userId: userId ?? undefined });
-    const convexSettings = useQuery(api.settings.get, { userId: userId ?? undefined });
+    // --- CONVEX DATA (filtered by token) ---
+    const convexTransactions = useQuery(api.transactions.get, { token: token ?? undefined });
+    const convexGoals = useQuery(api.goals.get, { token: token ?? undefined });
+    const convexAccounts = useQuery(api.accounts.get, { token: token ?? undefined });
+    const convexBudgets = useQuery(api.budgets.get, { token: token ?? undefined });
+    const convexInvestments = useQuery(api.investments.get, { token: token ?? undefined });
+    const convexDebts = useQuery(api.debts.get, { token: token ?? undefined });
+    const convexSettings = useQuery(api.settings.get, { token: token ?? undefined });
 
     // --- MAPPED DATA ---
-    const transactions: Transaction[] = (convexTransactions || []).map((t: any) => ({ ...t, id: t._id }));
-    const goals: Goal[] = (convexGoals || []).map((t: any) => ({ ...t, id: t._id }));
-    const accounts: Account[] = (convexAccounts || []).map((t: any) => ({ ...t, id: t._id }));
-    const budgetLimits: BudgetLimit[] = (convexBudgets || []).map((t: any) => ({ ...t, id: t._id }));
-    const investments: Investment[] = (convexInvestments || []).map((t: any) => ({ ...t, id: t._id }));
-    const debts: Debt[] = (convexDebts || []).map((t: any) => ({ ...t, id: t._id }));
+    const transactions: Transaction[] = (convexTransactions || []).map((t) => ({
+        id: t._id,
+        description: t.description,
+        amount: t.amount,
+        type: t.type as TransactionType,
+        category: t.category,
+        date: t.date,
+        account: t.account,
+        status: (t.status === 'pending' || t.status === 'completed' ? t.status : 'paid') as Transaction['status']
+    }));
+    const goals: Goal[] = (convexGoals || []).map((t) => ({ ...t, id: t._id, status: t.status as Goal['status'] }));
+    const accounts: Account[] = (convexAccounts || []).map((t) => ({ ...t, id: t._id }));
+    const budgetLimits: BudgetLimit[] = (convexBudgets || []).map((t) => ({ ...t, id: t._id }));
+    const investments: Investment[] = (convexInvestments || []).map((t) => ({ ...t, id: t._id, type: t.type as Investment['type'] }));
+    const debts: Debt[] = (convexDebts || []).map((t) => ({ ...t, id: t._id }));
 
     const settings: AppSettings = convexSettings ? {
         theme: convexSettings.theme as 'dark' | 'light',
@@ -131,16 +140,16 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
 
     // Transactions
     const addTransaction = (data: Omit<Transaction, 'id'>) => {
-        if (!userId) return;
-        createTransaction({ userId, ...data });
+        if (!token) return;
+        createTransaction({ token, ...data });
     };
     const updateTransaction = (id: string, data: Omit<Transaction, 'id'>) => {
-        if (!userId) return;
-        updateTransactionMutation({ id: id as Id<"transactions">, userId, ...data });
+        if (!token) return;
+        updateTransactionMutation({ id: id as unknown as Id<"transactions">, token, ...data });
     };
     const deleteTransaction = (id: string) => {
-        if (!userId) return;
-        deleteTransactionMutation({ id: id as Id<"transactions">, userId });
+        if (!token) return;
+        deleteTransactionMutation({ id: id as unknown as Id<"transactions">, token });
     };
 
     const openModal = (t?: Transaction) => { setEditingTransaction(t || null); setIsModalOpen(true); };
@@ -148,84 +157,84 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
 
     // Goals
     const addGoal = (data: Omit<Goal, 'id' | 'currentAmount' | 'status'>) => {
-        if (!userId) return;
-        createGoal({ userId, ...data });
+        if (!token) return;
+        createGoal({ token, ...data });
     };
     const updateGoal = (id: string, data: Partial<Goal>) => {
-        if (!userId) return;
-        updateGoalMutation({ id: id as Id<"goals">, userId, ...data });
+        if (!token) return;
+        updateGoalMutation({ id: id as unknown as Id<"goals">, token, ...data });
     };
     const deleteGoal = (id: string) => {
-        if (!userId) return;
-        deleteGoalMutation({ id: id as Id<"goals">, userId });
+        if (!token) return;
+        deleteGoalMutation({ id: id as unknown as Id<"goals">, token });
     };
     const addFundsToGoal = (id: string, amount: number, accountId?: string) => {
-        if (!userId) return;
-        const accId = accountId ? accountId as Id<"accounts"> : undefined;
-        addFundsGoalMutation({ goalId: id as Id<"goals">, userId, amount, accountId: accId });
+        if (!token) return;
+        const accId = accountId ? accountId as unknown as Id<"accounts"> : undefined;
+        addFundsGoalMutation({ goalId: id as unknown as Id<"goals">, token, amount, accountId: accId });
     };
 
     // Accounts
     const addAccount = (data: Omit<Account, 'id'>) => {
-        if (!userId) return;
-        createAccount({ userId, ...data });
+        if (!token) return;
+        createAccount({ token, ...data });
     };
     const updateAccount = (id: string, data: Partial<Account>) => {
-        if (!userId) return;
-        updateAccountMutation({ id: id as Id<"accounts">, userId, ...data });
+        if (!token) return;
+        updateAccountMutation({ id: id as unknown as Id<"accounts">, token, ...data });
     };
     const deleteAccount = (id: string) => {
-        if (!userId) return;
-        deleteAccountMutation({ id: id as Id<"accounts">, userId });
+        if (!token) return;
+        deleteAccountMutation({ id: id as unknown as Id<"accounts">, token });
     };
 
     // Budgets
     const addBudgetLimit = (data: Omit<BudgetLimit, 'id'>) => {
-        if (!userId) return;
-        createBudget({ userId, ...data });
+        if (!token) return;
+        createBudget({ token, ...data });
     };
     const updateBudgetLimit = (id: string, data: Partial<BudgetLimit>) => {
-        if (!userId) return;
-        updateBudgetMutation({ id: id as Id<"budgetLimits">, userId, ...data });
+        if (!token) return;
+        updateBudgetMutation({ id: id as unknown as Id<"budgetLimits">, token, ...data });
     };
     const deleteBudgetLimit = (id: string) => {
-        if (!userId) return;
-        deleteBudgetMutation({ id: id as Id<"budgetLimits">, userId });
+        if (!token) return;
+        deleteBudgetMutation({ id: id as unknown as Id<"budgetLimits">, token });
     };
 
     // Investments
     const addInvestment = (data: Omit<Investment, 'id'>, accountId?: string) => {
-        if (!userId) return;
-        const accId = accountId ? accountId as Id<"accounts"> : undefined;
-        createInvestment({ userId, ...data, accountId: accId });
+        if (!token) return;
+        const accId = accountId ? accountId as unknown as Id<"accounts"> : undefined;
+        createInvestment({ token, ...data, accountId: accId });
     };
     const updateInvestment = (id: string, data: Partial<Investment>) => {
-        if (!userId) return;
-        updateInvestmentMutation({ id: id as Id<"investments">, userId, ...data });
+        if (!token) return;
+        updateInvestmentMutation({ id: id as unknown as Id<"investments">, token, ...data });
     };
     const deleteInvestment = (id: string) => {
-        if (!userId) return;
-        deleteInvestmentMutation({ id: id as Id<"investments">, userId });
+        if (!token) return;
+        deleteInvestmentMutation({ id: id as unknown as Id<"investments">, token });
     };
 
     // Debts
     const addDebt = (data: Omit<Debt, 'id'>) => {
-        if (!userId) return;
-        createDebt({ userId, ...data });
+        if (!token) return;
+        createDebt({ token, ...data });
     };
     const updateDebt = (id: string, data: Partial<Debt>) => {
-        if (!userId) return;
-        updateDebtMutation({ id: id as Id<"debts">, userId, ...data });
+        if (!token) return;
+        updateDebtMutation({ id: id as unknown as Id<"debts">, token, ...data });
     };
     const deleteDebt = (id: string) => {
-        if (!userId) return;
-        deleteDebtMutation({ id: id as Id<"debts">, userId });
+        if (!token) return;
+        deleteDebtMutation({ id: id as unknown as Id<"debts">, token });
     };
 
     // Settings
     const updateSettings = (newSettings: Partial<AppSettings>) => {
-        if (!userId) return;
-        updateSettingsMutation({ userId, ...newSettings });
+        if (!token) return;
+        updateSettingsMutation({ token, ...newSettings });
     };
 
     return (

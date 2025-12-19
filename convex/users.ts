@@ -34,6 +34,7 @@ export const updateProfile = mutation({
         name: v.optional(v.string()),
         phone: v.optional(v.string()),
         currency: v.optional(v.string()),
+        familyRelationship: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
         const userId = await getUserIdFromToken(ctx, args.token);
@@ -41,10 +42,16 @@ export const updateProfile = mutation({
             throw new Error("Não autenticado");
         }
 
-        const dataToUpdate: any = {};
+        const dataToUpdate: {
+            name?: string;
+            phone?: string;
+            currency?: string;
+            familyRelationship?: string;
+        } = {};
         if (args.name !== undefined) dataToUpdate.name = args.name;
         if (args.phone !== undefined) dataToUpdate.phone = args.phone;
         if (args.currency !== undefined) dataToUpdate.currency = args.currency;
+        if (args.familyRelationship !== undefined) dataToUpdate.familyRelationship = args.familyRelationship;
 
         await ctx.db.patch(userId, dataToUpdate);
 

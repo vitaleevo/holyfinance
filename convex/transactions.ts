@@ -1,15 +1,17 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { createNotification } from "./notifications";
+import { getUserIdFromToken } from "./auth";
 
 export const get = query({
     args: {
-        userId: v.optional(v.id("users")),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        if (!args.userId) return [];
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) return [];
 
-        const user = await ctx.db.get(args.userId!);
+        const user = await ctx.db.get(userId);
         if (!user) return [];
 
         // If user is admin/partner, show all family transactions
@@ -23,7 +25,7 @@ export const get = query({
 
         return await ctx.db
             .query("transactions")
-            .withIndex("by_user", (q) => q.eq("userId", args.userId!))
+            .withIndex("by_user", (q) => q.eq("userId", userId))
             .order("desc")
             .collect();
     },
@@ -31,38 +33,67 @@ export const get = query({
 
 export const create = mutation({
     args: {
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         description: v.string(),
         amount: v.number(),
         type: v.string(),
         category: v.string(),
         date: v.string(),
         account: v.string(),
-        status: v.optional(v.string()),
+        status: v.optional(v.union(v.literal("paid"), v.literal("pending"), v.literal("completed"))),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.db.get(args.userId);
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
 
+        const { token: _, ...txData } = args;
+
+        // Determine which account to use
+        let transDescription = args.description;
+        let account = familyId
+            ? await ctx.db.query("accounts")
+                .withIndex("by_family", q => q.eq("familyId", familyId))
+                .filter((q) => q.eq(q.field("name"), args.account))
+                .first()
+            : await ctx.db.query("accounts")
+                .withIndex("by_user", q => q.eq("userId", userId))
+                .filter((q) => q.eq(q.field("name"), args.account))
+                .first();
+
+        // Admin Account Override Logic for Family Expenses
+        if (familyId && args.type === "expense") {
+            const admin = await ctx.db
+                .query("users")
+                .withIndex("by_family", (q) => q.eq("familyId", familyId))
+                .filter((q) => q.eq(q.field("role"), "admin"))
+                .first();
+
+            if (admin && admin._id !== userId) {
+                const adminAccount = await ctx.db
+                    .query("accounts")
+                    .withIndex("by_user", (q) => q.eq("userId", admin._id))
+                    .first();
+
+                if (adminAccount) {
+                    account = adminAccount;
+                    transDescription += ` (Gasto por: ${user?.name})`;
+                }
+            }
+        }
+
         const id = await ctx.db.insert("transactions", {
-            ...args,
+            ...txData,
+            userId: account ? account.userId : userId, // Transaction linked to the account owner
+            description: transDescription,
+            account: account ? account.name : args.account,
             status: args.status || "completed", // Default
             familyId
         });
 
         // Update Account Balance
-        let accountQuery = ctx.db.query("accounts");
-        if (familyId) {
-            // @ts-ignore
-            accountQuery = accountQuery.withIndex("by_family", q => q.eq("familyId", familyId));
-        } else {
-            accountQuery = accountQuery.withIndex("by_user", q => q.eq("userId", args.userId));
-        }
-
-        const account = await accountQuery
-            .filter((q) => q.eq(q.field("name"), args.account))
-            .first();
-
         if (account) {
             let newBalance = account.balance ?? 0;
             if (args.type === "income") {
@@ -83,7 +114,7 @@ export const create = mutation({
                     .first();
             } else {
                 limitDoc = await ctx.db.query("budgetLimits")
-                    .withIndex("by_user", q => q.eq("userId", args.userId))
+                    .withIndex("by_user", q => q.eq("userId", userId))
                     .filter(q => q.eq(q.field("category"), args.category))
                     .first();
             }
@@ -93,15 +124,11 @@ export const create = mutation({
                 const now = new Date();
                 const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
-                let transactionsQuery = ctx.db.query("transactions");
-                if (familyId) {
-                    // @ts-ignore
-                    transactionsQuery = transactionsQuery.withIndex("by_family", q => q.eq("familyId", familyId));
-                } else {
-                    transactionsQuery = transactionsQuery.withIndex("by_user", q => q.eq("userId", args.userId));
-                }
+                const baseQuery = familyId
+                    ? ctx.db.query("transactions").withIndex("by_family", q => q.eq("familyId", familyId))
+                    : ctx.db.query("transactions").withIndex("by_user", q => q.eq("userId", userId));
 
-                const transactions = await transactionsQuery
+                const transactions = await baseQuery
                     .filter((q) => q.and(
                         q.eq(q.field("category"), args.category),
                         q.eq(q.field("type"), "expense"),
@@ -120,7 +147,7 @@ export const create = mutation({
                     const idea = ideas[Math.floor(Math.random() * ideas.length)];
 
                     await createNotification(ctx, {
-                        userId: args.userId,
+                        userId: userId,
                         familyId,
                         title: `Orçamento Excedido: ${args.category} ⚠️`,
                         message: `Você ultrapassou o limite de ${limitDoc.limit} para ${args.category}. Gasto atual: ${totalSpent}.\n\n💡 Ideia: ${idea}`,
@@ -138,21 +165,24 @@ export const create = mutation({
 export const update = mutation({
     args: {
         id: v.id("transactions"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         description: v.string(),
         amount: v.number(),
         type: v.string(),
         category: v.string(),
         date: v.string(),
         account: v.string(),
-        status: v.optional(v.string()),
+        status: v.optional(v.union(v.literal("paid"), v.literal("pending"), v.literal("completed"))),
     },
     handler: async (ctx, args) => {
-        const { id, userId, ...newData } = args;
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const { id, token: _, ...newData } = args;
         const oldTransaction = await ctx.db.get(id);
 
         if (!oldTransaction) {
-            throw new Error("Transaction not found");
+            throw new Error("Transação não encontrada");
         }
 
         const user = await ctx.db.get(userId);
@@ -168,14 +198,15 @@ export const update = mutation({
 
         // Helper to find account
         const findAccount = async (name: string) => {
-            let q = ctx.db.query("accounts");
-            if (familyId) {
-                // @ts-ignore
-                q = q.withIndex("by_family", qt => qt.eq("familyId", familyId));
-            } else {
-                q = q.withIndex("by_user", qt => qt.eq("userId", userId));
-            }
-            return await q.filter(qt => qt.eq(qt.field("name"), name)).first();
+            return familyId
+                ? await ctx.db.query("accounts")
+                    .withIndex("by_family", qt => qt.eq("familyId", familyId))
+                    .filter(qt => qt.eq(qt.field("name"), name))
+                    .first()
+                : await ctx.db.query("accounts")
+                    .withIndex("by_user", qt => qt.eq("userId", userId))
+                    .filter(qt => qt.eq(qt.field("name"), name))
+                    .first();
         };
 
         // Revert old transaction effect
@@ -207,17 +238,20 @@ export const update = mutation({
 export const remove = mutation({
     args: {
         id: v.id("transactions"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
         const transaction = await ctx.db.get(args.id);
         if (!transaction) return;
 
-        const user = await ctx.db.get(args.userId);
+        const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
 
         // Verify ownership
-        const hasAccess = transaction.userId === args.userId || (familyId && transaction.familyId === familyId);
+        const hasAccess = transaction.userId === userId || (familyId && transaction.familyId === familyId);
         if (!hasAccess) {
             throw new Error("Unauthorized");
         }
@@ -225,17 +259,15 @@ export const remove = mutation({
         await ctx.db.delete(args.id);
 
         // Revert Account Balance
-        let accountQuery = ctx.db.query("accounts");
-        if (familyId) {
-            // @ts-ignore
-            accountQuery = accountQuery.withIndex("by_family", q => q.eq("familyId", familyId));
-        } else {
-            accountQuery = accountQuery.withIndex("by_user", q => q.eq("userId", args.userId));
-        }
-
-        const account = await accountQuery
-            .filter((q) => q.eq(q.field("name"), transaction.account))
-            .first();
+        const account = familyId
+            ? await ctx.db.query("accounts")
+                .withIndex("by_family", q => q.eq("familyId", familyId))
+                .filter((q) => q.eq(q.field("name"), transaction.account))
+                .first()
+            : await ctx.db.query("accounts")
+                .withIndex("by_user", q => q.eq("userId", userId))
+                .filter((q) => q.eq(q.field("name"), transaction.account))
+                .first();
 
         if (account) {
             let balance = account.balance ?? 0;

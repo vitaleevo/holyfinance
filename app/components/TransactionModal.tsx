@@ -14,7 +14,7 @@ export const TransactionModal = () => {
         category: 'Alimentação',
         date: new Date().toISOString().split('T')[0],
         account: 'Banco BAI',
-        status: 'paid' as 'paid' | 'pending'
+        status: 'paid' as 'paid' | 'pending' | 'completed'
     });
 
     useEffect(() => {
@@ -26,7 +26,8 @@ export const TransactionModal = () => {
                 category: editingTransaction.category,
                 date: editingTransaction.date,
                 account: editingTransaction.account,
-                status: editingTransaction.status
+                // Map 'completed' (default from DB) to 'paid' for the UI
+                status: editingTransaction.status === 'completed' ? 'paid' : editingTransaction.status
             });
         } else {
             setFormData({

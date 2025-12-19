@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import { useTransactions } from '../../context/TransactionContext';
+import { useAuth } from '../../context/AuthContext';
 import { Debt } from '../../types';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
 export default function DebtsPage() {
     const { debts, addDebt, updateDebt, deleteDebt, accounts } = useTransactions();
+    const { token } = useAuth();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({ name: '', bank: '', totalValue: '', paidValue: '', monthlyParcel: '', dueDate: '', icon: 'home' });
@@ -81,7 +83,8 @@ export default function DebtsPage() {
                 debtId: selectedDebt.id as any,
                 accountId: payAccount as any,
                 amount: parseFloat(payAmount),
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                token: token ?? undefined
             });
             setIsPayModalOpen(false);
             alert("Pagamento registrado com sucesso!");

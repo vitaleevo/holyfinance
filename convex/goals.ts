@@ -1,15 +1,17 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { createNotification } from "./notifications";
+import { getUserIdFromToken } from "./auth";
 
 export const get = query({
     args: {
-        userId: v.optional(v.id("users")),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        if (!args.userId) return [];
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) return [];
 
-        const user = await ctx.db.get(args.userId!);
+        const user = await ctx.db.get(userId);
         if (!user) return [];
 
         // Admin/Partner see all family goals
@@ -22,14 +24,14 @@ export const get = query({
 
         return await ctx.db
             .query("goals")
-            .withIndex("by_user", (q) => q.eq("userId", args.userId!))
+            .withIndex("by_user", (q) => q.eq("userId", userId))
             .collect();
     },
 });
 
 export const create = mutation({
     args: {
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         title: v.string(),
         category: v.string(),
         targetAmount: v.number(),
@@ -37,11 +39,17 @@ export const create = mutation({
         icon: v.string(),
     },
     handler: async (ctx, args) => {
-        const user = await ctx.db.get(args.userId);
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
 
+        const { token, ...goalData } = args;
+
         return await ctx.db.insert("goals", {
-            ...args,
+            ...goalData,
+            userId,
             familyId,
             currentAmount: 0,
             status: "active",
@@ -52,7 +60,7 @@ export const create = mutation({
 export const update = mutation({
     args: {
         id: v.id("goals"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         title: v.optional(v.string()),
         category: v.optional(v.string()),
         targetAmount: v.optional(v.number()),
@@ -62,16 +70,19 @@ export const update = mutation({
         status: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
-        const { id, userId, ...data } = args;
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
+        const { id, token, ...data } = args;
 
         const goal = await ctx.db.get(id);
-        if (!goal) throw new Error("Not found");
+        if (!goal) throw new Error("Meta não encontrada");
 
         const user = await ctx.db.get(userId);
         const hasAccess = goal.userId === userId || (user?.familyId && goal.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para atualizar esta meta");
         }
 
         await ctx.db.patch(id, data);
@@ -81,17 +92,20 @@ export const update = mutation({
 export const remove = mutation({
     args: {
         id: v.id("goals"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
     },
     handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
         const goal = await ctx.db.get(args.id);
         if (!goal) return;
 
-        const user = await ctx.db.get(args.userId);
-        const hasAccess = goal.userId === args.userId || (user?.familyId && goal.familyId === user.familyId);
+        const user = await ctx.db.get(userId);
+        const hasAccess = goal.userId === userId || (user?.familyId && goal.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para excluir esta meta");
         }
 
         await ctx.db.delete(args.id);
@@ -101,20 +115,23 @@ export const remove = mutation({
 export const addFundsCompensating = mutation({
     args: {
         goalId: v.id("goals"),
-        userId: v.id("users"),
+        token: v.optional(v.string()),
         amount: v.number(),
         accountId: v.optional(v.id("accounts")),
     },
     handler: async (ctx, args) => {
-        const goal = await ctx.db.get(args.goalId);
-        if (!goal) throw new Error("Not found");
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
 
-        const user = await ctx.db.get(args.userId);
+        const goal = await ctx.db.get(args.goalId);
+        if (!goal) throw new Error("Meta não encontrada");
+
+        const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
-        const hasAccess = goal.userId === args.userId || (familyId && goal.familyId === familyId);
+        const hasAccess = goal.userId === userId || (familyId && goal.familyId === familyId);
 
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Sem permissão para esta operação");
         }
 
         // Update goal
@@ -137,7 +154,7 @@ export const addFundsCompensating = mutation({
             const idea = ideas[Math.floor(Math.random() * ideas.length)];
 
             await createNotification(ctx, {
-                userId: args.userId,
+                userId: userId,
                 familyId,
                 title: `Meta Atingida: ${goal.title} 🎉`,
                 message: `Parabéns! Você alcançou o valor alvo de ${goal.targetAmount}.\n\n💡 Ideia: ${idea}`,
@@ -149,7 +166,7 @@ export const addFundsCompensating = mutation({
         // Debit from account if specified
         if (args.accountId) {
             const account = await ctx.db.get(args.accountId);
-            const accountAccess = account && (account.userId === args.userId || (familyId && account.familyId === familyId));
+            const accountAccess = account && (account.userId === userId || (familyId && account.familyId === familyId));
             if (accountAccess) {
                 await ctx.db.patch(args.accountId, {
                     balance: (account.balance ?? 0) - args.amount,

@@ -1,0 +1,15 @@
+app/context/TransactionContext.tsx(165,30): error TS2322: Type 'string' is not assignable to type 'Id<"goals">'.
+  Type 'string' is not assignable to type '{ __tableName: "goals"; }'.
+app/context/TransactionContext.tsx(184,33): error TS2322: Type 'string' is not assignable to type 'Id<"accounts">'.
+  Type 'string' is not assignable to type '{ __tableName: "accounts"; }'.
+app/context/TransactionContext.tsx(198,32): error TS2322: Type 'string' is not assignable to type 'Id<"budgetLimits">'.
+  Type 'string' is not assignable to type '{ __tableName: "budgetLimits"; }'.
+app/context/TransactionContext.tsx(213,36): error TS2322: Type 'string' is not assignable to type 'Id<"investments">'.
+  Type 'string' is not assignable to type '{ __tableName: "investments"; }'.
+app/context/TransactionContext.tsx(227,30): error TS2322: Type 'string' is not assignable to type 'Id<"debts">'.
+  Type 'string' is not assignable to type '{ __tableName: "debts"; }'.
+convex/transactions.ts(92,13): error TS2322: Type 'string' is not assignable to type '"paid" | "pending" | "completed" | undefined'.
+convex/transactions.ts(197,32): error TS2345: Argument of type '{ status?: string | undefined; type: string; description: string; amount: number; category: string; date: string; account: string; }' is not assignable to parameter of type 'PatchValue<{ _id: Id<"transactions">; _creationTime: number; familyId?: Id<"families"> | undefined; status?: "paid" | "pending" | "completed" | undefined; type: string; userId: Id<"users">; ... 4 more ...; account: string; }>'.
+  Types of property 'status' are incompatible.
+    Type 'string | undefined' is not assignable to type '"paid" | "pending" | "completed" | undefined'.
+      Type 'string' is not assignable to type '"paid" | "pending" | "completed" | undefined'.

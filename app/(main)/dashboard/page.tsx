@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useRouter } from 'next/navigation';
 import { useTransactions } from '../../context/TransactionContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function DashboardPage() {
     const { transactions, accounts, investments, debts, settings } = useTransactions();
+    const { user } = useAuth();
     const router = useRouter();
     const [viewMode, setViewMode] = useState<'month' | 'all'>('month');
 
@@ -104,25 +106,45 @@ export default function DashboardPage() {
 
     return (
         <div className="flex flex-col gap-8">
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="flex flex-col gap-1">
                     <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">Dashboard Principal</h1>
                     <p className="text-text-secondary text-base">Visão unificada do seu patrimônio e fluxo de caixa.</p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <button
-                        onClick={() => setViewMode(prev => prev === 'month' ? 'all' : 'month')}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg border border-surface-border bg-surface-dark text-text-secondary text-sm font-medium hover:text-primary transition-colors hover:border-primary active:scale-95"
-                    >
-                        <span className="material-symbols-outlined text-[20px]">calendar_today</span>
-                        {viewMode === 'month' ? 'Este Mês' : 'Todos'}
-                    </button>
-                    <button
-                        onClick={() => router.push('/dashboard/notifications')}
-                        className="p-2 rounded-lg border border-surface-border bg-surface-dark text-text-secondary hover:text-primary transition-colors hover:border-primary active:scale-95"
-                    >
-                        <span className="material-symbols-outlined text-[20px] icon-filled">notifications</span>
-                    </button>
+
+                <div className="flex flex-wrap items-center gap-4 md:gap-6 ml-auto">
+                    {/* User Profile Info */}
+                    <div className="flex items-center gap-3 py-1.5 px-3 rounded-2xl bg-surface-dark border border-surface-border shadow-sm group hover:border-primary/30 transition-all cursor-pointer" onClick={() => router.push('/settings')}>
+                        <div className="flex flex-col text-right hidden sm:flex">
+                            <span className="text-white font-bold text-sm leading-tight">{user?.name}</span>
+                            <span className="text-primary text-[11px] font-bold uppercase tracking-wider">
+                                {user?.familyRelationship || 'Membro'}
+                            </span>
+                        </div>
+                        <div className="size-10 rounded-xl overflow-hidden bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+                            {user?.avatarUrl ? (
+                                <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover" />
+                            ) : (
+                                <span className="material-symbols-outlined text-primary">person</span>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 border-l border-surface-border pl-4 md:pl-6">
+                        <button
+                            onClick={() => setViewMode(prev => prev === 'month' ? 'all' : 'month')}
+                            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-surface-border bg-surface-dark text-text-secondary text-sm font-semibold hover:text-white transition-all hover:bg-surface-hover hover:border-primary/50"
+                        >
+                            <span className="material-symbols-outlined text-[20px]">calendar_today</span>
+                            <span className="hidden xs:inline">{viewMode === 'month' ? 'Este Mês' : 'Todos'}</span>
+                        </button>
+                        <button
+                            onClick={() => router.push('/notifications')}
+                            className="p-2.5 rounded-xl border border-surface-border bg-surface-dark text-text-secondary hover:text-primary transition-all hover:bg-surface-hover hover:border-primary/50 relative"
+                        >
+                            <span className="material-symbols-outlined text-[20px] icon-filled">notifications</span>
+                        </button>
+                    </div>
                 </div>
             </header>
 

@@ -9,6 +9,7 @@ export enum Page {
     DEBTS = 'Dívidas',
     REPORTS = 'Relatórios',
     NOTIFICATIONS = 'Notificações',
+    FAMILY = 'Família',
     SETTINGS = 'Configurações'
 }
 
@@ -34,7 +35,7 @@ export interface Transaction {
     category: string;
     date: string; // YYYY-MM-DD
     account: string;
-    status: 'paid' | 'pending';
+    status: 'paid' | 'pending' | 'completed';
 }
 
 export interface Goal {

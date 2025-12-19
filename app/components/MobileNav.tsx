@@ -15,6 +15,7 @@ const routeMap: Record<Page, string> = {
     [Page.DEBTS]: '/debts',
     [Page.REPORTS]: '/reports',
     [Page.NOTIFICATIONS]: '/notifications',
+    [Page.FAMILY]: '/family',
     [Page.SETTINGS]: '/settings',
 };
 
@@ -27,6 +28,7 @@ const navItems = [
     { icon: 'trending_up', label: 'Investimentos', page: Page.INVESTMENTS },
     { icon: 'credit_card', label: 'Dívidas', page: Page.DEBTS },
     { icon: 'bar_chart', label: 'Relatórios', page: Page.REPORTS },
+    { icon: 'diversity_3', label: 'Família', page: Page.FAMILY },
 ];
 
 export const MobileNav = () => {
