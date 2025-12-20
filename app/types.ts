@@ -10,7 +10,8 @@ export enum Page {
     REPORTS = 'Relatórios',
     NOTIFICATIONS = 'Notificações',
     FAMILY = 'Família',
-    SETTINGS = 'Configurações'
+    SETTINGS = 'Configurações',
+    SUBSCRIPTION = 'Assinatura'
 }
 
 export interface NavItem {

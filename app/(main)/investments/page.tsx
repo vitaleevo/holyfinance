@@ -4,9 +4,10 @@ import React, { useState } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useTransactions } from '../../context/TransactionContext';
 import { Investment } from '../../types';
+import { formatKwanza, maskValue } from '../../utils/currency';
 
 export default function InvestmentsPage() {
-    const { investments, accounts, addInvestment, updateInvestment, deleteInvestment } = useTransactions();
+    const { investments, accounts, settings, addInvestment, updateInvestment, deleteInvestment } = useTransactions();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -14,6 +15,10 @@ export default function InvestmentsPage() {
     const [formData, setFormData] = useState({ ticker: '', name: '', type: 'Ações', quantity: '', price: '', debitAccount: '' });
 
     const totalBalance = investments.reduce((acc, curr) => acc + (curr.quantity * curr.price), 0);
+
+    const formatMoney = (val: number) => {
+        return maskValue(formatKwanza(val), settings.privacyMode);
+    };
 
     // Chart Data
     const typeMap = investments.reduce((acc, curr) => {
@@ -89,7 +94,7 @@ export default function InvestmentsPage() {
 
             <div className="bg-surface-dark border border-surface-border p-5 rounded-xl flex flex-col gap-3 max-w-sm">
                 <span className="text-text-secondary text-sm font-medium">Patrimônio Investido</span>
-                <span className="text-3xl font-bold text-white tracking-tight">KZ {totalBalance.toLocaleString()}</span>
+                <span className="text-3xl font-bold text-white tracking-tight">{formatMoney(totalBalance)}</span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -137,8 +142,8 @@ export default function InvestmentsPage() {
                                             </div>
                                         </td>
                                         <td className="py-4 px-6 text-sm text-white text-right font-medium">{row.quantity}</td>
-                                        <td className="py-4 px-6 text-sm text-white text-right font-bold">KZ {row.price.toLocaleString()}</td>
-                                        <td className="py-4 px-6 text-sm text-white text-right font-bold">KZ {(row.quantity * row.price).toLocaleString()}</td>
+                                        <td className="py-4 px-6 text-sm text-white text-right font-bold">{formatMoney(row.price)}</td>
+                                        <td className="py-4 px-6 text-sm text-white text-right font-bold">{formatMoney(row.quantity * row.price)}</td>
                                         <td className="py-4 px-6 text-center">
                                             <div className="flex justify-center gap-2">
                                                 <button onClick={() => handleOpen(row)} className="text-text-secondary hover:text-white"><span className="material-symbols-outlined text-sm">edit</span></button>
@@ -179,7 +184,7 @@ export default function InvestmentsPage() {
                                         className="w-full bg-background-dark border border-surface-border rounded-lg px-4 py-2 text-white outline-none"
                                     >
                                         {accounts.map(acc => (
-                                            <option key={acc.id} value={acc.id}>{acc.name} (KZ {acc.balance.toLocaleString()})</option>
+                                            <option key={acc.id} value={acc.id}>{acc.name} ({formatKwanza(acc.balance)})</option>
                                         ))}
                                         <option value="">Não debitar (apenas registro)</option>
                                     </select>

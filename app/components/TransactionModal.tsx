@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { TransactionType } from '../types';
 import { useTransactions } from '../context/TransactionContext';
+import { formatKwanza } from '../utils/currency';
 
 export const TransactionModal = () => {
     const { isModalOpen, closeModal, addTransaction, updateTransaction, editingTransaction, accounts } = useTransactions();
@@ -115,7 +116,7 @@ export const TransactionModal = () => {
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">Valor da Transação</label>
                             <div className="relative group">
-                                <span className={`absolute left-0 top-1/2 -translate-y-1/2 text-4xl font-black ${themeColor} opacity-50`}>KZ</span>
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 font-bold">KZ</span>
                                 <input
                                     autoFocus
                                     type="number"
@@ -183,7 +184,7 @@ export const TransactionModal = () => {
                                     >
                                         {accounts.length > 0 ? (
                                             accounts.map(acc => (
-                                                <option key={acc.id} value={acc.name}>{acc.name}</option>
+                                                <option key={acc.id} value={acc.name}>{acc.name} ({formatKwanza(acc.balance)})</option>
                                             ))
                                         ) : (
                                             <option value="">Nenhuma conta encontrada</option>

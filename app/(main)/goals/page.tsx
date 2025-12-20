@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import { useTransactions } from '../../context/TransactionContext';
 import { Goal } from '../../types';
+import { formatKwanza, maskValue } from '../../utils/currency';
 
 export default function GoalsPage() {
-    const { goals, accounts, addGoal, deleteGoal, addFundsToGoal, updateGoal } = useTransactions();
+    const { goals, accounts, settings, addGoal, deleteGoal, addFundsToGoal, updateGoal } = useTransactions();
 
     // States for Modals
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -90,6 +91,10 @@ export default function GoalsPage() {
     const totalSaved = goals.reduce((acc, curr) => acc + curr.currentAmount, 0);
     const activeGoalsCount = goals.filter(g => g.status === 'active').length;
 
+    const formatMoney = (val: number) => {
+        return maskValue(formatKwanza(val), settings.privacyMode);
+    };
+
     const getRemainingTime = (dateStr: string) => {
         const diff = new Date(dateStr).getTime() - new Date().getTime();
         const months = Math.ceil(diff / (1000 * 60 * 60 * 24 * 30));
@@ -121,7 +126,7 @@ export default function GoalsPage() {
                         <p className="text-text-secondary text-sm font-medium uppercase tracking-wider">Total Acumulado</p>
                         <span className="bg-[#1f3b2d] text-primary text-xs font-bold px-2 py-1 rounded">Reservado</span>
                     </div>
-                    <p className="text-white text-3xl font-bold leading-tight mt-1">KZ {totalSaved.toLocaleString()}</p>
+                    <p className="text-white text-3xl font-bold leading-tight mt-1">{formatMoney(totalSaved)}</p>
                 </div>
                 <div className="flex flex-col gap-2 rounded-xl p-6 bg-surface-dark border border-surface-border shadow-sm">
                     <div className="flex justify-between items-start">
@@ -165,15 +170,15 @@ export default function GoalsPage() {
                                     <span className={`text-4xl font-black tracking-tight ${isCompleted ? 'text-primary' : 'text-white'}`}>{pct}%</span>
                                     <div className="text-right">
                                         <p className="text-xs text-text-secondary uppercase mb-1">Faltam</p>
-                                        <p className="text-white font-bold">KZ {(goal.targetAmount - goal.currentAmount).toLocaleString()}</p>
+                                        <p className="text-white font-bold">{formatMoney(goal.targetAmount - goal.currentAmount)}</p>
                                     </div>
                                 </div>
                                 <div className="w-full bg-surface-border h-4 rounded-full overflow-hidden">
                                     <div className={`h-full rounded-full transition-all duration-1000 ease-out ${isCompleted ? 'bg-primary' : 'bg-gradient-to-r from-primary/50 to-primary'}`} style={{ width: `${pct}%` }}></div>
                                 </div>
                                 <div className="flex justify-between text-xs font-medium text-text-secondary mt-1">
-                                    <span>Guardado: KZ {goal.currentAmount.toLocaleString()}</span>
-                                    <span>Meta: KZ {goal.targetAmount.toLocaleString()}</span>
+                                    <span>Guardado: {formatMoney(goal.currentAmount)}</span>
+                                    <span>Meta: {formatMoney(goal.targetAmount)}</span>
                                 </div>
                             </div>
 
@@ -340,7 +345,7 @@ export default function GoalsPage() {
                                     className="w-full bg-background-dark border border-surface-border rounded-lg px-4 py-3 text-white mt-1 focus:border-primary outline-none"
                                 >
                                     {accounts.map(acc => (
-                                        <option key={acc.id} value={acc.id}>{acc.name} (KZ {acc.balance.toLocaleString()})</option>
+                                        <option key={acc.id} value={acc.id}>{acc.name} ({formatKwanza(acc.balance)})</option>
                                     ))}
                                     <option value="">Não debitar de conta</option>
                                 </select>

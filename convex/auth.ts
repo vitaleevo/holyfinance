@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { v, ConvexError } from "convex/values";
 import { mutation, query, QueryCtx } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { hashSync, compareSync } from "bcryptjs";
@@ -22,11 +22,11 @@ export const register = mutation({
         const domain = email.split('@')[1];
 
         if (!domain || !domain.includes('.')) {
-            throw new Error("O formato do email parece estar incorreto. Por favor, verifique.");
+            throw new ConvexError("O formato do email parece estar incorreto. Por favor, verifique.");
         }
 
         if (forbiddenDomains.includes(domain)) {
-            throw new Error("Por favor, use um email válido (Gmail, Outlook, domínio pessoal, etc). Emails de teste não são permitidos.");
+            throw new ConvexError("Por favor, use um email válido (Gmail, Outlook, domínio pessoal, etc). Emails de teste não são permitidos.");
         }
 
         // Check if user already exists
@@ -36,15 +36,20 @@ export const register = mutation({
             .first();
 
         if (existingUser) {
-            throw new Error("Já existe uma conta com este email.");
+            throw new ConvexError("Já existe uma conta com este email.");
         }
 
         // Create user
+        const trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
         const userId = await ctx.db.insert("users", {
             name: args.name,
             email: args.email.toLowerCase(),
             passwordHash: hashSync(args.password, 10), // Use bcrypt
             createdAt: new Date().toISOString(),
+            subscriptionStatus: "trialing",
+            trialEndsAt,
+            planType: "basic",
+            billingCycle: "monthly",
         });
 
         // Create default settings for the user
@@ -93,12 +98,12 @@ export const login = mutation({
             .first();
 
         if (!user) {
-            throw new Error("Email ou senha incorretos.");
+            throw new ConvexError("Email ou senha incorretos.");
         }
 
         const isValid = compareSync(args.password, user.passwordHash); // Use bcrypt
         if (!isValid) {
-            throw new Error("Email ou senha incorretos.");
+            throw new ConvexError("Email ou senha incorretos.");
         }
 
         // Create session
@@ -160,6 +165,16 @@ export const getCurrentUser = query({
             avatarUrl = await ctx.storage.getUrl(user.avatarStorageId);
         }
 
+        let status: any = user.subscriptionStatus ?? "expired";
+
+        // Dynamic check for trial expiration
+        if (status === "trialing" && user.trialEndsAt) {
+            const trialEnd = new Date(user.trialEndsAt).getTime();
+            if (Date.now() > trialEnd) {
+                status = "expired";
+            }
+        }
+
         return {
             id: user._id,
             name: user.name,
@@ -169,6 +184,10 @@ export const getCurrentUser = query({
             avatarUrl,
             familyRelationship: user.familyRelationship,
             role: user.role ?? "member",
+            subscriptionStatus: status,
+            trialEndsAt: user.trialEndsAt,
+            planType: user.planType ?? "basic",
+            billingCycle: user.billingCycle ?? "monthly",
         };
     },
 });

@@ -13,6 +13,10 @@ interface User {
     avatarUrl?: string | null;
     familyRelationship?: string | null;
     role?: "admin" | "partner" | "member";
+    subscriptionStatus?: "trialing" | "active" | "canceled" | "expired" | "pending_verification";
+    trialEndsAt?: string;
+    planType?: "free" | "basic" | "intermediate" | "advanced";
+    billingCycle?: "monthly" | "yearly" | "biyearly";
 }
 
 interface AuthContextType {
@@ -58,6 +62,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         avatarUrl: currentUser.avatarUrl,
         familyRelationship: currentUser.familyRelationship,
         role: currentUser.role as "admin" | "partner" | "member",
+        subscriptionStatus: currentUser.subscriptionStatus as any,
+        trialEndsAt: currentUser.trialEndsAt,
+        planType: currentUser.planType as any,
+        billingCycle: currentUser.billingCycle as any,
     } : null;
 
     const login = async (email: string, password: string) => {

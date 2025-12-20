@@ -5,6 +5,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useRouter } from 'next/navigation';
 import { useTransactions } from '../../context/TransactionContext';
 import { useAuth } from '../../context/AuthContext';
+import { formatKwanza, maskValue } from '../../utils/currency';
 
 export default function DashboardPage() {
     const { transactions, accounts, investments, debts, settings } = useTransactions();
@@ -39,8 +40,7 @@ export default function DashboardPage() {
 
     // Helper for Privacy Mode
     const formatMoney = (val: number) => {
-        if (settings.privacyMode) return '••••••';
-        return 'KZ ' + val.toLocaleString();
+        return maskValue(formatKwanza(val), settings.privacyMode);
     };
 
     // 3. Calculate Expenses by Category for Chart (using filtered)

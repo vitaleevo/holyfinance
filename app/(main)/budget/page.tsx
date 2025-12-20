@@ -3,9 +3,10 @@
 import React, { useState } from 'react';
 import { useTransactions } from '../../context/TransactionContext';
 import { BudgetLimit } from '../../types';
+import { formatKwanza, maskValue } from '../../utils/currency';
 
 export default function BudgetPage() {
-    const { transactions, budgetLimits, addBudgetLimit, updateBudgetLimit, deleteBudgetLimit } = useTransactions();
+    const { transactions, budgetLimits, settings, addBudgetLimit, updateBudgetLimit, deleteBudgetLimit } = useTransactions();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [formData, setFormData] = useState({ category: '', limit: '' });
@@ -28,6 +29,10 @@ export default function BudgetPage() {
     const totalSpent = budgetData.reduce((a, b) => a + b.spent, 0);
     const remaining = totalLimit - totalSpent;
     const totalPct = totalLimit > 0 ? Math.round((totalSpent / totalLimit) * 100) : 0;
+
+    const formatMoney = (val: number) => {
+        return maskValue(formatKwanza(val), settings.privacyMode);
+    };
 
     const handleOpen = (item?: BudgetLimit) => {
         if (item) {
@@ -57,9 +62,9 @@ export default function BudgetPage() {
             <div className="rounded-2xl bg-surface-dark border border-surface-border p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-success via-primary to-danger"></div>
                 <p className="text-text-secondary font-bold uppercase tracking-widest text-sm mb-2">Disponível para Gastar (Baseado em Limites)</p>
-                <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter mb-4">KZ {remaining.toLocaleString()}</h2>
+                <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter mb-4">{formatMoney(remaining)}</h2>
                 <p className="text-sm text-text-secondary">
-                    {totalPct}% do orçamento total (KZ {totalLimit.toLocaleString()}) utilizado.
+                    {totalPct}% do orçamento total ({formatMoney(totalLimit)}) utilizado.
                 </p>
             </div>
 
@@ -81,13 +86,13 @@ export default function BudgetPage() {
                             </div>
                             <div className="flex flex-col gap-2">
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-text-secondary">Gasto: <span className="text-white font-bold">KZ {item.spent.toLocaleString()}</span></span>
-                                    <span className="text-text-secondary">Limite: {item.limit.toLocaleString()}</span>
+                                    <span className="text-text-secondary">Gasto: <span className="text-white font-bold">{formatMoney(item.spent)}</span></span>
+                                    <span className="text-text-secondary">Limite: {formatMoney(item.limit)}</span>
                                 </div>
                                 <div className="w-full h-2.5 bg-background-dark rounded-full overflow-hidden">
                                     <div className={`h-full rounded-full ${colorClass}`} style={{ width: `${pct}%` }}></div>
                                 </div>
-                                <span className={`text-xs ${textClass} font-bold text-right`}>Restam KZ {(item.limit - item.spent).toLocaleString()}</span>
+                                <span className={`text-xs ${textClass} font-bold text-right`}>Restam {formatMoney(item.limit - item.spent)}</span>
                             </div>
                         </div>
                     )

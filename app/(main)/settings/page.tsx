@@ -22,6 +22,9 @@ export default function SettingsPage() {
     const updateProfile = useMutation(api.users.updateProfile);
     const updateAvatar = useMutation(api.users.updateAvatar);
     const saveEmailSettings = useMutation(api.emailConfigs.saveSettings);
+    const cleanupExpiredUsers = useMutation(api.subscriptions.cleanupExpiredUsers);
+    const requestAccountDeletion = useMutation(api.users.requestAccountDeletion);
+    const cancelAccountDeletion = useMutation(api.users.cancelAccountDeletion);
 
     // Fetch existing settings
     const emailSettings = useQuery(api.emailConfigs.getSettings, { token: token ?? undefined });
@@ -367,8 +370,165 @@ export default function SettingsPage() {
                         </div>
                     </div>
                 </section>
+
+                {/* Danger Zone */}
+                <section className="bg-surface-dark border border-danger/20 rounded-2xl p-6">
+                    <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-danger">warning</span>
+                        Zona de Perigo
+                    </h2>
+
+                    {userProfile?.deletionScheduledAt ? (
+                        <div className="bg-danger/10 border border-danger/30 rounded-xl p-4 mb-4">
+                            <div className="flex items-start gap-3">
+                                <span className="material-symbols-outlined text-danger">schedule</span>
+                                <div>
+                                    <p className="text-white font-bold">Exclusão de conta agendada</p>
+                                    <p className="text-sm text-text-secondary mt-1">
+                                        Sua conta e todos os seus dados serão excluídos permanentemente em{" "}
+                                        <span className="text-white font-mono">
+                                            {new Date(userProfile.deletionScheduledAt).toLocaleDateString('pt-BR')}
+                                        </span>.
+                                    </p>
+                                    <button
+                                        onClick={async () => {
+                                            if (confirm("Deseja realmente cancelar a exclusão da sua conta?")) {
+                                                try {
+                                                    await cancelAccountDeletion({ token: token ?? undefined });
+                                                    showToast("Exclusão cancelada com sucesso!", "success");
+                                                } catch (e: any) {
+                                                    showToast(e.message || "Erro ao cancelar exclusão.", "error");
+                                                }
+                                            }
+                                        }}
+                                        className="mt-4 bg-white text-background-dark font-bold px-4 py-2 rounded-lg text-sm hover:bg-white/90 transition-colors"
+                                    >
+                                        Cancelar Exclusão
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div>
+                            <p className="text-sm text-text-secondary mb-4">
+                                Uma vez que você solicitar a exclusão, sua conta entrará em um período de carência de 7 dias antes de ser permanentemente removida.
+                            </p>
+                            <button
+                                onClick={async () => {
+                                    if (confirm("ATENÇÃO: Sua conta será agendada para exclusão permanente em 7 dias. Deseja continuar?")) {
+                                        try {
+                                            await requestAccountDeletion({ token: token ?? undefined });
+                                            showToast("Sua conta foi agendada para exclusão.", "warning");
+                                        } catch (e: any) {
+                                            showToast(e.message || "Erro ao solicitar exclusão.", "error");
+                                        }
+                                    }
+                                }}
+                                className="bg-danger/10 hover:bg-danger text-danger hover:text-white font-bold px-6 py-2 rounded-lg transition-all border border-danger/20 text-sm"
+                            >
+                                Excluir minha conta
+                            </button>
+                        </div>
+                    )}
+                </section>
+
+                {/* Admin Only Section */}
+                {user?.role === 'admin' && (
+                    <div className="flex flex-col gap-6">
+                        {/* Manual Payment Approvals */}
+                        <section className="bg-surface-dark border border-primary/30 rounded-2xl p-6">
+                            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary">verified_user</span>
+                                Aprovações Pendentes (MCX)
+                            </h2>
+                            <PendingApprovalsList adminToken={token!} showToast={showToast} />
+                        </section>
+
+                        <section className="bg-surface-dark border border-danger/30 rounded-2xl p-6">
+                            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <span className="material-symbols-outlined text-danger">admin_panel_settings</span>
+                                Limpeza de Dados
+                            </h2>
+                            <div className="p-4 rounded-xl bg-danger/5 border border-danger/20 mb-6 font-outfit">
+                                <p className="text-sm text-white font-bold mb-1 uppercase tracking-wider">Políticas de Retenção</p>
+                                <p className="text-xs text-text-secondary leading-relaxed">
+                                    Usuários com período de teste expirado há mais de 30 dias são marcados como **inativos**.
+                                    Você pode removê-los permanentemente do banco de dados para liberar espaço.
+                                </p>
+                            </div>
+                            <button
+                                onClick={async () => {
+                                    if (confirm("Tem certeza que deseja remover todos os usuários inativos há mais de 1 mês? Esta ação é irreversível e apagará todos os seus dados.")) {
+                                        setIsSaving(true);
+                                        try {
+                                            const { deletedCount } = await cleanupExpiredUsers({ adminToken: token! });
+                                            showToast(`${deletedCount} usuários inativos foram removidos.`, "success");
+                                        } catch (e: any) {
+                                            showToast(e.message || "Erro ao limpar dados.", "error");
+                                        } finally {
+                                            setIsSaving(false);
+                                        }
+                                    }
+                                }}
+                                disabled={isSaving}
+                                className="bg-danger/10 hover:bg-danger text-danger hover:text-white font-bold px-6 py-3 rounded-xl transition-all w-full md:w-auto uppercase text-xs tracking-widest border border-danger/20"
+                            >
+                                Limpar Usuários Inativos (&gt; 30 dias)
+                            </button>
+                        </section>
+                    </div>
+                )}
             </div>
         </div>
     );
-};
+}
+
+function PendingApprovalsList({ adminToken, showToast }: { adminToken: string, showToast: any }) {
+    const pendingUsers = useQuery(api.subscriptions.getPendingUsers, { adminToken });
+    const approveUser = useMutation(api.subscriptions.approveUser);
+    const [isProcessing, setIsProcessing] = useState<string | null>(null);
+
+    const handleApprove = async (userId: Id<"users">) => {
+        setIsProcessing(userId);
+        try {
+            await approveUser({ adminToken, targetUserId: userId });
+            showToast("Usuário aprovado com sucesso!", "success");
+        } catch (e: any) {
+            showToast(e.message || "Erro ao aprovar usuário.", "error");
+        } finally {
+            setIsProcessing(null);
+        }
+    };
+
+    if (pendingUsers === undefined) return <p className="text-text-secondary text-sm">Carregando...</p>;
+    if (pendingUsers.length === 0) return (
+        <div className="flex flex-col items-center justify-center py-10 opacity-50">
+            <span className="material-symbols-outlined text-4xl mb-2">check_circle</span>
+            <p className="text-sm">Nenhuma aprovação pendente no momento.</p>
+        </div>
+    );
+
+    return (
+        <div className="flex flex-col gap-3">
+            {pendingUsers.map(user => (
+                <div key={user._id} className="flex items-center justify-between p-4 rounded-xl bg-background-dark border border-surface-border animate-reveal">
+                    <div className="flex flex-col">
+                        <p className="font-bold text-white text-sm">{user.name}</p>
+                        <p className="text-xs text-text-secondary">{user.email}</p>
+                        <p className="text-[10px] text-primary/70 font-black mt-1 uppercase tracking-widest">
+                            MCX: {user.paymentPhone || 'N/A'} • {user.planType} ({user.billingCycle})
+                        </p>
+                    </div>
+                    <button
+                        onClick={() => handleApprove(user._id)}
+                        disabled={!!isProcessing}
+                        className="bg-primary text-background-dark text-[10px] font-black px-4 py-2 rounded-lg hover:bg-primary-dark transition-all disabled:opacity-50 hover-premium"
+                    >
+                        {isProcessing === user._id ? 'PROCESSANDO...' : 'APROVAR ACESSO'}
+                    </button>
+                </div>
+            ))}
+        </div>
+    );
+}
 

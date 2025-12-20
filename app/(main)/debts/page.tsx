@@ -7,9 +7,10 @@ import { useToast } from '../../context/ToastContext';
 import { Debt } from '../../types';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
+import { formatKwanza, maskValue } from '../../utils/currency';
 
 export default function DebtsPage() {
-    const { debts, addDebt, updateDebt, deleteDebt, accounts } = useTransactions();
+    const { debts, addDebt, updateDebt, deleteDebt, accounts, settings } = useTransactions();
     const { token } = useAuth();
     const { showToast } = useToast();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,6 +31,10 @@ export default function DebtsPage() {
 
     const totalDebt = debts.reduce((acc, curr) => acc + (curr.totalValue - curr.paidValue), 0);
     const totalMonthly = debts.reduce((acc, curr) => acc + curr.monthlyParcel, 0);
+
+    const formatMoney = (val: number) => {
+        return maskValue(formatKwanza(val), settings.privacyMode);
+    };
 
     // Simulator Calculation
     const calculateSim = () => {

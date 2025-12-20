@@ -18,6 +18,7 @@ const navItems: NavItem[] = [
     { icon: 'bar_chart', label: 'Relatórios', page: Page.REPORTS },
     { icon: 'notifications', label: 'Notificações', page: Page.NOTIFICATIONS },
     { icon: 'diversity_3', label: 'Família', page: Page.FAMILY },
+    { icon: 'workspace_premium', label: 'Assinatura', page: Page.SUBSCRIPTION },
     { icon: 'settings', label: 'Configurações', page: Page.SETTINGS },
 ];
 
@@ -33,6 +34,7 @@ const routeMap: Record<Page, string> = {
     [Page.NOTIFICATIONS]: '/notifications',
     [Page.FAMILY]: '/family',
     [Page.SETTINGS]: '/settings',
+    [Page.SUBSCRIPTION]: '/subscription',
 };
 
 export const Sidebar: React.FC = () => {
@@ -85,15 +87,15 @@ export const Sidebar: React.FC = () => {
                         <Link
                             key={item.page}
                             href={routeMap[item.page]}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all w-full text-left ${active
-                                ? 'bg-surface-dark border border-surface-border text-white shadow-sm'
-                                : 'text-text-secondary hover:bg-surface-dark/50 hover:text-white'
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 w-full text-left group ${active
+                                ? 'bg-surface-dark border border-surface-border text-white shadow-lg shadow-black/20'
+                                : 'text-text-secondary hover:bg-surface-dark/50 hover:text-white hover:translate-x-1'
                                 }`}
                         >
-                            <span className={`material-symbols-outlined text-[22px] ${active ? 'text-primary' : ''}`}>
+                            <span className={`material-symbols-outlined text-[22px] transition-transform duration-300 group-hover:scale-110 ${active ? 'text-primary' : ''}`}>
                                 {item.icon}
                             </span>
-                            <p className={`text-sm font-medium leading-normal ${active ? 'font-semibold' : ''}`}>
+                            <p className={`text-sm font-medium leading-normal transition-all duration-300 ${active ? 'font-black' : 'group-hover:font-semibold'}`}>
                                 {item.label}
                             </p>
                         </Link>
@@ -105,9 +107,9 @@ export const Sidebar: React.FC = () => {
             <div className="pt-4 flex flex-col gap-4 border-t border-surface-border mt-auto shrink-0 pb-2">
                 <button
                     onClick={() => openModal()}
-                    className="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl h-11 px-4 bg-primary hover:bg-primary-dark transition-colors text-background-dark text-sm font-bold leading-normal tracking-wide shadow-lg shadow-primary/20 shrink-0"
+                    className="flex w-full cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl h-11 px-4 bg-primary hover:bg-primary-dark transition-all text-background-dark text-sm font-black leading-normal tracking-wide shadow-lg shadow-primary/20 shrink-0 hover-premium group"
                 >
-                    <span className="material-symbols-outlined text-lg">add</span>
+                    <span className="material-symbols-outlined text-lg transition-transform duration-500 group-hover:rotate-180">add</span>
                     <span className="truncate">Nova Transação</span>
                 </button>
 
@@ -125,19 +127,23 @@ export const Sidebar: React.FC = () => {
                             </div>
                         )}
                         <div className="flex flex-col min-w-0 flex-1">
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-2">
                                 <p className="text-sm font-bold text-white truncate">{user.name}</p>
-                                {user.role === 'admin' && (
-                                    <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-1 rounded uppercase font-bold">Dono</span>
+                                {user.subscriptionStatus === 'trialing' && (
+                                    <span className="bg-primary/20 text-primary text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Trial</span>
                                 )}
-                                {user.role === 'partner' && (
-                                    <span className="text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1 rounded uppercase font-bold">Parceiro</span>
-                                )}
-                                {user.role === 'member' && (
-                                    <span className="text-[9px] bg-orange-500/10 text-orange-400 border border-orange-500/20 px-1 rounded uppercase font-bold">Membro</span>
+                                {user.subscriptionStatus === 'pending_verification' && (
+                                    <span className="bg-warning/20 text-warning text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Pendente</span>
                                 )}
                             </div>
-                            <p className="text-[10px] text-text-secondary truncate">{user.email}</p>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                                <span className="text-[10px] font-black uppercase tracking-wider text-text-secondary bg-surface-border px-1.5 rounded">
+                                    {user.role || 'User'}
+                                </span>
+                                <span className="text-[10px] font-bold text-primary/70 uppercase">
+                                    • {user.planType || 'Basic'}
+                                </span>
+                            </div>
                         </div>
                         <button
                             onClick={handleLogout}

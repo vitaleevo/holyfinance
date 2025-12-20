@@ -19,6 +19,7 @@ const routeMap: Record<Page, string> = {
     [Page.NOTIFICATIONS]: '/notifications',
     [Page.FAMILY]: '/family',
     [Page.SETTINGS]: '/settings',
+    [Page.SUBSCRIPTION]: '/subscription',
 };
 
 const navItems = [
@@ -31,6 +32,8 @@ const navItems = [
     { icon: 'credit_card', label: 'Dívidas', page: Page.DEBTS },
     { icon: 'bar_chart', label: 'Relatórios', page: Page.REPORTS },
     { icon: 'diversity_3', label: 'Família', page: Page.FAMILY },
+    { icon: 'workspace_premium', label: 'Assinatura', page: Page.SUBSCRIPTION },
+    { icon: 'settings', label: 'Configurações', page: Page.SETTINGS },
 ];
 
 export const MobileNav = () => {
@@ -110,19 +113,40 @@ export const MobileNav = () => {
                 })}
             </nav>
 
-            {/* Menu Drawer (Hamburger implementation re-used) */}
+            {/* Menu Drawer */}
             {isOpen && (
                 <div className="fixed inset-0 z-[60] bg-black/50 md:hidden" onClick={() => setIsOpen(false)}>
                     <div className="absolute right-0 top-0 bottom-0 w-64 bg-background-dark border-l border-surface-border p-4 flex flex-col h-full animate-in slide-in-from-right duration-200" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-between mb-8 px-2">
-                            <div className="flex items-center gap-2">
-                                <img src="/logo-icon.png" alt="Logo" className="size-6 object-contain" />
-                                <h2 className="text-lg font-bold text-white">Menu</h2>
+
+                        {/* User Profile Info in Drawer */}
+                        <div className="flex items-center gap-3 p-3 bg-surface-dark/50 rounded-2xl border border-surface-border mb-6">
+                            <div className="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                                {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
                             </div>
+                            <div className="flex flex-col min-0">
+                                <div className="flex items-center gap-2">
+                                    <p className="text-sm font-bold text-white truncate">{user?.name}</p>
+                                    {user?.subscriptionStatus === 'trialing' && (
+                                        <span className="bg-primary/20 text-primary text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Trial</span>
+                                    )}
+                                    {user?.subscriptionStatus === 'pending_verification' && (
+                                        <span className="bg-warning/20 text-warning text-[8px] px-1.5 py-0.5 rounded font-black uppercase">Pendente</span>
+                                    )}
+                                </div>
+                                <div className="flex items-center gap-1.5">
+                                    <span className="text-[10px] font-black uppercase text-text-secondary">{user?.role}</span>
+                                    <span className="text-[10px] font-bold text-primary/70 uppercase">• {user?.planType}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between mb-6 px-2">
+                            <h2 className="text-lg font-bold text-white uppercase tracking-widest">Menu</h2>
                             <button onClick={() => setIsOpen(false)} className="text-text-secondary hover:text-white">
                                 <span className="material-symbols-outlined">close</span>
                             </button>
                         </div>
+
                         <nav className="flex flex-col gap-2 overflow-y-auto flex-1">
                             {navItems.filter(item => {
                                 if (user?.role === 'member' && item.page === Page.INVESTMENTS) return false;

@@ -19,15 +19,31 @@ export default defineSchema({
     familyId: v.optional(v.id("families")), // Link to family
     role: v.optional(v.string()), // "admin" | "partner" | "member"
     familyRelationship: v.optional(v.string()), // "Pai", "Mãe", "Filho", "Primo", etc.
+    subscriptionStatus: v.optional(v.union(
+      v.literal("trialing"),
+      v.literal("active"),
+      v.literal("canceled"),
+      v.literal("expired"),
+      v.literal("pending_verification")
+    )),
+    trialEndsAt: v.optional(v.string()),
+    planType: v.optional(v.union(v.literal("free"), v.literal("basic"), v.literal("intermediate"), v.literal("advanced"))),
+    billingCycle: v.optional(v.union(v.literal("monthly"), v.literal("yearly"), v.literal("biyearly"))),
+    paymentMethod: v.optional(v.union(v.literal("mcx"), v.literal("stripe"))),
+    paymentPhone: v.optional(v.string()),
+    deletionScheduledAt: v.optional(v.string()), // Timestamp for account deletion
   })
     .index("by_email", ["email"])
-    .index("by_family", ["familyId"]),
+    .index("by_family", ["familyId"])
+    .index("by_deletion", ["deletionScheduledAt"]),
 
   sessions: defineTable({
     userId: v.id("users"),
     token: v.string(),
     expiresAt: v.string(),
-  }).index("by_token", ["token"]),
+  })
+    .index("by_token", ["token"])
+    .index("by_user", ["userId"]),
 
   settings: defineTable({
     userId: v.id("users"),

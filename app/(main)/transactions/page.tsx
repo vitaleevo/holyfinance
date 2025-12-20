@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTransactions } from '../../context/TransactionContext';
+import { formatKwanza, maskValue } from '../../utils/currency';
 
 export default function TransactionsPage() {
     const { transactions, deleteTransaction, openModal } = useTransactions();
@@ -17,8 +18,8 @@ export default function TransactionsPage() {
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     // Formatting Helper
-    const formatMoney = (amount: number, type: string) => {
-        return `${type === 'expense' ? '- ' : '+ '}KZ ${amount.toLocaleString()}`;
+    const formatMoney = (amount: number, type: 'income' | 'expense') => {
+        return formatKwanza(amount, true, type);
     };
 
     const getIcon = (cat: string) => {

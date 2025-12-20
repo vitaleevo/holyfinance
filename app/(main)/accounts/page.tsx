@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTransactions } from '../../context/TransactionContext';
+import { formatKwanza, maskValue } from '../../utils/currency';
 import { useToast } from '../../context/ToastContext';
 import { Account } from '../../types';
 import { useMutation } from 'convex/react';
@@ -25,8 +26,7 @@ export default function AccountsPage() {
     const totalBalance = accounts.reduce((acc, curr) => acc + curr.balance, 0);
 
     const formatMoney = (val: number) => {
-        if (settings.privacyMode) return '••••••';
-        return 'KZ ' + val.toLocaleString();
+        return maskValue(formatKwanza(val), settings.privacyMode);
     };
 
     const handleOpen = (acc?: Account) => {
