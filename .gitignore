@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# logs and temp files
+lint_output.txt
+tsc_log.txt
+implementation_plan_notifications.md
+legado.md
+Regras Anti-Alucinação para IA em Desenvolvimento.md
