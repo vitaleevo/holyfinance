@@ -75,7 +75,11 @@ export const Sidebar: React.FC = () => {
 
             {/* Navigation Area - Scrollable */}
             <nav className="flex-1 overflow-y-auto py-4 flex flex-col gap-1 custom-scrollbar">
-                {navItems.map((item) => {
+                {navItems.filter(item => {
+                    // Security Rule: Members don't see Investments
+                    if (user?.role === 'member' && item.page === Page.INVESTMENTS) return false;
+                    return true;
+                }).map((item) => {
                     const active = isActive(item.page);
                     return (
                         <Link
@@ -121,7 +125,18 @@ export const Sidebar: React.FC = () => {
                             </div>
                         )}
                         <div className="flex flex-col min-w-0 flex-1">
-                            <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                            <div className="flex items-center gap-1.5">
+                                <p className="text-sm font-bold text-white truncate">{user.name}</p>
+                                {user.role === 'admin' && (
+                                    <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-1 rounded uppercase font-bold">Dono</span>
+                                )}
+                                {user.role === 'partner' && (
+                                    <span className="text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1 rounded uppercase font-bold">Parceiro</span>
+                                )}
+                                {user.role === 'member' && (
+                                    <span className="text-[9px] bg-orange-500/10 text-orange-400 border border-orange-500/20 px-1 rounded uppercase font-bold">Membro</span>
+                                )}
+                            </div>
                             <p className="text-[10px] text-text-secondary truncate">{user.email}</p>
                         </div>
                         <button

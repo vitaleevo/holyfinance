@@ -11,6 +11,7 @@ interface User {
     email: string;
     avatarUrl?: string | null;
     familyRelationship?: string | null;
+    role?: "admin" | "partner" | "member";
 }
 
 interface AuthContextType {
@@ -55,6 +56,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         email: currentUser.email,
         avatarUrl: currentUser.avatarUrl,
         familyRelationship: currentUser.familyRelationship,
+        role: currentUser.role as "admin" | "partner" | "member",
     } : null;
 
     const login = async (email: string, password: string) => {

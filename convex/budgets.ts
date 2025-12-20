@@ -39,7 +39,14 @@ export const create = mutation({
         if (!userId) throw new Error("Não autorizado");
 
         const user = await ctx.db.get(userId);
-        const familyId = user?.familyId;
+        if (!user) throw new Error("Usuário não encontrado");
+
+        const familyId = user.familyId;
+
+        // Security Rule: Only admin/partner can create family budgets
+        if (familyId && user.role === 'member') {
+            throw new Error("Apenas administradores e parceiros podem definir orçamentos da família.");
+        }
 
         const { token: _, ...data } = args;
 
@@ -68,10 +75,20 @@ export const update = mutation({
         if (!budget) throw new Error("Orçamento não encontrado");
 
         const user = await ctx.db.get(userId);
-        const hasAccess = budget.userId === userId || (user?.familyId && budget.familyId === user.familyId);
+        const familyId = user?.familyId;
+
+        // Verify ownership & Permissions
+        const isOwner = budget.userId === userId;
+        const isManager = familyId && (user?.role === "admin" || user?.role === "partner");
+        const hasAccess = isOwner || (isManager && budget.familyId === familyId);
+
+        // Additional Rule: Members cannot edit family budgets even if they created them (rare case)
+        if (familyId && user?.role === 'member' && budget.familyId === familyId) {
+            throw new Error("Membros não podem editar orçamentos da família.");
+        }
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para atualizar este orçamento");
+            throw new Error("Você não tem permissão para atualizar este orçamento.");
         }
 
         await ctx.db.patch(id, data);
@@ -91,10 +108,19 @@ export const remove = mutation({
         if (!budget) return;
 
         const user = await ctx.db.get(userId);
-        const hasAccess = budget.userId === userId || (user?.familyId && budget.familyId === user.familyId);
+        const familyId = user?.familyId;
+
+        // Verify ownership & Permissions
+        const isOwner = budget.userId === userId;
+        const isManager = familyId && (user?.role === "admin" || user?.role === "partner");
+        const hasAccess = isOwner || (isManager && budget.familyId === familyId);
+
+        if (familyId && user?.role === 'member' && budget.familyId === familyId) {
+            throw new Error("Membros não podem excluir orçamentos da família.");
+        }
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para excluir este orçamento");
+            throw new Error("Você não tem permissão para excluir este orçamento.");
         }
 
         await ctx.db.delete(args.id);

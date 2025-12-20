@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import { useTransactions } from '../../context/TransactionContext';
+import { useToast } from '../../context/ToastContext';
 import { Account } from '../../types';
 import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
 export default function AccountsPage() {
     const { accounts, addAccount, updateAccount, deleteAccount, settings } = useTransactions();
+    const { showToast } = useToast();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -64,9 +66,9 @@ export default function AccountsPage() {
             });
             setIsTransferModalOpen(false);
             setTransferAmount("");
-            alert("Transferência realizada com sucesso!");
+            showToast("Transferência realizada com sucesso!", "success");
         } catch (error: any) {
-            alert("Erro na transferência: " + error.message);
+            showToast(error.message || "Erro na transferência", "error");
         }
     };
 

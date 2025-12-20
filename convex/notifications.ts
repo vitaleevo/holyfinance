@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getUserIdFromToken } from "./auth";
+import { decrypt } from "./utils";
 import { api } from "./_generated/api";
 
 export const list = query({
@@ -138,7 +139,7 @@ export async function createNotification(ctx: any, args: { userId: any, familyId
                 host: settings.host,
                 port: settings.port,
                 user: settings.user,
-                pass: settings.pass,
+                pass: decrypt(settings.pass),
                 fromEmail: settings.fromEmail,
                 secure: settings.secure
             });
@@ -151,7 +152,7 @@ export async function createNotification(ctx: any, args: { userId: any, familyId
 
 // Internal helper to create notification
 // In production, this would be an internal function or called via action
-export const create = mutation({
+const create = mutation({
     args: {
         userId: v.id("users"),
         familyId: v.optional(v.id("families")),

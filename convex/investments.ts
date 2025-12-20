@@ -13,6 +13,11 @@ export const get = query({
         const user = await ctx.db.get(userId);
         if (!user) return [];
 
+        // Security Rule: Members don't see ANY investments
+        if (user.role === 'member') {
+            return [];
+        }
+
         // Admin/Partner see all family investments
         if (user.familyId && (user.role === 'admin' || user.role === 'partner')) {
             return await ctx.db
@@ -42,10 +47,13 @@ export const create = mutation({
         const userId = await getUserIdFromToken(ctx, args.token);
         if (!userId) throw new Error("Não autorizado");
 
-        const { accountId, token, ...investmentData } = args;
-
         const user = await ctx.db.get(userId);
-        const familyId = user?.familyId;
+        if (!user || user.role === 'member') {
+            throw new Error("Membros dependentes não podem gerenciar investimentos.");
+        }
+
+        const { accountId, token, ...investmentData } = args;
+        const familyId = user.familyId;
 
         const id = await ctx.db.insert("investments", {
             ...investmentData,
@@ -83,13 +91,17 @@ export const update = mutation({
         const userId = await getUserIdFromToken(ctx, args.token);
         if (!userId) throw new Error("Não autorizado");
 
+        const user = await ctx.db.get(userId);
+        if (!user || user.role === 'member') {
+            throw new Error("Membros dependentes não podem gerenciar investimentos.");
+        }
+
         const { id, token, ...data } = args;
 
         const investment = await ctx.db.get(id);
         if (!investment) throw new Error("Investimento não encontrado");
 
-        const user = await ctx.db.get(userId);
-        const hasAccess = investment.userId === userId || (user?.familyId && investment.familyId === user.familyId);
+        const hasAccess = investment.userId === userId || (user.familyId && investment.familyId === user.familyId);
 
         if (!hasAccess) {
             throw new Error("Sem permissão para atualizar este investimento");
@@ -108,11 +120,15 @@ export const remove = mutation({
         const userId = await getUserIdFromToken(ctx, args.token);
         if (!userId) throw new Error("Não autorizado");
 
+        const user = await ctx.db.get(userId);
+        if (!user || user.role === 'member') {
+            throw new Error("Membros dependentes não podem gerenciar investimentos.");
+        }
+
         const investment = await ctx.db.get(args.id);
         if (!investment) return;
 
-        const user = await ctx.db.get(userId);
-        const hasAccess = investment.userId === userId || (user?.familyId && investment.familyId === user.familyId);
+        const hasAccess = investment.userId === userId || (user.familyId && investment.familyId === user.familyId);
 
         if (!hasAccess) {
             throw new Error("Sem permissão para remover este investimento");

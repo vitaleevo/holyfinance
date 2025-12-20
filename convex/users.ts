@@ -2,8 +2,13 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getUserIdFromToken } from "./auth";
 
-export const generateUploadUrl = mutation(async (ctx) => {
-    return await ctx.storage.generateUploadUrl();
+export const generateUploadUrl = mutation({
+    args: { token: v.optional(v.string()) },
+    handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autenticado");
+        return await ctx.storage.generateUploadUrl();
+    }
 });
 
 export const updateAvatar = mutation({

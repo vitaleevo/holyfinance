@@ -79,10 +79,14 @@ export const update = mutation({
         if (!goal) throw new Error("Meta não encontrada");
 
         const user = await ctx.db.get(userId);
-        const hasAccess = goal.userId === userId || (user?.familyId && goal.familyId === user.familyId);
+
+        // Verify ownership & Permissions
+        const isOwner = goal.userId === userId;
+        const isManager = user?.familyId && (user.role === "admin" || user.role === "partner");
+        const hasAccess = isOwner || (isManager && goal.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para atualizar esta meta");
+            throw new Error("Você não tem permissão para atualizar esta meta.");
         }
 
         await ctx.db.patch(id, data);
@@ -102,10 +106,14 @@ export const remove = mutation({
         if (!goal) return;
 
         const user = await ctx.db.get(userId);
-        const hasAccess = goal.userId === userId || (user?.familyId && goal.familyId === user.familyId);
+
+        // Verify ownership & Permissions
+        const isOwner = goal.userId === userId;
+        const isManager = user?.familyId && (user.role === "admin" || user.role === "partner");
+        const hasAccess = isOwner || (isManager && goal.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para excluir esta meta");
+            throw new Error("Você não tem permissão para excluir esta meta.");
         }
 
         await ctx.db.delete(args.id);
@@ -128,10 +136,13 @@ export const addFundsCompensating = mutation({
 
         const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
-        const hasAccess = goal.userId === userId || (familyId && goal.familyId === familyId);
+        // Verify ownership & Permissions
+        const isOwner = goal.userId === userId;
+        const isManager = familyId && (user?.role === "admin" || user?.role === "partner");
+        const hasAccess = isOwner || (isManager && goal.familyId === familyId);
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para esta operação");
+            throw new Error("Você não tem permissão para adicionar fundos a esta meta.");
         }
 
         // Update goal

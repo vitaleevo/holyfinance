@@ -188,10 +188,13 @@ export const update = mutation({
         const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
 
-        // Verify ownership
-        const hasAccess = oldTransaction.userId === userId || (familyId && oldTransaction.familyId === familyId);
+        // Verify ownership & Permissions
+        const isOwner = oldTransaction.userId === userId;
+        const isManager = familyId && (user.role === "admin" || user.role === "partner");
+        const hasAccess = isOwner || (isManager && oldTransaction.familyId === familyId);
+
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Você não tem permissão para editar esta transação.");
         }
 
         await ctx.db.patch(id, newData);
@@ -250,10 +253,13 @@ export const remove = mutation({
         const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
 
-        // Verify ownership
-        const hasAccess = transaction.userId === userId || (familyId && transaction.familyId === familyId);
+        // Verify ownership & Permissions
+        const isOwner = transaction.userId === userId;
+        const isManager = familyId && (user.role === "admin" || user.role === "partner");
+        const hasAccess = isOwner || (isManager && transaction.familyId === familyId);
+
         if (!hasAccess) {
-            throw new Error("Unauthorized");
+            throw new Error("Você não tem permissão para remover esta transação.");
         }
 
         await ctx.db.delete(args.id);

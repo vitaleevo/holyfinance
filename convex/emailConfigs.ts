@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getUserIdFromToken } from "./auth";
+import { encrypt } from "./utils";
 
 export const saveSettings = mutation({
     args: {
@@ -26,7 +27,7 @@ export const saveSettings = mutation({
             host: args.host,
             port: args.port,
             user: args.user,
-            pass: args.pass,
+            pass: encrypt(args.pass),
             fromEmail: args.fromEmail,
             secure: args.secure,
         };
@@ -47,9 +48,17 @@ export const getSettings = query({
         const userId = await getUserIdFromToken(ctx, args.token);
         if (!userId) return null;
 
-        return await ctx.db
+        const settings = await ctx.db
             .query("emailSettings")
             .withIndex("by_user", (q) => q.eq("userId", userId))
             .first();
+
+        if (settings) {
+            return {
+                ...settings,
+                pass: "********" // Never return encrypted pass to UI
+            };
+        }
+        return null;
     },
 });

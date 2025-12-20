@@ -1,6 +1,7 @@
 import { mutation } from "./_generated/server";
 
-export const clearAll = mutation({
+// Destructive: Unexport for production safety
+const clearAll = mutation({
     args: {},
     handler: async (ctx) => {
         const tables = [

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import { useRouter } from 'next/navigation';
 import { Id } from "../../../convex/_generated/dataModel";
 
@@ -30,6 +31,7 @@ interface FamilyData {
 export default function FamilyPage() {
     const { user, token } = useAuth();
     const router = useRouter();
+    const { showToast } = useToast();
 
     // Fetch family data
     const familyData = useQuery(api.families.get, { token: token ?? undefined }) as FamilyData | null | undefined;
@@ -47,8 +49,6 @@ export default function FamilyPage() {
     const [familyName, setFamilyName] = useState("");
     const [inviteCode, setInviteCode] = useState("");
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
     const [copied, setCopied] = useState(false);
     const [confirmLeave, setConfirmLeave] = useState(false);
     const [confirmRemove, setConfirmRemove] = useState<Id<"users"> | null>(null);
@@ -58,17 +58,16 @@ export default function FamilyPage() {
     const handleCreateFamily = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError("");
         try {
             await createFamily({
                 name: familyName,
                 token: token ?? undefined
             });
-            setSuccess("Família criada com sucesso!");
+            showToast("Família criada com sucesso!", "success");
             setView('menu');
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : "Erro ao criar família";
-            setError(errorMessage);
+            showToast(errorMessage, "error");
         } finally {
             setLoading(false);
         }
@@ -77,17 +76,16 @@ export default function FamilyPage() {
     const handleJoinFamily = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        setError("");
         try {
             await joinFamily({
                 code: inviteCode,
                 token: token ?? undefined
             });
-            setSuccess("Você entrou na família!");
+            showToast("Você entrou na família!", "success");
             setView('menu');
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : "Erro ao entrar na família. Verifique o código.";
-            setError(errorMessage);
+            showToast(errorMessage, "error");
         } finally {
             setLoading(false);
         }
@@ -101,14 +99,13 @@ export default function FamilyPage() {
 
     const handleRemoveMember = async (memberId: Id<"users">) => {
         setLoading(true);
-        setError("");
         try {
             await removeMember({ memberId, token: token ?? undefined });
-            setSuccess("Membro removido com sucesso!");
+            showToast("Membro removido com sucesso!", "success");
             setConfirmRemove(null);
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : "Erro ao remover membro";
-            setError(errorMessage);
+            showToast(errorMessage, "error");
         } finally {
             setLoading(false);
         }
@@ -116,14 +113,13 @@ export default function FamilyPage() {
 
     const handleLeaveFamily = async () => {
         setLoading(true);
-        setError("");
         try {
             await leaveFamily({ token: token ?? undefined });
-            setSuccess("Você saiu da família.");
+            showToast("Você saiu da família.", "success");
             setConfirmLeave(false);
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : "Erro ao sair da família";
-            setError(errorMessage);
+            showToast(errorMessage, "error");
         } finally {
             setLoading(false);
         }
@@ -131,13 +127,12 @@ export default function FamilyPage() {
 
     const handleTransferAdmin = async (newAdminId: Id<"users">) => {
         setLoading(true);
-        setError("");
         try {
             await transferAdmin({ newAdminId, token: token ?? undefined });
-            setSuccess("Administração transferida com sucesso!");
+            showToast("Administração transferida!", "success");
         } catch (err: unknown) {
             const errorMessage = err instanceof Error ? err.message : "Erro ao transferir administração";
-            setError(errorMessage);
+            showToast(errorMessage, "error");
         } finally {
             setLoading(false);
         }
@@ -150,8 +145,9 @@ export default function FamilyPage() {
                 newRole,
                 token: token ?? undefined
             });
-        } catch (err) {
-            console.error(err);
+            showToast("Função do membro atualizada!", "success");
+        } catch (err: any) {
+            showToast(err.message || "Erro ao atualizar função", "error");
         }
     };
 
@@ -172,24 +168,11 @@ export default function FamilyPage() {
         );
     }
 
-    // Alert component
-    const Alert = ({ type, message, onClose }: { type: 'error' | 'success', message: string, onClose: () => void }) => (
-        <div className={`fixed top-4 right-4 z-50 p-4 rounded-xl border shadow-2xl backdrop-blur-sm flex items-center gap-3 animate-slide-in ${type === 'error' ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-            }`}>
-            <span className="material-symbols-outlined">{type === 'error' ? 'error' : 'check_circle'}</span>
-            <span className="font-medium">{message}</span>
-            <button onClick={onClose} className="ml-2 opacity-60 hover:opacity-100">
-                <span className="material-symbols-outlined text-sm">close</span>
-            </button>
-        </div>
-    );
 
     // 2. User HAS a Family -> Show Dashboard
     if (familyData) {
         return (
             <div className="flex flex-col gap-8">
-                {error && <Alert type="error" message={error} onClose={() => setError("")} />}
-                {success && <Alert type="success" message={success} onClose={() => setSuccess("")} />}
 
                 {/* Header */}
                 <header className="relative">
@@ -475,8 +458,6 @@ export default function FamilyPage() {
     // 3. User HAS NO Family -> Show Create/Join Options
     return (
         <div className="flex flex-col gap-8">
-            {error && <Alert type="error" message={error} onClose={() => setError("")} />}
-            {success && <Alert type="success" message={success} onClose={() => setSuccess("")} />}
 
             <header>
                 <div className="flex items-center gap-4 mb-2">

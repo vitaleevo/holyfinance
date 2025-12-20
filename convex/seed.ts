@@ -1,6 +1,6 @@
 import { mutation } from "./_generated/server";
 
-export const seed = mutation({
+const seed = mutation({
     args: {},
     handler: async (ctx) => {
         // Seed disabled as it requires userId for the new multi-tenant schema.

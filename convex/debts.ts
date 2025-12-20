@@ -78,10 +78,15 @@ export const update = mutation({
         if (!debt) throw new Error("Dívida não encontrada");
 
         const user = await ctx.db.get(userId);
-        const hasAccess = debt.userId === userId || (user?.familyId && debt.familyId === user.familyId);
+        const familyId = user?.familyId;
+
+        // Verify ownership & Permissions
+        const isOwner = debt.userId === userId;
+        const isManager = familyId && (user?.role === "admin" || user?.role === "partner");
+        const hasAccess = isOwner || (isManager && debt.familyId === familyId);
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para atualizar esta dívida");
+            throw new Error("Você não tem permissão para atualizar esta dívida.");
         }
 
         await ctx.db.patch(id, data);
@@ -101,10 +106,15 @@ export const remove = mutation({
         if (!debt) return;
 
         const user = await ctx.db.get(userId);
-        const hasAccess = debt.userId === userId || (user?.familyId && debt.familyId === user.familyId);
+        const familyId = user?.familyId;
+
+        // Verify ownership & Permissions
+        const isOwner = debt.userId === userId;
+        const isManager = familyId && (user?.role === "admin" || user?.role === "partner");
+        const hasAccess = isOwner || (isManager && debt.familyId === familyId);
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para excluir esta dívida");
+            throw new Error("Você não tem permissão para excluir esta dívida.");
         }
 
         await ctx.db.delete(args.id);

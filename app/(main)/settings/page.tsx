@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTransactions } from '../../context/TransactionContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { Id } from "../../../convex/_generated/dataModel";
@@ -11,6 +12,7 @@ import { Id } from "../../../convex/_generated/dataModel";
 export default function SettingsPage() {
     const { settings, updateSettings } = useTransactions();
     const { user, token } = useAuth();
+    const { showToast } = useToast();
     const router = useRouter();
 
     // Fetch full profile to get avatarUrl
@@ -98,7 +100,7 @@ export default function SettingsPage() {
             // 1. Upload new avatar if selected
             if (selectedFile) {
                 // Get upload URL
-                const postUrl = await generateUploadUrl();
+                const postUrl = await generateUploadUrl({ token: token ?? undefined });
 
                 // Upload file
                 const result = await fetch(postUrl, {
@@ -142,10 +144,10 @@ export default function SettingsPage() {
 
             // Cleanup and feedback
             setSelectedFile(null);
-            alert("Configurações salvas com sucesso!"); // Simple feedback for now
-        } catch (error) {
+            showToast("Perfil atualizado com sucesso!", "success");
+        } catch (error: any) {
             console.error("Erro ao salvar:", error);
-            alert("Erro ao salvar alterações.");
+            showToast(error.message || "Falha ao salvar alterações.", "error");
         } finally {
             setIsSaving(false);
         }

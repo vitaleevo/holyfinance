@@ -5,7 +5,7 @@ import { TransactionType } from '../types';
 import { useTransactions } from '../context/TransactionContext';
 
 export const TransactionModal = () => {
-    const { isModalOpen, closeModal, addTransaction, updateTransaction, editingTransaction } = useTransactions();
+    const { isModalOpen, closeModal, addTransaction, updateTransaction, editingTransaction, accounts } = useTransactions();
 
     const [formData, setFormData] = useState({
         description: '',
@@ -13,9 +13,15 @@ export const TransactionModal = () => {
         type: 'expense' as TransactionType,
         category: 'Alimentação',
         date: new Date().toISOString().split('T')[0],
-        account: 'Banco BAI',
+        account: '',
         status: 'paid' as 'paid' | 'pending' | 'completed'
     });
+
+    useEffect(() => {
+        if (isModalOpen && accounts.length > 0 && !formData.account && !editingTransaction) {
+            setFormData(prev => ({ ...prev, account: accounts[0].name }));
+        }
+    }, [isModalOpen, accounts, editingTransaction]);
 
     useEffect(() => {
         if (editingTransaction) {
@@ -175,10 +181,13 @@ export const TransactionModal = () => {
                                         value={formData.account}
                                         onChange={(e) => setFormData({ ...formData, account: e.target.value })}
                                     >
-                                        <option>Banco BAI</option>
-                                        <option>Banco Millennium</option>
-                                        <option>Nubank</option>
-                                        <option>Carteira</option>
+                                        {accounts.length > 0 ? (
+                                            accounts.map(acc => (
+                                                <option key={acc.id} value={acc.name}>{acc.name}</option>
+                                            ))
+                                        ) : (
+                                            <option value="">Nenhuma conta encontrada</option>
+                                        )}
                                     </select>
                                     <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none">account_balance</span>
                                 </div>

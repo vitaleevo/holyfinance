@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Page } from '../types';
 
+import { useAuth } from '../context/AuthContext';
+
 const routeMap: Record<Page, string> = {
     [Page.DASHBOARD]: '/dashboard',
     [Page.ACCOUNTS]: '/accounts',
@@ -32,6 +34,7 @@ const navItems = [
 ];
 
 export const MobileNav = () => {
+    const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
 
@@ -121,7 +124,10 @@ export const MobileNav = () => {
                             </button>
                         </div>
                         <nav className="flex flex-col gap-2 overflow-y-auto flex-1">
-                            {navItems.map((item) => {
+                            {navItems.filter(item => {
+                                if (user?.role === 'member' && item.page === Page.INVESTMENTS) return false;
+                                return true;
+                            }).map((item) => {
                                 const active = isActive(item.page);
                                 return (
                                     <Link

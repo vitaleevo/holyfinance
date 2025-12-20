@@ -6,6 +6,7 @@ import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
 import { Transaction, Goal, Account, BudgetLimit, Investment, Debt, AppSettings, TransactionType } from '../types';
 import { useAuth } from './AuthContext';
+import { useToast } from './ToastContext';
 
 interface TransactionContextType {
     // Transactions
@@ -58,6 +59,7 @@ const TransactionContext = createContext<TransactionContextType | undefined>(und
 
 export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const { token } = useAuth();
+    const { showToast } = useToast();
 
     // --- UI STATE ---
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -139,102 +141,202 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
     // --- HANDLERS (all require userId) ---
 
     // Transactions
-    const addTransaction = (data: Omit<Transaction, 'id'>) => {
+    const addTransaction = async (data: Omit<Transaction, 'id'>) => {
         if (!token) return;
-        createTransaction({ token, ...data });
+        try {
+            await createTransaction({ token, ...data });
+            showToast("Transação registrada com sucesso!", "success");
+        } catch (err: any) {
+            showToast(err.message || "Erro ao adicionar transação", "error");
+        }
     };
-    const updateTransaction = (id: string, data: Omit<Transaction, 'id'>) => {
+    const updateTransaction = async (id: string, data: Omit<Transaction, 'id'>) => {
         if (!token) return;
-        updateTransactionMutation({ id: id as unknown as Id<"transactions">, token, ...data });
+        try {
+            await updateTransactionMutation({ ...data, id: id as any as Id<"transactions">, token });
+            showToast("Transação atualizada!", "success");
+        } catch (err: any) {
+            showToast(err.message || "Erro ao atualizar", "error");
+        }
     };
-    const deleteTransaction = (id: string) => {
+    const deleteTransaction = async (id: string) => {
         if (!token) return;
-        deleteTransactionMutation({ id: id as unknown as Id<"transactions">, token });
+        try {
+            await deleteTransactionMutation({ id: id as any as Id<"transactions">, token });
+            showToast("Transação removida", "success");
+        } catch (err: any) {
+            showToast(err.message || "Erro ao remover", "error");
+        }
     };
 
     const openModal = (t?: Transaction) => { setEditingTransaction(t || null); setIsModalOpen(true); };
     const closeModal = () => { setEditingTransaction(null); setIsModalOpen(false); };
 
     // Goals
-    const addGoal = (data: Omit<Goal, 'id' | 'currentAmount' | 'status'>) => {
+    const addGoal = async (data: Omit<Goal, 'id' | 'currentAmount' | 'status'>) => {
         if (!token) return;
-        createGoal({ token, ...data });
+        try {
+            await createGoal({ token, ...data });
+            showToast("Meta criada!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const updateGoal = (id: string, data: Partial<Goal>) => {
+    const updateGoal = async (id: string, data: Partial<Goal>) => {
         if (!token) return;
-        updateGoalMutation({ id: id as unknown as Id<"goals">, token, ...data });
+        try {
+            await updateGoalMutation({ ...data, id: id as any as Id<"goals">, token });
+            showToast("Meta atualizada!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const deleteGoal = (id: string) => {
+    const deleteGoal = async (id: string) => {
         if (!token) return;
-        deleteGoalMutation({ id: id as unknown as Id<"goals">, token });
+        try {
+            await deleteGoalMutation({ id: id as any as Id<"goals">, token });
+            showToast("Meta removida", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const addFundsToGoal = (id: string, amount: number, accountId?: string) => {
+    const addFundsToGoal = async (id: string, amount: number, accountId?: string) => {
         if (!token) return;
-        const accId = accountId ? accountId as unknown as Id<"accounts"> : undefined;
-        addFundsGoalMutation({ goalId: id as unknown as Id<"goals">, token, amount, accountId: accId });
+        try {
+            const accId = accountId ? accountId as any as Id<"accounts"> : undefined;
+            await addFundsGoalMutation({ goalId: id as any as Id<"goals">, token, amount, accountId: accId });
+            showToast("Fundos adicionados à meta!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
 
     // Accounts
-    const addAccount = (data: Omit<Account, 'id'>) => {
+    const addAccount = async (data: Omit<Account, 'id'>) => {
         if (!token) return;
-        createAccount({ token, ...data });
+        try {
+            await createAccount({ token, ...data });
+            showToast("Conta adicionada!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const updateAccount = (id: string, data: Partial<Account>) => {
+    const updateAccount = async (id: string, data: Partial<Account>) => {
         if (!token) return;
-        updateAccountMutation({ id: id as unknown as Id<"accounts">, token, ...data });
+        try {
+            await updateAccountMutation({ ...data, id: id as any as Id<"accounts">, token });
+            showToast("Conta atualizada!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const deleteAccount = (id: string) => {
+    const deleteAccount = async (id: string) => {
         if (!token) return;
-        deleteAccountMutation({ id: id as unknown as Id<"accounts">, token });
+        try {
+            await deleteAccountMutation({ id: id as any as Id<"accounts">, token });
+            showToast("Conta removida", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
 
     // Budgets
-    const addBudgetLimit = (data: Omit<BudgetLimit, 'id'>) => {
+    const addBudgetLimit = async (data: Omit<BudgetLimit, 'id'>) => {
         if (!token) return;
-        createBudget({ token, ...data });
+        try {
+            await createBudget({ token, ...data });
+            showToast("Limite de orçamento definido!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const updateBudgetLimit = (id: string, data: Partial<BudgetLimit>) => {
+    const updateBudgetLimit = async (id: string, data: Partial<BudgetLimit>) => {
         if (!token) return;
-        updateBudgetMutation({ id: id as unknown as Id<"budgetLimits">, token, ...data });
+        try {
+            await updateBudgetMutation({ ...data, id: id as any as Id<"budgetLimits">, token });
+            showToast("Orçamento atualizado!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const deleteBudgetLimit = (id: string) => {
+    const deleteBudgetLimit = async (id: string) => {
         if (!token) return;
-        deleteBudgetMutation({ id: id as unknown as Id<"budgetLimits">, token });
+        try {
+            await deleteBudgetMutation({ id: id as any as Id<"budgetLimits">, token });
+            showToast("Orçamento removido", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
 
     // Investments
-    const addInvestment = (data: Omit<Investment, 'id'>, accountId?: string) => {
+    const addInvestment = async (data: Omit<Investment, 'id'>, accountId?: string) => {
         if (!token) return;
-        const accId = accountId ? accountId as unknown as Id<"accounts"> : undefined;
-        createInvestment({ token, ...data, accountId: accId });
+        try {
+            const accId = accountId ? accountId as any as Id<"accounts"> : undefined;
+            await createInvestment({ token, ...data, accountId: accId });
+            showToast("Investimento registrado!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const updateInvestment = (id: string, data: Partial<Investment>) => {
+    const updateInvestment = async (id: string, data: Partial<Investment>) => {
         if (!token) return;
-        updateInvestmentMutation({ id: id as unknown as Id<"investments">, token, ...data });
+        try {
+            await updateInvestmentMutation({ ...data, id: id as any as Id<"investments">, token });
+            showToast("Investimento atualizado!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const deleteInvestment = (id: string) => {
+    const deleteInvestment = async (id: string) => {
         if (!token) return;
-        deleteInvestmentMutation({ id: id as unknown as Id<"investments">, token });
+        try {
+            await deleteInvestmentMutation({ id: id as any as Id<"investments">, token });
+            showToast("Investimento removido", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
 
     // Debts
-    const addDebt = (data: Omit<Debt, 'id'>) => {
+    const addDebt = async (data: Omit<Debt, 'id'>) => {
         if (!token) return;
-        createDebt({ token, ...data });
+        try {
+            await createDebt({ token, ...data });
+            showToast("Dívida cadastrada!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const updateDebt = (id: string, data: Partial<Debt>) => {
+    const updateDebt = async (id: string, data: Partial<Debt>) => {
         if (!token) return;
-        updateDebtMutation({ id: id as unknown as Id<"debts">, token, ...data });
+        try {
+            await updateDebtMutation({ ...data, id: id as any as Id<"debts">, token });
+            showToast("Dívida atualizada!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
-    const deleteDebt = (id: string) => {
+    const deleteDebt = async (id: string) => {
         if (!token) return;
-        deleteDebtMutation({ id: id as unknown as Id<"debts">, token });
+        try {
+            await deleteDebtMutation({ id: id as any as Id<"debts">, token });
+            showToast("Dívida removida", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
 
     // Settings
-    const updateSettings = (newSettings: Partial<AppSettings>) => {
+    const updateSettings = async (newSettings: Partial<AppSettings>) => {
         if (!token) return;
-        updateSettingsMutation({ token, ...newSettings });
+        try {
+            await updateSettingsMutation({ token, ...newSettings });
+            showToast("Configurações salvas!", "success");
+        } catch (err: any) {
+            showToast(err.message, "error");
+        }
     };
 
     return (

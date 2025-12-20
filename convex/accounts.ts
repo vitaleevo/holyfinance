@@ -74,10 +74,14 @@ export const update = mutation({
         if (!account) throw new Error("Conta não encontrada");
 
         const user = await ctx.db.get(userId);
-        const hasAccess = account.userId === userId || (user?.familyId && account.familyId === user.familyId);
+
+        // Verify ownership & Permissions
+        const isOwner = account.userId === userId;
+        const isManager = user?.familyId && (user.role === "admin" || user.role === "partner");
+        const hasAccess = isOwner || (isManager && account.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para alterar esta conta");
+            throw new Error("Você não tem permissão para alterar esta conta.");
         }
 
         await ctx.db.patch(id, data);
@@ -97,10 +101,14 @@ export const remove = mutation({
         if (!account) return;
 
         const user = await ctx.db.get(userId);
-        const hasAccess = account.userId === userId || (user?.familyId && account.familyId === user.familyId);
+
+        // Verify ownership & Permissions
+        const isOwner = account.userId === userId;
+        const isManager = user?.familyId && (user.role === "admin" || user.role === "partner");
+        const hasAccess = isOwner || (isManager && account.familyId === user.familyId);
 
         if (!hasAccess) {
-            throw new Error("Sem permissão para remover esta conta");
+            throw new Error("Você não tem permissão para remover esta conta.");
         }
 
         await ctx.db.delete(args.id);
@@ -109,19 +117,31 @@ export const remove = mutation({
 
 export const transfer = mutation({
     args: {
+        token: v.optional(v.string()),
         fromAccountId: v.id("accounts"),
         toAccountId: v.id("accounts"),
         amount: v.number(),
         date: v.string(),
     },
     handler: async (ctx, args) => {
+        const userId = await getUserIdFromToken(ctx, args.token);
+        if (!userId) throw new Error("Não autorizado");
+
         const fromAccount = await ctx.db.get(args.fromAccountId);
         const toAccount = await ctx.db.get(args.toAccountId);
 
         if (!fromAccount || !toAccount) throw new Error("Conta não encontrada");
-        if (fromAccount.userId !== toAccount.userId) throw new Error("Unauthorized");
+
+        const user = await ctx.db.get(userId);
+        const familyId = user?.familyId;
+
+        // Permission check for transfer
+        const canAccessFrom = fromAccount.userId === userId || (familyId && fromAccount.familyId === familyId && (user?.role === 'admin' || user?.role === 'partner'));
+        const canAccessTo = toAccount.userId === userId || (familyId && toAccount.familyId === familyId && (user?.role === 'admin' || user?.role === 'partner'));
+
+        if (!canAccessFrom || !canAccessTo) throw new Error("Você não tem permissão para realizar esta transferência.");
         if (fromAccount._id === toAccount._id) throw new Error("Contas devem ser diferentes");
-        if ((fromAccount.balance ?? 0) < args.amount) throw new Error("Saldo insuficiente");
+        if ((fromAccount.balance ?? 0) < args.amount) throw new Error("Saldo insuficiente na conta de origem");
 
         const newFromBalance = (fromAccount.balance ?? 0) - args.amount;
         const newToBalance = (toAccount.balance ?? 0) + args.amount;
@@ -131,8 +151,9 @@ export const transfer = mutation({
 
         // Record transactions
         await ctx.db.insert("transactions", {
-            userId: fromAccount.userId,
-            description: `Transferência para ${toAccount.name}`,
+            userId: userId, // Performed by
+            familyId,
+            description: `Transferência: ${fromAccount.name} -> ${toAccount.name}`,
             amount: args.amount,
             type: "expense",
             category: "Transferência",
@@ -141,8 +162,9 @@ export const transfer = mutation({
         });
 
         await ctx.db.insert("transactions", {
-            userId: toAccount.userId,
-            description: `Transferência de ${fromAccount.name}`,
+            userId: userId, // Performed by
+            familyId,
+            description: `Transferência: ${fromAccount.name} -> ${toAccount.name}`,
             amount: args.amount,
             type: "income",
             category: "Transferência",

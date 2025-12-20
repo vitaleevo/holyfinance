@@ -168,6 +168,7 @@ export const getCurrentUser = query({
             currency: user.currency,
             avatarUrl,
             familyRelationship: user.familyRelationship,
+            role: user.role ?? "member",
         };
     },
 });
@@ -191,4 +192,19 @@ export async function getUserIdFromToken(
     }
 
     return session.userId;
+}
+
+export type UserRole = "admin" | "partner" | "member";
+
+export async function getUserWithRole(ctx: QueryCtx, token: string | undefined) {
+    const userId = await getUserIdFromToken(ctx, token);
+    if (!userId) return null;
+
+    const user = await ctx.db.get(userId);
+    if (!user) return null;
+
+    return {
+        ...user,
+        role: (user.role as UserRole) || "member" // Fallback to member for safety
+    };
 }
