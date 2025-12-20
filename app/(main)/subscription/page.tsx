@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
-import { useMutation } from 'convex/react';
+import { useMutation, useQuery } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
 type BillingCycle = 'monthly' | 'yearly' | 'biyearly';
@@ -13,48 +13,28 @@ export default function SubscriptionPage() {
     const { showToast } = useToast();
     const [billingCycle, setBillingCycle] = useState<BillingCycle>('monthly');
 
-    const isTrialing = user?.subscriptionStatus === "trialing";
-    const trialEndsDate = user?.trialEndsAt ? new Date(user.trialEndsAt) : null;
-    const daysLeft = trialEndsDate ? Math.ceil((trialEndsDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : 0;
+    const packages = useQuery(api.admin.listActivePackages);
+    const isLoadingPlans = packages === undefined;
 
-    const plans = [
-        {
-            id: 'basic',
-            name: 'Básico',
-            price: { monthly: 5000, yearly: 51000, biyearly: 90000 },
-            features: [
-                'Gestão de 1 Conta Bancária',
-                'Transações Ilimitadas (Manual)',
-                'Relatórios Mensais Simples',
-                'Metas Financeiras Básicas',
-                'Suporte via Email'
-            ]
+    const plansList = packages?.map(pkg => ({
+        id: pkg.key,
+        name: pkg.name,
+        price: {
+            monthly: pkg.priceMonthly,
+            yearly: pkg.priceYearly,
+            biyearly: pkg.priceBiyearly ?? pkg.priceYearly * 1.8
         },
-        {
-            id: 'intermediate',
-            name: 'Intermediário',
-            price: { monthly: 12000, yearly: 122400, biyearly: 216000 },
-            features: [
-                'Gestão de Contas Família (3 Membros)',
-                'Acompanhamento de Investimentos',
-                'Relatórios em PDF Avançados',
-                'Metas Compartilhadas',
-                'Suporte Prioritário'
-            ]
-        },
-        {
-            id: 'advanced',
-            name: 'Avançado',
-            price: { monthly: 25000, yearly: 255000, biyearly: 450000 },
-            features: [
-                'Gestão Familiar Ilimitada',
-                'Assistente Financeiro IA',
-                'Sincronização entre Dispositivos',
-                'Dashboard de Net Worth',
-                'Gerente de Conta Dedicado'
-            ]
-        }
-    ];
+        features: [
+            pkg.description,
+            `${pkg.limits.maxAccounts === 999 ? 'Contas Ilimitadas' : `Gestão de ${pkg.limits.maxAccounts} Conta${pkg.limits.maxAccounts > 1 ? 's' : ''}`}`,
+            `${pkg.limits.maxFamilyMembers > 0 ? `Até ${pkg.limits.maxFamilyMembers} Membros Família` : 'Apenas Uso Individual'}`,
+            pkg.features.investments ? 'Análise de Investimentos' : null,
+            pkg.features.advancedReports ? 'Relatórios PDF Avançados' : null,
+            pkg.features.csvExport ? 'Exportação de Dados CSV' : null,
+            pkg.features.financialAssistant ? 'Assistente IA' : null,
+        ].filter(Boolean) as string[],
+        highlight: pkg.highlight
+    })) || [];
 
     const formatCurrency = (val: number) => {
         return new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA', maximumFractionDigits: 0 }).format(val);
@@ -86,10 +66,19 @@ export default function SubscriptionPage() {
         }
     };
 
+    const isTrialing = user?.subscriptionStatus === "trialing";
+    const trialEndsDate = user?.trialEndsAt ? new Date(user.trialEndsAt) : null;
+    const daysLeft = trialEndsDate ? Math.ceil((trialEndsDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24)) : 0;
+
     return (
         <div className="max-w-6xl mx-auto py-12 px-6">
             <div className="text-center mb-12">
                 <h1 className="text-4xl font-black mb-4 uppercase tracking-tight text-white">Gerenciar Assinatura</h1>
+                {isLoadingPlans && (
+                    <div className="flex justify-center mt-4">
+                        <div className="size-6 border-2 border-primary border-t-transparent animate-spin rounded-full"></div>
+                    </div>
+                )}
                 <p className="text-text-secondary">Escolha o plano que melhor se adapta às necessidades da sua família.</p>
             </div>
 
@@ -116,7 +105,7 @@ export default function SubscriptionPage() {
                             <p className="font-black text-white">{trialEndsDate?.toLocaleDateString('pt-BR')}</p>
                         </div>
                         <button
-                            onClick={() => window.scrollTo({ top: document.getElementById('plans-grid')?.offsetTop! - 100, behavior: 'smooth' })}
+                            onClick={() => window.scrollTo({ top: (document.getElementById('plans-grid')?.offsetTop || 0) - 100, behavior: 'smooth' })}
                             className="w-full md:w-auto bg-primary text-background-dark font-black px-8 py-4 rounded-2xl hover:bg-primary-dark transition-all shadow-xl shadow-primary/20 active:scale-95"
                         >
                             ESCOLHER PLANO AGORA
@@ -154,12 +143,12 @@ export default function SubscriptionPage() {
 
             {/* Plans Grid */}
             <div id="plans-grid" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {plans.map((plan) => {
+                {plansList.map((plan) => {
                     const isCurrent = user?.planType === plan.id;
                     return (
                         <div
                             key={plan.id}
-                            className={`p-8 rounded-[40px] border-2 flex flex-col transition-all duration-300 ${plan.id === 'intermediate'
+                            className={`p-8 rounded-[40px] border-2 flex flex-col transition-all duration-300 ${plan.highlight
                                 ? 'bg-surface-dark border-primary shadow-2xl shadow-primary/10 scale-105 z-10'
                                 : 'bg-surface-dark border-white/5 opacity-80 hover:opacity-100'
                                 }`}
@@ -168,7 +157,7 @@ export default function SubscriptionPage() {
                                 <h3 className="text-xl font-black text-white uppercase tracking-tight mb-2">{plan.name}</h3>
                                 <div className="flex items-end gap-1">
                                     <span className="text-4xl font-black text-white">
-                                        {formatCurrency(plan.price[billingCycle])}
+                                        {formatCurrency((plan.price as any)[billingCycle])}
                                     </span>
                                     <span className="text-text-secondary font-bold mb-1.5 text-xs uppercase">
                                         / {billingCycle === 'monthly' ? 'mês' : billingCycle === 'yearly' ? 'ano' : '2 anos'}
@@ -190,7 +179,7 @@ export default function SubscriptionPage() {
                                 disabled={(isCurrent && user?.subscriptionStatus === 'active') || isProcessing !== null}
                                 className={`w-full py-5 rounded-2xl font-black text-lg transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2 ${isCurrent && user?.subscriptionStatus === 'active'
                                     ? 'bg-white/10 text-white/40 cursor-not-allowed'
-                                    : plan.id === 'intermediate'
+                                    : plan.highlight
                                         ? 'bg-primary hover:bg-primary-dark text-background-dark shadow-primary/20'
                                         : 'bg-white text-background-dark hover:bg-white/90'
                                     }`}

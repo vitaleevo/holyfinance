@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { useTransactions } from '../../context/TransactionContext';
+import { useAuth } from '../../context/AuthContext';
+import { checkLimit } from '../../utils/plans';
 import { formatKwanza, maskValue } from '../../utils/currency';
 import { useToast } from '../../context/ToastContext';
 import { Account } from '../../types';
@@ -9,6 +11,7 @@ import { useMutation } from 'convex/react';
 import { api } from '../../../convex/_generated/api';
 
 export default function AccountsPage() {
+    const { user } = useAuth();
     const { accounts, addAccount, updateAccount, deleteAccount, settings } = useTransactions();
     const { showToast } = useToast();
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,10 +122,21 @@ export default function AccountsPage() {
                         </div>
                     ))}
 
-                    <button onClick={() => handleOpen()} className="flex items-center justify-center gap-2 p-4 rounded-xl border border-dashed border-surface-border text-text-secondary hover:text-white hover:border-primary hover:bg-surface-dark transition-all">
-                        <span className="material-symbols-outlined">add_circle</span>
-                        <span className="font-medium">Adicionar Nova Conta</span>
-                    </button>
+                    {checkLimit(user?.planType, 'maxAccounts', accounts.length) ? (
+                        <button onClick={() => handleOpen()} className="flex items-center justify-center gap-2 p-4 rounded-xl border border-dashed border-surface-border text-text-secondary hover:text-white hover:border-primary hover:bg-surface-dark transition-all">
+                            <span className="material-symbols-outlined">add_circle</span>
+                            <span className="font-medium">Adicionar Nova Conta</span>
+                        </button>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center gap-2 p-6 rounded-xl border border-dashed border-surface-border bg-surface-dark/30 text-center">
+                            <span className="material-symbols-outlined text-text-secondary text-3xl">lock</span>
+                            <div className="flex flex-col gap-1">
+                                <span className="font-bold text-white">Limite de Contas Atingido</span>
+                                <p className="text-sm text-text-secondary">Faça upgrade do seu plano para gerenciar mais contas.</p>
+                            </div>
+                            <a href="/subscription" className="mt-2 text-primary font-bold text-sm hover:underline">Ver Planos</a>
+                        </div>
+                    )}
                 </div>
             </div>
 

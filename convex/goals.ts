@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
 import { createNotification } from "./notifications";
 import { getUserIdFromToken } from "./auth";
 
@@ -185,4 +185,32 @@ export const addFundsCompensating = mutation({
             }
         }
     },
+});
+
+export const checkDeadlines = internalMutation({
+    args: {},
+    handler: async (ctx) => {
+        const now = new Date();
+        const nextWeek = new Date();
+        nextWeek.setDate(now.getDate() + 7);
+
+        const goals = await ctx.db.query("goals")
+            .filter(q => q.eq(q.field("status"), "active"))
+            .collect();
+
+        for (const goal of goals) {
+            const deadline = new Date(goal.deadline);
+            // If deadline is within next 7 days
+            if (deadline > now && deadline <= nextWeek) {
+                await createNotification(ctx, {
+                    userId: goal.userId,
+                    familyId: goal.familyId,
+                    title: `Prazo de Meta Próximo: ${goal.title} ⏳`,
+                    message: `A data alvo da sua meta "${goal.title}" é em ${deadline.toLocaleDateString('pt-AO')}. Você já guardou ${goal.currentAmount} de ${goal.targetAmount}.`,
+                    type: "warning",
+                    isImportant: true,
+                });
+            }
+        }
+    }
 });

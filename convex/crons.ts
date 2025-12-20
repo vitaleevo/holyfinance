@@ -10,4 +10,16 @@ crons.daily(
     internal.users.deleteScheduledAccounts,
 );
 
+crons.daily(
+    "check-goal-deadlines",
+    { hourUTC: 1, minuteUTC: 0 },
+    internal.goals.checkDeadlines,
+);
+
+crons.daily(
+    "check-upcoming-debts",
+    { hourUTC: 1, minuteUTC: 30 },
+    internal.debts.checkUpcoming,
+);
+
 export default crons;

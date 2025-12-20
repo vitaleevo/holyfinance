@@ -1,6 +1,8 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { createNotification } from "./notifications";
 import { getUserIdFromToken } from "./auth";
+import { checkLimit } from "./plans";
 
 function generateCode() {
     // Generate a random 4 digit string
@@ -87,14 +89,31 @@ export const join = mutation({
 
         if (!family) throw new Error("Código de convite inválido ou expirado.");
 
-        // Rule: Limit family size to 5 members
+        // Get current members to check limit
         const currentMembers = await ctx.db
             .query("users")
             .withIndex("by_family", (q) => q.eq("familyId", family._id))
             .collect();
 
-        if (currentMembers.length >= 5) {
-            throw new Error("Esta família já atingiu o limite máximo de 5 membros.");
+        // Rule: Limit family size based on Plan
+        // Warning: The plan limit applies to the FAMILY OWNER (Admin), not necessarily the joiner
+        // We find the admin of the family to check their plan
+        const familyAdmin = await ctx.db
+            .query("users")
+            .withIndex("by_family", (q) => q.eq("familyId", family._id))
+            .filter((q) => q.eq(q.field("role"), "admin"))
+            .first();
+
+        if (familyAdmin) {
+            const canAddMember = checkLimit(familyAdmin.planType, "maxFamilyMembers", currentMembers.length);
+            if (!canAddMember) {
+                throw new Error("Esta família atingiu o limite de membros do plano do administrador.");
+            }
+        } else {
+            // Fallback if no admin found (should happen rarely, maybe old data), allow up to 5 hardcoded
+            if (currentMembers.length >= 5) {
+                throw new Error("Esta família já atingiu o limite máximo de 5 membros.");
+            }
         }
 
         await ctx.db.patch(userId, {
@@ -123,6 +142,18 @@ export const join = mutation({
 
         const notifications2 = await ctx.db.query("notifications").withIndex("by_user", q => q.eq("userId", userId)).collect();
         for (const item of notifications2) await ctx.db.patch(item._id, { familyId: family._id });
+
+        // Notify other members
+        for (const member of currentMembers) {
+            await createNotification(ctx, {
+                userId: member._id,
+                familyId: family._id,
+                title: "Novo membro na família! 🏠",
+                message: `${user.name} entrou para a família ${family.name}.`,
+                type: "info",
+                isImportant: false,
+            });
+        }
 
         return family;
     },
@@ -276,6 +307,23 @@ export const leave = mutation({
 
         // Leave family
         await ctx.db.patch(userId, { familyId: undefined, role: undefined });
+
+        // Notify remaining members
+        const remainingMembers = await ctx.db
+            .query("users")
+            .withIndex("by_family", (q) => q.eq("familyId", user.familyId!))
+            .collect();
+
+        for (const member of remainingMembers) {
+            await createNotification(ctx, {
+                userId: member._id,
+                familyId: user.familyId!,
+                title: "Um membro saiu da família 🏠",
+                message: `${user.name} saiu da família. Dados pessoais foram dissociados.`,
+                type: "warning",
+                isImportant: false,
+            });
+        }
 
         return { success: true };
     },

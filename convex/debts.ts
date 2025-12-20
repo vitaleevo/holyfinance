@@ -1,5 +1,6 @@
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalMutation } from "./_generated/server";
+import { createNotification } from "./notifications";
 import { getUserIdFromToken } from "./auth";
 
 export const get = query({
@@ -195,4 +196,29 @@ export const payParcel = mutation({
             account: account.name,
         });
     },
+});
+
+export const checkUpcoming = internalMutation({
+    args: {},
+    handler: async (ctx) => {
+        const now = new Date();
+        const inThreeDays = new Date();
+        inThreeDays.setDate(now.getDate() + 3);
+
+        const debts = await ctx.db.query("debts").collect();
+
+        for (const debt of debts) {
+            const dueDate = new Date(debt.dueDate);
+            if (dueDate > now && dueDate <= inThreeDays) {
+                await createNotification(ctx, {
+                    userId: debt.userId,
+                    familyId: debt.familyId,
+                    title: `Vencimento de Dívida: ${debt.name} 💳`,
+                    message: `A sua parcela de ${debt.monthlyParcel} do banco ${debt.bank} vence dia ${dueDate.toLocaleDateString('pt-AO')}.`,
+                    type: "error", // Use error for high-vis warning
+                    isImportant: true,
+                });
+            }
+        }
+    }
 });

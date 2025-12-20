@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { getUserIdFromToken } from "./auth";
+import { checkLimit } from "./plans";
 
 export const get = query({
     args: {
@@ -43,6 +44,17 @@ export const create = mutation({
 
         const user = await ctx.db.get(userId);
         const familyId = user?.familyId;
+
+        // Plan Limit Check for Accounts
+        const currentAccounts = await ctx.db
+            .query("accounts")
+            .withIndex("by_user", (q) => q.eq("userId", userId))
+            .collect();
+
+        const canCreate = checkLimit(user?.planType, "maxAccounts", currentAccounts.length);
+        if (!canCreate) {
+            throw new Error("Limite de contas atingido para seu plano atual. Faça upgrade para adicionar mais contas.");
+        }
 
         return await ctx.db.insert("accounts", {
             userId,

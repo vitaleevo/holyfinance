@@ -6,7 +6,7 @@ import { useTransactions } from '../context/TransactionContext';
 import { formatKwanza } from '../utils/currency';
 
 export const TransactionModal = () => {
-    const { isModalOpen, closeModal, addTransaction, updateTransaction, editingTransaction, accounts } = useTransactions();
+    const { isModalOpen, closeModal, addTransaction, updateTransaction, editingTransaction, accounts, categories } = useTransactions();
 
     const [formData, setFormData] = useState({
         description: '',
@@ -151,23 +151,29 @@ export const TransactionModal = () => {
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                                     >
-                                        {isExpense ? (
-                                            <>
-                                                <option>Alimentação</option>
-                                                <option>Transporte</option>
-                                                <option>Moradia</option>
-                                                <option>Lazer</option>
-                                                <option>Saúde</option>
-                                                <option>Educação</option>
-                                                <option>Outros</option>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <option>Salário</option>
-                                                <option>Investimento</option>
-                                                <option>Extra</option>
-                                                <option>Presente</option>
-                                            </>
+                                        {categories.filter(c => c.type === formData.type).map(cat => (
+                                            <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                        ))}
+                                        {/* Fallback if no categories loaded yet */}
+                                        {categories.filter(c => c.type === formData.type).length === 0 && (
+                                            isExpense ? (
+                                                <>
+                                                    <option>Alimentação</option>
+                                                    <option>Transporte</option>
+                                                    <option>Moradia</option>
+                                                    <option>Lazer</option>
+                                                    <option>Saúde</option>
+                                                    <option>Educação</option>
+                                                    <option>Outros</option>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <option>Salário</option>
+                                                    <option>Investimento</option>
+                                                    <option>Extra</option>
+                                                    <option>Presente</option>
+                                                </>
+                                            )
                                         )}
                                     </select>
                                     <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary pointer-events-none">expand_more</span>

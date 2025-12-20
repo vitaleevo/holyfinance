@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from 'react';
@@ -6,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import { Page } from '../types';
 
 import { useAuth } from '../context/AuthContext';
+import { hasFeature } from '../utils/plans';
 
 const routeMap: Record<Page, string> = {
     [Page.DASHBOARD]: '/dashboard',
@@ -66,7 +68,7 @@ export const MobileNav = () => {
                         alt="HolyFinanças"
                         className="size-8 object-contain drop-shadow-[0_0_8px_rgba(19,236,109,0.4)]"
                     />
-                    <span className="font-bold text-white tracking-tight">HolyFinanças</span>
+                    <span className="font-bold text-white tracking-tight">HolyFinance</span>
                 </div>
                 <Link href="/notifications" className="text-white relative">
                     <span className="material-symbols-outlined">notifications</span>
@@ -148,20 +150,28 @@ export const MobileNav = () => {
                         </div>
 
                         <nav className="flex flex-col gap-2 overflow-y-auto flex-1">
-                            {navItems.filter(item => {
-                                if (user?.role === 'member' && item.page === Page.INVESTMENTS) return false;
-                                return true;
-                            }).map((item) => {
+                            {navItems.map((item) => {
                                 const active = isActive(item.page);
+
+                                let isLocked = false;
+                                if (item.page === Page.INVESTMENTS && !hasFeature(user?.planType, 'investments')) {
+                                    isLocked = true;
+                                }
+
                                 return (
                                     <Link
                                         key={item.page}
                                         href={routeMap[item.page]}
                                         onClick={() => setIsOpen(false)}
-                                        className={`flex items-center gap-3 p-3 rounded-lg transition-colors ${active ? 'bg-surface-dark border border-surface-border text-white' : 'text-text-secondary hover:text-white'}`}
+                                        className={`flex items-center gap-3 p-3 rounded-lg transition-colors relative ${active ? 'bg-surface-dark border border-surface-border text-white' : 'text-text-secondary hover:text-white'}`}
                                     >
                                         <span className={`material-symbols-outlined ${active ? 'text-primary' : ''}`}>{item.icon}</span>
                                         <span className="font-medium text-sm">{item.label}</span>
+                                        {isLocked && (
+                                            <span className="absolute right-3 material-symbols-outlined text-[16px] text-text-secondary opacity-70">
+                                                lock
+                                            </span>
+                                        )}
                                     </Link>
                                 );
                             })}

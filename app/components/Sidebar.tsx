@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React from 'react';
@@ -6,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Page, NavItem } from '../types';
 import { useTransactions } from '../context/TransactionContext';
 import { useAuth } from '../context/AuthContext';
+import { hasFeature } from '../utils/plans';
 
 const navItems: NavItem[] = [
     { icon: 'dashboard', label: 'Visão Geral', page: Page.DASHBOARD },
@@ -70,24 +72,27 @@ export const Sidebar: React.FC = () => {
             <div className="flex items-center justify-center py-4 shrink-0">
                 <img
                     src="/logo-full-dark-bg.png"
-                    alt="HolyFinanças"
+                    alt="HolyFinance"
                     className="h-16 w-auto object-contain drop-shadow-[0_0_12px_rgba(19,236,109,0.35)]"
                 />
             </div>
 
             {/* Navigation Area - Scrollable */}
             <nav className="flex-1 overflow-y-auto py-4 flex flex-col gap-1 custom-scrollbar">
-                {navItems.filter(item => {
-                    // Security Rule: Members don't see Investments
-                    if (user?.role === 'member' && item.page === Page.INVESTMENTS) return false;
-                    return true;
-                }).map((item) => {
+                {navItems.map((item) => {
                     const active = isActive(item.page);
+
+                    // Feature Check
+                    let isLocked = false;
+                    if (item.page === Page.INVESTMENTS && !hasFeature(user?.planType, 'investments')) {
+                        isLocked = true;
+                    }
+
                     return (
                         <Link
                             key={item.page}
                             href={routeMap[item.page]}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 w-full text-left group ${active
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-300 w-full text-left group relative ${active
                                 ? 'bg-surface-dark border border-surface-border text-white shadow-lg shadow-black/20'
                                 : 'text-text-secondary hover:bg-surface-dark/50 hover:text-white hover:translate-x-1'
                                 }`}
@@ -98,6 +103,11 @@ export const Sidebar: React.FC = () => {
                             <p className={`text-sm font-medium leading-normal transition-all duration-300 ${active ? 'font-black' : 'group-hover:font-semibold'}`}>
                                 {item.label}
                             </p>
+                            {isLocked && (
+                                <span className="absolute right-3 material-symbols-outlined text-[16px] text-text-secondary opacity-70">
+                                    lock
+                                </span>
+                            )}
                         </Link>
                     );
                 })}

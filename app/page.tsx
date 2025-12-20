@@ -63,9 +63,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src="/logo-icon.png" alt="Logo" className="h-10 w-auto" />
-            <span className="text-xl font-black tracking-tighter uppercase text-zinc-900">HolyFinanças</span>
+            <span className="text-xl font-black tracking-tighter uppercase text-zinc-900">HolyFinance</span>
           </div>
           <div className="hidden md:flex items-center gap-8">
+            <Link href="/about" className="text-sm font-bold text-zinc-500 hover:text-primary transition-colors">Sobre Nós</Link>
             <a href="#features" className="text-sm font-bold text-zinc-500 hover:text-primary transition-colors">Funcionalidades</a>
             <a href="#pricing" className="text-sm font-bold text-zinc-500 hover:text-primary transition-colors">Preços</a>
             <a href="#security" className="text-sm font-bold text-zinc-500 hover:text-primary transition-colors">Segurança</a>
@@ -243,29 +244,34 @@ export default function LandingPage() {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-6 justify-center md:justify-start">
               <img src="/logo-icon.png" alt="Logo" className="h-10 w-auto" />
-              <span className="text-xl font-black tracking-tighter uppercase text-zinc-900">HolyFinanças</span>
+              <span className="text-xl font-black tracking-tighter uppercase text-zinc-900">HolyFinance</span>
             </div>
             <p className="text-zinc-500 max-w-sm font-medium">Liderando a revolução da educação financeira e gestão de patrimônio em Angola.</p>
+            <div className="mt-6 text-zinc-500 font-medium text-sm">
+              <p>935348327 / 959822513</p>
+              <p>info@conexao.com</p>
+            </div>
           </div>
           <div className="text-zinc-900">
-            <h4 className="font-bold mb-6">HolyFinanças</h4>
+            <h4 className="font-bold mb-6">HolyFinance</h4>
             <div className="flex flex-col gap-4 text-zinc-500 font-medium">
               <Link href="/login" className="hover:text-primary transition-colors">Entrar</Link>
               <Link href="/register" className="hover:text-primary transition-colors">Criar Conta</Link>
-              <a href="#features" className="hover:text-primary transition-colors">Sobre Nós</a>
+              <Link href="/about" className="hover:text-primary transition-colors">Sobre Nós</Link>
             </div>
           </div>
           <div className="text-zinc-900">
             <h4 className="font-bold mb-6">Suporte</h4>
             <div className="flex flex-col gap-4 text-zinc-500 font-medium">
-              <a href="#" className="hover:text-primary transition-colors">Termos e Condições</a>
-              <a href="#" className="hover:text-primary transition-colors">Privacidade</a>
-              <a href="#" className="hover:text-primary transition-colors">Ajuda</a>
+              <Link href="/terms" className="hover:text-primary transition-colors">Termos e Condições</Link>
+              <Link href="/privacy" className="hover:text-primary transition-colors">Privacidade</Link>
+              <Link href="/help" className="hover:text-primary transition-colors">Ajuda</Link>
+              <Link href="/support" className="hover:text-primary transition-colors">Fale Conosco</Link>
             </div>
           </div>
         </div>
         <div className="text-center mt-20 pt-8 border-t border-zinc-100 text-xs text-zinc-400 font-bold uppercase tracking-widest">
-          © 2024 HolyFinanças Angola. Todos os direitos reservados.
+          © 2024 HolyFinance Angola. Todos os direitos reservados.
         </div>
       </footer>
     </div>

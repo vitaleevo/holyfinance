@@ -32,10 +32,32 @@ export default defineSchema({
     paymentMethod: v.optional(v.union(v.literal("mcx"), v.literal("stripe"))),
     paymentPhone: v.optional(v.string()),
     deletionScheduledAt: v.optional(v.string()), // Timestamp for account deletion
+    isSuperAdmin: v.optional(v.boolean()), // System Administrator
   })
     .index("by_email", ["email"])
     .index("by_family", ["familyId"])
     .index("by_deletion", ["deletionScheduledAt"]),
+
+  packages: defineTable({
+    key: v.string(), // "basic", "intermediate", "advanced"
+    name: v.string(), // "Básico", "Intermediário"
+    description: v.string(),
+    priceMonthly: v.number(), // In AOA
+    priceYearly: v.number(),
+    priceBiyearly: v.optional(v.number()),
+    limits: v.object({
+      maxAccounts: v.number(),
+      maxFamilyMembers: v.number(),
+    }),
+    features: v.object({
+      investments: v.boolean(),
+      financialAssistant: v.boolean(),
+      advancedReports: v.boolean(),
+      csvExport: v.boolean(),
+    }),
+    isActive: v.boolean(),
+    highlight: v.optional(v.boolean()), // "Most Popular"
+  }).index("by_key", ["key"]),
 
   sessions: defineTable({
     userId: v.id("users"),

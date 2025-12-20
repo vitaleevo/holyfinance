@@ -3,10 +3,13 @@
 import React, { useState } from 'react';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { useTransactions } from '../../context/TransactionContext';
+import { useAuth } from '../../context/AuthContext';
+import { hasFeature } from '../../utils/plans';
 import { Investment } from '../../types';
 import { formatKwanza, maskValue } from '../../utils/currency';
 
 export default function InvestmentsPage() {
+    const { user } = useAuth();
     const { investments, accounts, settings, addInvestment, updateInvestment, deleteInvestment } = useTransactions();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -78,6 +81,43 @@ export default function InvestmentsPage() {
         }
         setIsModalOpen(false);
     };
+
+    const canAccess = hasFeature(user?.planType, 'investments');
+
+    if (!canAccess) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6 bg-surface-dark border border-surface-border rounded-2xl relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+
+                <div className="size-20 bg-gradient-to-br from-primary/10 to-transparent border border-primary/20 rounded-full flex items-center justify-center mb-6 animate-pulse">
+                    <span className="material-symbols-outlined text-4xl text-primary">lock</span>
+                </div>
+
+                <h2 className="text-3xl font-black text-white mb-2 tracking-tight">Recurso Premium</h2>
+                <p className="text-text-secondary max-w-md mb-8 text-lg font-medium">
+                    O módulo de Investimentos é exclusivo para membros dos planos <span className="text-white font-bold">Intermediário</span> e <span className="text-white font-bold">Avançado</span>.
+                </p>
+
+                <div className="flex flex-col gap-4 w-full max-w-sm">
+                    <div className="flex items-center gap-3 text-sm text-text-secondary bg-background-dark/50 p-3 rounded-lg border border-surface-border">
+                        <span className="material-symbols-outlined text-primary">check_circle</span>
+                        <span>Acompanhamento de Ações e FIIs</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-text-secondary bg-background-dark/50 p-3 rounded-lg border border-surface-border">
+                        <span className="material-symbols-outlined text-primary">check_circle</span>
+                        <span>Gráficos de alocação de ativos</span>
+                    </div>
+                </div>
+
+                <a
+                    href="/subscription"
+                    className="mt-8 bg-primary hover:bg-primary-dark text-background-dark font-black py-4 px-10 rounded-xl transition-all shadow-[0_0_20px_rgba(19,236,109,0.2)] hover:shadow-[0_0_30px_rgba(19,236,109,0.4)] hover:scale-105"
+                >
+                    Fazer Upgrade Agora
+                </a>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col gap-8">

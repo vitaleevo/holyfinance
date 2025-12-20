@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { useRouter } from 'next/navigation';
 import { Id } from "../../../convex/_generated/dataModel";
+import { checkLimit, getPlanLimits } from '../../utils/plans';
 
 // Types
 interface FamilyMember {
@@ -206,62 +207,106 @@ export default function FamilyPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Invite Card - Only for Admin/Partner */}
                     <div className="lg:col-span-1 flex flex-col gap-6">
-                        {familyData?.family?.code !== "******" ? (
-                            <div className="bg-gradient-to-br from-surface-dark to-background-dark border border-surface-border rounded-2xl p-6 flex flex-col gap-5 h-full">
-                                <div className="flex items-center gap-4">
-                                    <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                                        <span className="material-symbols-outlined">qr_code_2</span>
-                                    </div>
-                                    <div>
-                                        <h3 className="text-white font-bold text-lg">Código de Convite</h3>
-                                        <p className="text-text-secondary text-sm">Compartilhe para adicionar membros</p>
-                                    </div>
-                                </div>
+                        {(() => {
+                            // Logic to determine limits
+                            // Assuming current user view, we need to know who is admin to check limits
+                            // But usually, limits are attached to the family creator/admin. 
+                            // For simplicity, we can trust the backend error, BUT for UI we want to show it proactively.
+                            // We will use the dashboard logic: find admin in members list.
+                            const adminMember = familyData?.members?.find(m => m.role === 'admin');
+                            // We can't know the plan of the admin easily without fetching it, 
+                            // BUT 'familyData' members list doesn't have plan info.
+                            // We can rely on the fact that if we are the admin, we know our plan.
+                            // If we are not admin, maybe we shouldn't show the limit bar or use a generic one?
+                            // Let's assume for now we just show a generic "Full" state if 5 members, 
+                            // OR if we are admin check our own plan.
 
-                                <div
-                                    className="relative bg-background-dark p-5 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/60 cursor-pointer transition-all group"
-                                    onClick={handleCopyCode}
-                                >
-                                    <div className="flex items-center justify-center gap-3">
-                                        <span className="text-3xl font-mono font-black text-primary tracking-[0.3em]">
-                                            {familyData?.family?.code}
-                                        </span>
-                                        <span className={`material-symbols-outlined transition-all ${copied ? 'text-emerald-400 scale-110' : 'text-text-secondary group-hover:text-white'}`}>
-                                            {copied ? 'check_circle' : 'content_copy'}
-                                        </span>
-                                    </div>
-                                    <p className="text-center text-xs text-text-secondary mt-3">
-                                        {copied ? '✓ Copiado!' : 'Clique para copiar'}
-                                    </p>
-                                </div>
+                            const isAdmin = user?.role === 'admin';
+                            const maxMembers = isAdmin
+                                ? getPlanLimits(user?.planType).maxFamilyMembers
+                                : 5; // Fallback visual limit for non-admins (or fetch real limit if needed)
 
-                                {/* Plan Info */}
-                                <div className="mt-auto pt-4 border-t border-surface-border/50">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <p className="text-xs text-text-secondary font-medium uppercase tracking-wider">Membros</p>
-                                        <span className="text-xs font-bold text-primary">{familyData?.members?.length} / 5</span>
-                                    </div>
-                                    <div className="w-full h-1.5 bg-background-dark rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full bg-primary rounded-full transition-all duration-500"
-                                            style={{ width: `${(familyData?.members?.length / 5) * 100}%` }}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="bg-surface-dark/50 border border-surface-border/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-4 h-full border-dashed">
-                                <div className="size-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
-                                    <span className="material-symbols-outlined">lock</span>
-                                </div>
-                                <div>
-                                    <h4 className="text-white font-bold text-sm">Acesso Limitado</h4>
-                                    <p className="text-text-secondary text-xs mt-1">
-                                        Apenas Administradores e Parceiros podem ver e compartilhar o código de convite.
-                                    </p>
-                                </div>
-                            </div>
-                        )}
+                            const isFull = (familyData?.members?.length || 0) >= maxMembers;
+
+                            return (
+                                <>
+                                    {familyData?.family?.code !== "******" ? (
+                                        <div className="bg-gradient-to-br from-surface-dark to-background-dark border border-surface-border rounded-2xl p-6 flex flex-col gap-5 h-full">
+
+                                            {isFull ? (
+                                                <div className="bg-danger/10 border border-danger/20 p-4 rounded-xl flex items-center gap-3 mb-2">
+                                                    <span className="material-symbols-outlined text-danger">group_add</span>
+                                                    <div className="flex-1">
+                                                        <p className="text-danger font-bold text-sm">Família Cheia</p>
+                                                        <p className="text-danger/70 text-xs">Limite do plano atingido.</p>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                                                            <span className="material-symbols-outlined">qr_code_2</span>
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="text-white font-bold text-lg">Código de Convite</h3>
+                                                            <p className="text-text-secondary text-sm">Compartilhe para adicionar membros</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className="relative bg-background-dark p-5 rounded-xl border-2 border-dashed border-primary/30 hover:border-primary/60 cursor-pointer transition-all group"
+                                                        onClick={handleCopyCode}
+                                                    >
+                                                        <div className="flex items-center justify-center gap-3">
+                                                            <span className="text-3xl font-mono font-black text-primary tracking-[0.3em]">
+                                                                {familyData?.family?.code}
+                                                            </span>
+                                                            <span className={`material-symbols-outlined transition-all ${copied ? 'text-emerald-400 scale-110' : 'text-text-secondary group-hover:text-white'}`}>
+                                                                {copied ? 'check_circle' : 'content_copy'}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-center text-xs text-text-secondary mt-3">
+                                                            {copied ? '✓ Copiado!' : 'Clique para copiar'}
+                                                        </p>
+                                                    </div>
+                                                </>
+                                            )}
+
+                                            {/* Plan Info */}
+                                            <div className="mt-auto pt-4 border-t border-surface-border/50">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <p className="text-xs text-text-secondary font-medium uppercase tracking-wider">Membros</p>
+                                                    <span className={`text-xs font-bold ${isFull ? 'text-danger' : 'text-primary'}`}>{familyData?.members?.length} / {maxMembers}</span>
+                                                </div>
+                                                <div className="w-full h-1.5 bg-background-dark rounded-full overflow-hidden">
+                                                    <div
+                                                        className={`h-full rounded-full transition-all duration-500 ${isFull ? 'bg-danger' : 'bg-primary'}`}
+                                                        style={{ width: `${Math.min(100, (familyData?.members?.length / maxMembers) * 100)}%` }}
+                                                    />
+                                                </div>
+                                                {isFull && isAdmin && (
+                                                    <a href="/subscription" className="block mt-4 text-center text-xs font-bold text-primary hover:underline">
+                                                        Aumentar Limite →
+                                                    </a>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-surface-dark/50 border border-surface-border/50 rounded-2xl p-6 flex flex-col items-center justify-center text-center gap-4 h-full border-dashed">
+                                            <div className="size-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+                                                <span className="material-symbols-outlined">lock</span>
+                                            </div>
+                                            <div>
+                                                <h4 className="text-white font-bold text-sm">Acesso Limitado</h4>
+                                                <p className="text-text-secondary text-xs mt-1">
+                                                    Apenas Administradores e Parceiros podem ver e compartilhar o código de convite.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
+                            );
+                        })()}
 
                         {/* Role Legend Card */}
                         <div className="bg-surface-dark/30 border border-surface-border/30 rounded-2xl p-6">

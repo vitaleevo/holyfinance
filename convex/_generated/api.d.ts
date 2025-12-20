@@ -10,6 +10,7 @@
 
 import type * as accounts from "../accounts.js";
 import type * as actions_email from "../actions/email.js";
+import type * as admin from "../admin.js";
 import type * as auth from "../auth.js";
 import type * as budgets from "../budgets.js";
 import type * as categories from "../categories.js";
@@ -18,9 +19,11 @@ import type * as debts from "../debts.js";
 import type * as emailConfigs from "../emailConfigs.js";
 import type * as families from "../families.js";
 import type * as goals from "../goals.js";
+import type * as init_admin from "../init_admin.js";
 import type * as investments from "../investments.js";
 import type * as migrations from "../migrations.js";
 import type * as notifications from "../notifications.js";
+import type * as plans from "../plans.js";
 import type * as seed from "../seed.js";
 import type * as settings from "../settings.js";
 import type * as subscriptions from "../subscriptions.js";
@@ -37,6 +40,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   accounts: typeof accounts;
   "actions/email": typeof actions_email;
+  admin: typeof admin;
   auth: typeof auth;
   budgets: typeof budgets;
   categories: typeof categories;
@@ -45,9 +49,11 @@ declare const fullApi: ApiFromModules<{
   emailConfigs: typeof emailConfigs;
   families: typeof families;
   goals: typeof goals;
+  init_admin: typeof init_admin;
   investments: typeof investments;
   migrations: typeof migrations;
   notifications: typeof notifications;
+  plans: typeof plans;
   seed: typeof seed;
   settings: typeof settings;
   subscriptions: typeof subscriptions;

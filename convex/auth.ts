@@ -188,6 +188,7 @@ export const getCurrentUser = query({
             trialEndsAt: user.trialEndsAt,
             planType: user.planType ?? "basic",
             billingCycle: user.billingCycle ?? "monthly",
+            isSuperAdmin: user.isSuperAdmin ?? false,
         };
     },
 });

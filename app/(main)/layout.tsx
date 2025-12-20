@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Sidebar } from "../components/Sidebar";
 import { MobileNav } from "../components/MobileNav";
 import { TransactionModal } from "../components/TransactionModal";
@@ -14,7 +14,7 @@ export default function MainLayout({
 }) {
     const { isAuthenticated, isLoading, user, logout } = useAuth();
     const router = useRouter();
-    const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
+    const pathname = usePathname();
 
     // Redirect to login if not authenticated
     useEffect(() => {
@@ -115,7 +115,9 @@ export default function MainLayout({
 
                         <h1 className="text-3xl font-black mb-4 uppercase tracking-tight">Sessão Bloqueada</h1>
                         <p className="text-text-secondary font-medium mb-10 leading-relaxed">
-                            Seu período de teste grátis de 7 dias chegou ao fim. <br /><br /> Seus dados estão **seguros**, mas para continuar evoluindo sua vida financeira, você precisa escolher um plano.
+                            Seu período de teste grátis de 7 dias chegou ao fim. <br />
+                            {user?.trialEndsAt && <span className="block mt-2 text-sm text-danger font-bold">Expirou em: {new Date(user.trialEndsAt).toLocaleDateString('pt-BR')} às {new Date(user.trialEndsAt).toLocaleTimeString('pt-BR')}</span>}
+                            <br /> Seus dados estão **seguros**, mas para continuar evoluindo sua vida financeira, você precisa escolher um plano.
                         </p>
 
                         <div className="flex flex-col gap-4">

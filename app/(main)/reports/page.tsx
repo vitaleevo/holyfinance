@@ -3,8 +3,13 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { useTransactions } from '../../context/TransactionContext';
+import { useAuth } from '../../context/AuthContext';
+import { hasFeature } from '../../utils/plans';
+import { useToast } from '../../context/ToastContext';
 
 export default function ReportsPage() {
+    const { user } = useAuth();
+    const { showToast } = useToast();
     const { transactions } = useTransactions();
 
     // Aggregate transactions by month
@@ -44,9 +49,22 @@ export default function ReportsPage() {
                     <h1 className="text-3xl font-black text-white tracking-tight">Relatórios Detalhados</h1>
                     <p className="text-text-secondary">Análise profunda do seu comportamento financeiro.</p>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-dark border border-surface-border text-white font-bold hover:bg-surface-border transition-colors">
+                <button
+                    onClick={() => {
+                        if (hasFeature(user?.planType, 'advancedReports')) {
+                            showToast("Gerando PDF... (Simulação)", "success");
+                        } else {
+                            showToast("Exportação PDF disponível apenas nos planos Intermediário e Avançado.", "error");
+                        }
+                    }}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-bold transition-all ${hasFeature(user?.planType, 'advancedReports')
+                            ? 'bg-surface-dark border-surface-border text-white hover:bg-surface-border'
+                            : 'bg-surface-dark/50 border-surface-border/50 text-text-secondary cursor-not-allowed opacity-70'
+                        }`}
+                >
                     <span className="material-symbols-outlined">download</span>
                     PDF
+                    {!hasFeature(user?.planType, 'advancedReports') && <span className="material-symbols-outlined text-[16px]">lock</span>}
                 </button>
             </header>
 

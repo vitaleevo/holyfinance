@@ -51,6 +51,10 @@ interface TransactionContextType {
     updateDebt: (id: string, data: Partial<Debt>) => void;
     deleteDebt: (id: string) => void;
 
+    // Categories
+    categories: any[];
+    refreshCategories: () => void;
+
     // Settings
     settings: AppSettings;
     updateSettings: (newSettings: Partial<AppSettings>) => void;
@@ -74,6 +78,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
     const convexInvestments = useQuery(api.investments.get, { token: token ?? undefined });
     const convexDebts = useQuery(api.debts.get, { token: token ?? undefined });
     const convexSettings = useQuery(api.settings.get, { token: token ?? undefined });
+    const convexCategories = useQuery(api.categories.get, { token: token ?? undefined });
 
     // --- MAPPED DATA ---
     const transactions: Transaction[] = (convexTransactions || []).map((t) => ({
@@ -91,6 +96,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
     const budgetLimits: BudgetLimit[] = (convexBudgets || []).map((t) => ({ ...t, id: t._id }));
     const investments: Investment[] = (convexInvestments || []).map((t) => ({ ...t, id: t._id, type: t.type as Investment['type'] }));
     const debts: Debt[] = (convexDebts || []).map((t) => ({ ...t, id: t._id }));
+    const categories: any[] = (convexCategories || []).map((c) => ({ ...c, id: c._id }));
 
     const settings: AppSettings = convexSettings ? {
         theme: convexSettings.theme as 'dark' | 'light',
@@ -129,6 +135,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
     const deleteDebtMutation = useMutation(api.debts.remove);
 
     const updateSettingsMutation = useMutation(api.settings.update);
+    const initCategoriesMutation = useMutation(api.categories.initializeDefaults);
 
     // --- EFFECTS ---
     useEffect(() => {
@@ -138,6 +145,12 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             document.documentElement.classList.remove('dark');
         }
     }, [settings.theme]);
+
+    useEffect(() => {
+        if (token && convexCategories && convexCategories.length === 0) {
+            initCategoriesMutation({ token });
+        }
+    }, [token, convexCategories]);
 
     // --- HANDLERS (all require userId) ---
 
@@ -340,6 +353,10 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
         }
     };
 
+    const refreshCategories = () => {
+        if (token) initCategoriesMutation({ token });
+    };
+
     return (
         <TransactionContext.Provider value={{
             transactions, addTransaction, updateTransaction, deleteTransaction, isModalOpen, openModal, closeModal, editingTransaction,
@@ -348,6 +365,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             budgetLimits, addBudgetLimit, updateBudgetLimit, deleteBudgetLimit,
             investments, addInvestment, updateInvestment, deleteInvestment,
             debts, addDebt, updateDebt, deleteDebt,
+            categories, refreshCategories,
             settings, updateSettings
         }}>
             {children}

@@ -17,6 +17,7 @@ interface User {
     trialEndsAt?: string;
     planType?: "free" | "basic" | "intermediate" | "advanced";
     billingCycle?: "monthly" | "yearly" | "biyearly";
+    isSuperAdmin?: boolean;
 }
 
 interface AuthContextType {
@@ -66,6 +67,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         trialEndsAt: currentUser.trialEndsAt,
         planType: currentUser.planType as any,
         billingCycle: currentUser.billingCycle as any,
+        isSuperAdmin: currentUser.isSuperAdmin,
     } : null;
 
     const login = async (email: string, password: string) => {

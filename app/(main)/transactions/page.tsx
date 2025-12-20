@@ -3,8 +3,13 @@
 import React, { useState } from 'react';
 import { useTransactions } from '../../context/TransactionContext';
 import { formatKwanza, maskValue } from '../../utils/currency';
+import { useAuth } from '../../context/AuthContext';
+import { hasFeature } from '../../utils/plans';
+import { useToast } from '../../context/ToastContext';
 
 export default function TransactionsPage() {
+    const { user } = useAuth();
+    const { showToast } = useToast();
     const { transactions, deleteTransaction, openModal } = useTransactions();
     const [searchTerm, setSearchTerm] = useState('');
     const [filterType, setFilterType] = useState<'all' | 'income' | 'expense'>('all');
@@ -34,6 +39,29 @@ export default function TransactionsPage() {
         }
     };
 
+    const handleExportCSV = () => {
+        if (!hasFeature(user?.planType, 'csvExport')) {
+            showToast("Recurso disponível apenas nos planos Basic, Intermediário e Avançado.", "error");
+            return;
+        }
+
+        const csvContent = "data:text/csv;charset=utf-8,"
+            + "Data,Descrição,Categoria,Conta,Tipo,Valor\n"
+            + filteredTransactions.map(t => {
+                return `${new Date(t.date).toLocaleDateString('pt-AO')},"${t.description}",${t.category},${t.account},${t.type === 'income' ? 'Receita' : 'Despesa'},${t.amount}`;
+            }).join("\n");
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "transacoes_holyfinance.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showToast("Exportação iniciada!", "success");
+    };
+
     return (
         <div className="flex flex-col gap-6 h-full">
             <div className="flex flex-col md:flex-row justify-between items-end gap-4">
@@ -61,6 +89,19 @@ export default function TransactionsPage() {
                         <option value="income">Receitas</option>
                         <option value="expense">Despesas</option>
                     </select>
+
+                    <button
+                        onClick={handleExportCSV}
+                        className={`flex items-center gap-2 px-4 py-2.5 rounded-lg border text-sm font-bold transition-all ${hasFeature(user?.planType, 'csvExport')
+                                ? 'bg-surface-dark border-surface-border text-white hover:bg-surface-border hover:text-primary'
+                                : 'bg-surface-dark/50 border-surface-border/50 text-text-secondary cursor-not-allowed opacity-70'
+                            }`}
+                        title={hasFeature(user?.planType, 'csvExport') ? "Exportar CSV" : "Faça upgrade para exportar"}
+                    >
+                        <span className="material-symbols-outlined text-[18px]">download</span>
+                        <span className="hidden md:inline">Exportar</span>
+                        {!hasFeature(user?.planType, 'csvExport') && <span className="material-symbols-outlined text-[14px]">lock</span>}
+                    </button>
                 </div>
             </div>
 
@@ -122,7 +163,7 @@ export default function TransactionsPage() {
                     <span className="text-xs text-text-secondary">Mostrando {filteredTransactions.length} transações</span>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 

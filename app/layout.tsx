@@ -14,7 +14,7 @@ const notoSans = Noto_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "HolyFinanças",
+  title: "HolyFinance",
   description: "Gestão Financeira Pessoal",
   icons: {
     icon: "/logo-icon.png",

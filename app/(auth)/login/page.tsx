@@ -46,7 +46,7 @@ export default function LoginPage() {
             <div className="flex flex-col items-center mb-8">
                 <img
                     src="/logo-full-dark-bg.png"
-                    alt="HolyFinanças"
+                    alt="HolyFinance"
                     className="h-32 w-auto object-contain mb-6 drop-shadow-[0_0_15px_rgba(19,236,109,0.3)]"
                 />
                 <h1 className="text-2xl font-black text-white tracking-tight">Bem-vindo de volta</h1>
