@@ -1,0 +1,13 @@
+# CONFIGURAÇÕES PARA O VERCEL
+
+# 1. No Painel da Vercel (Environment Variables), adicione estas duas:
+
+# Copie este valor para NEXT_PUBLIC_CONVEX_URL
+NEXT_PUBLIC_CONVEX_URL=https://ardent-lemming-299.convex.cloud
+
+# Para CONVEX_DEPLOY_KEY, você deve gerar uma nova no Dashboard do Convex:
+# Vá em Settings -> Deployment Key e copie o valor que começa com "prod:..." ou "dev:..."
+# CONVEX_DEPLOY_KEY=SUA_CHAVE_AQUI
+
+# 2. No Painel do Convex (Environment Variables), adicione esta:
+# ENCRYPTION_KEY=UMA_CHAVE_ALEATORIA_DE_32_CARACTERES
