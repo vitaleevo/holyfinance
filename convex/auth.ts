@@ -22,7 +22,7 @@ export const register = mutation({
         const domain = email.split('@')[1];
 
         if (!domain || !domain.includes('.')) {
-            throw new Error("Email inválido.");
+            throw new Error("O formato do email parece estar incorreto. Por favor, verifique.");
         }
 
         if (forbiddenDomains.includes(domain)) {

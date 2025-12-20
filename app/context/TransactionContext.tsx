@@ -7,6 +7,7 @@ import { Id } from "../../convex/_generated/dataModel";
 import { Transaction, Goal, Account, BudgetLimit, Investment, Debt, AppSettings, TransactionType } from '../types';
 import { useAuth } from './AuthContext';
 import { useToast } from './ToastContext';
+import { formatError } from '../utils/error';
 
 interface TransactionContextType {
     // Transactions
@@ -147,7 +148,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await createTransaction({ token, ...data });
             showToast("Transação registrada com sucesso!", "success");
         } catch (err: any) {
-            showToast(err.message || "Erro ao adicionar transação", "error");
+            showToast(formatError(err), "error");
         }
     };
     const updateTransaction = async (id: string, data: Omit<Transaction, 'id'>) => {
@@ -156,7 +157,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await updateTransactionMutation({ ...data, id: id as any as Id<"transactions">, token });
             showToast("Transação atualizada!", "success");
         } catch (err: any) {
-            showToast(err.message || "Erro ao atualizar", "error");
+            showToast(formatError(err), "error");
         }
     };
     const deleteTransaction = async (id: string) => {
@@ -165,7 +166,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await deleteTransactionMutation({ id: id as any as Id<"transactions">, token });
             showToast("Transação removida", "success");
         } catch (err: any) {
-            showToast(err.message || "Erro ao remover", "error");
+            showToast(formatError(err), "error");
         }
     };
 
@@ -179,7 +180,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await createGoal({ token, ...data });
             showToast("Meta criada!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const updateGoal = async (id: string, data: Partial<Goal>) => {
@@ -188,7 +189,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await updateGoalMutation({ ...data, id: id as any as Id<"goals">, token });
             showToast("Meta atualizada!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const deleteGoal = async (id: string) => {
@@ -197,7 +198,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await deleteGoalMutation({ id: id as any as Id<"goals">, token });
             showToast("Meta removida", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const addFundsToGoal = async (id: string, amount: number, accountId?: string) => {
@@ -207,7 +208,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await addFundsGoalMutation({ goalId: id as any as Id<"goals">, token, amount, accountId: accId });
             showToast("Fundos adicionados à meta!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
 
@@ -218,7 +219,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await createAccount({ token, ...data });
             showToast("Conta adicionada!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const updateAccount = async (id: string, data: Partial<Account>) => {
@@ -227,7 +228,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await updateAccountMutation({ ...data, id: id as any as Id<"accounts">, token });
             showToast("Conta atualizada!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const deleteAccount = async (id: string) => {
@@ -236,7 +237,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await deleteAccountMutation({ id: id as any as Id<"accounts">, token });
             showToast("Conta removida", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
 
@@ -247,7 +248,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await createBudget({ token, ...data });
             showToast("Limite de orçamento definido!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const updateBudgetLimit = async (id: string, data: Partial<BudgetLimit>) => {
@@ -256,7 +257,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await updateBudgetMutation({ ...data, id: id as any as Id<"budgetLimits">, token });
             showToast("Orçamento atualizado!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const deleteBudgetLimit = async (id: string) => {
@@ -265,7 +266,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await deleteBudgetMutation({ id: id as any as Id<"budgetLimits">, token });
             showToast("Orçamento removido", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
 
@@ -277,7 +278,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await createInvestment({ token, ...data, accountId: accId });
             showToast("Investimento registrado!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const updateInvestment = async (id: string, data: Partial<Investment>) => {
@@ -286,7 +287,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await updateInvestmentMutation({ ...data, id: id as any as Id<"investments">, token });
             showToast("Investimento atualizado!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const deleteInvestment = async (id: string) => {
@@ -295,7 +296,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await deleteInvestmentMutation({ id: id as any as Id<"investments">, token });
             showToast("Investimento removido", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
 
@@ -306,7 +307,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await createDebt({ token, ...data });
             showToast("Dívida cadastrada!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const updateDebt = async (id: string, data: Partial<Debt>) => {
@@ -315,7 +316,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await updateDebtMutation({ ...data, id: id as any as Id<"debts">, token });
             showToast("Dívida atualizada!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
     const deleteDebt = async (id: string) => {
@@ -324,7 +325,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await deleteDebtMutation({ id: id as any as Id<"debts">, token });
             showToast("Dívida removida", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
 
@@ -335,7 +336,7 @@ export const TransactionProvider: React.FC<{ children: ReactNode }> = ({ childre
             await updateSettingsMutation({ token, ...newSettings });
             showToast("Configurações salvas!", "success");
         } catch (err: any) {
-            showToast(err.message, "error");
+            showToast(formatError(err), "error");
         }
     };
 

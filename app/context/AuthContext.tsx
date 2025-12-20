@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
+import { formatError } from "../utils/error";
 
 interface User {
     id: Id<"users">;
@@ -65,8 +66,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             localStorage.setItem(TOKEN_KEY, result.token);
             setToken(result.token);
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Erro ao fazer login";
-            throw new Error(message);
+            throw new Error(formatError(error));
         }
     };
 
@@ -76,8 +76,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             localStorage.setItem(TOKEN_KEY, result.token);
             setToken(result.token);
         } catch (error: unknown) {
-            const message = error instanceof Error ? error.message : "Erro ao criar conta";
-            throw new Error(message);
+            throw new Error(formatError(error));
         }
     };
 

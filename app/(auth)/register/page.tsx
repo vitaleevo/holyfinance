@@ -4,10 +4,13 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
+import { formatError } from '../../utils/error';
 
 export default function RegisterPage() {
     const router = useRouter();
     const { register, isAuthenticated } = useAuth();
+    const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -40,9 +43,12 @@ export default function RegisterPage() {
 
         try {
             await register(name, email, password);
+            showToast("Conta criada com sucesso!", "success");
             router.push('/dashboard');
         } catch (err: any) {
-            setError(err.message || 'Erro ao criar conta');
+            const cleanMessage = formatError(err);
+            setError(cleanMessage);
+            showToast(cleanMessage, "error");
         } finally {
             setIsLoading(false);
         }

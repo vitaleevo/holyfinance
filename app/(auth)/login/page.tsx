@@ -4,10 +4,13 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
+import { formatError } from '../../utils/error';
 
 export default function LoginPage() {
     const router = useRouter();
     const { login, isAuthenticated } = useAuth();
+    const { showToast } = useToast();
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -27,9 +30,12 @@ export default function LoginPage() {
 
         try {
             await login(email, password);
+            showToast("Login realizado com sucesso!", "success");
             router.push('/dashboard');
         } catch (err: any) {
-            setError(err.message || 'Erro ao fazer login');
+            const cleanMessage = formatError(err);
+            setError(cleanMessage);
+            showToast(cleanMessage, "error");
         } finally {
             setIsLoading(false);
         }
